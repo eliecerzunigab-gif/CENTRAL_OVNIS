@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CENTRAL OVNIS - Dashboard Completo | Datos Desclasificados UAP</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg-primary:#0a0e1a;--bg-secondary:#111827;--bg-card:#1a1f35;--bg-card-hover:#222a45;--text-primary:#e2e8f0;--text-secondary:#94a3b8;--text-muted:#64748b;--accent:#00d4ff;--accent2:#7c3aed;--accent3:#f59e0b;--accent4:#10b981;--border:#1e293b;--success:#10b981;--danger:#ef4444;--warning:#f59e0b}
+body{font-family:'Inter',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,212,255,0.03) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(124,58,237,0.03) 0%,transparent 50%);pointer-events:none;z-index:0}
+.container{max-width:1400px;margin:0 auto;padding:20px;position:relative;z-index:1}
+.header{text-align:center;padding:40px 20px 30px;border-bottom:1px solid var(--border);margin-bottom:30px}
+.header h1{font-family:'Orbitron',sans-serif;font-size:2.2em;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px}
+.header .subtitle{color:var(--text-secondary);font-size:1em;margin-top:8px;letter-spacing:4px;text-transform:uppercase}
+.header .badge-row{display:flex;justify-content:center;gap:15px;margin-top:15px;flex-wrap:wrap}
+.header .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-total{background:rgba(16,185,129,0.15);color:var(--accent4);border:1px solid rgba(16,185,129,0.3)}
+.badge-r1{background:rgba(0,212,255,0.15);color:var(--accent);border:1px solid rgba(0,212,255,0.3)}
+.badge-r2{background:rgba(245,158,11,0.15);color:var(--accent3);border:1px solid rgba(245,158,11,0.3)}
+
+/* Stats Grid */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:30px}
+.comp-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;transition:all .3s}
+.comp-card:hover{border-color:rgba(0,212,255,0.2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+.comp-title{font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.comp-values{display:flex;align-items:center;justify-content:center;gap:12px}
+.comp-value{text-align:center;flex:1}
+.comp-value .num{font-size:2em;font-weight:800;font-family:'Orbitron',sans-serif}
+.comp-value .label{font-size:11px;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:1px}
+.comp-vs{font-size:14px;font-weight:700;color:var(--text-muted);padding:0 8px}
+
+/* Type Distribution */
+.type-dist{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.type-item{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600}
+.type-item.PDF{background:rgba(239,68,68,0.15);color:#ef4444}
+.type-item.VID{background:rgba(139,92,246,0.15);color:#8b5cf6}
+.type-item.IMG{background:rgba(16,185,129,0.15);color:#10b981}
+.type-item.AUD{background:rgba(245,158,11,0.15);color:#f59e0b}
+.type-item .count{font-family:'Orbitron',sans-serif;font-size:14px}
+
+/* Agency Bars */
+.agency-bars{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.agency-bar-row{display:flex;align-items:center;gap:8px}
+.agency-bar-label{font-size:11px;color:var(--text-secondary);width:100px;text-align:right;flex-shrink:0}
+.agency-bar-track{flex:1;height:18px;background:var(--bg-secondary);border-radius:4px;overflow:hidden;position:relative}
+.agency-bar-fill{height:100%;border-radius:4px;transition:width 1s ease;position:relative;background:linear-gradient(90deg,var(--accent),rgba(0,212,255,0.4))}
+.agency-bar-fill.loc{background:linear-gradient(90deg,var(--accent3),rgba(245,158,11,0.4))}
+.agency-bar-count{font-size:11px;color:var(--text-muted);width:30px;text-align:left;flex-shrink:0}
+
+/* Slideshow */
+.slideshow-container{overflow:hidden;margin-bottom:30px;border-radius:16px;border:1px solid var(--border);background:var(--bg-card)}
+.slideshow-track{display:flex;gap:12px;padding:16px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent) var(--bg-secondary)}
+.slideshow-track::-webkit-scrollbar{height:6px}
+.slideshow-track::-webkit-scrollbar-track{background:var(--bg-secondary);border-radius:3px}
+.slideshow-track::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+.slide{flex:0 0 auto;width:280px;height:180px;border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .3s;border:1px solid var(--border)}
+.slide:hover{transform:scale(1.03);border-color:var(--accent)}
+.slide img{width:100%;height:100%;object-fit:cover}
+
+/* Top 10 Grid */
+.section-title{font-family:'Orbitron',sans-serif;font-size:1.3em;font-weight:700;color:var(--text-primary);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.section-title .dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.top10-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:40px}
+.top-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .3s;position:relative}
+.top-card:hover{border-color:rgba(0,212,255,0.3);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.4)}
+.top-card .rank{position:absolute;top:10px;left:10px;width:32px;height:32px;background:rgba(0,0,0,0.7);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--accent);z-index:2;font-family:'Orbitron',sans-serif;border:1px solid rgba(0,212,255,0.3)}
+.top-card .score-badge{position:absolute;top:10px;right:10px;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;z-index:2;letter-spacing:1px;background:rgba(16,185,129,0.2);color:var(--accent4);border:1px solid rgba(16,185,129,0.3)}
+.card-image{width:100%;height:180px;object-fit:cover;cursor:pointer;transition:transform .3s}
+.card-image:hover{transform:scale(1.05)}
+.card-image-placeholder{width:100%;height:180px;display:flex;align-items:center;justify-content:center;font-size:3em;background:linear-gradient(135deg,var(--bg-secondary),var(--bg-card))}
+.card-body{padding:14px}
+.card-type{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:6px}
+.type-PDF{background:rgba(239,68,68,0.2);color:#ef4444}
+.type-VID{background:rgba(139,92,246,0.2);color:#8b5cf6}
+.type-IMG{background:rgba(16,185,129,0.2);color:#10b981}
+.type-AUD{background:rgba(245,158,11,0.2);color:#f59e0b}
+.card-title{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:6px;line-height:1.3}
+.card-meta{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;color:var(--text-muted);margin-bottom:8px}
+.card-meta .agency{color:var(--accent);font-weight:600}
+.card-desc{font-size:12px;color:var(--text-secondary);line-height:1.5;margin-bottom:10px}
+.card-links{display:flex;gap:8px}
+.btn-pdf{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;background:rgba(239,68,68,0.15);color:#ef4444;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;transition:all .2s}
+.btn-pdf:hover{background:rgba(239,68,68,0.3)}
+
+/* Full Table */
+.table-container{overflow-x:auto;margin-bottom:40px}
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{background:var(--bg-secondary);color:var(--text-muted);padding:10px 12px;text-align:left;font-weight:600;text-transform:uppercase;letter-spacing:1px;font-size:10px;border-bottom:2px solid var(--border);position:sticky;top:0;z-index:2}
+.data-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+.data-table tr:hover td{background:var(--bg-card-hover)}
+.table-type{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.table-type.PDF{background:rgba(239,68,68,0.15);color:#ef4444}
+.table-type.VID{background:rgba(139,92,246,0.15);color:#8b5cf6}
+.table-type.IMG{background:rgba(16,185,129,0.15);color:#10b981}
+.table-type.AUD{background:rgba(245,158,11,0.15);color:#f59e0b}
+.score-cell{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--accent4);font-weight:700}
+
+/* Search */
+.search-container{margin-bottom:20px}
+.search-input{width:100%;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;color:var(--text-primary);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all .3s}
+.search-input:focus{border-color:var(--accent);box-shadow:0 0 20px rgba(0,212,255,0.1)}
+.search-input::placeholder{color:var(--text-muted)}
+
+/* Modal */
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal.active{display:flex}
+.modal img{max-width:90vw;max-height:85vh;border-radius:8px;object-fit:contain}
+.modal-close{position:absolute;top:20px;right:30px;font-size:30px;color:white;cursor:pointer;background:none;border:none;z-index:1001}
+.modal-title{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:white;font-size:14px;text-align:center;background:rgba(0,0,0,0.7);padding:8px 16px;border-radius:8px;max-width:80%}
+
+/* Footer */
+.footer{text-align:center;padding:30px;border-top:1px solid var(--border);color:var(--text-muted);font-size:12px;margin-top:20px}
+.footer a{color:var(--accent);text-decoration:none}
+
+/* Responsive */
+@media(max-width:768px){
+  .header h1{font-size:1.5em}
+  .stats-grid{grid-template-columns:1fr}
+  .top10-grid{grid-template-columns:1fr}
+  .agency-bar-label{width:70px;font-size:10px}
+  .comp-value .num{font-size:1.5em}
+  .slide{width:200px;height:130px}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>🛸 CENTRAL OVNIS</h1>
+    <div class="subtitle">Dashboard Completo · Datos Desclasificados del Gobierno de EE.UU.</div>
+    <div class="badge-row">
+      <span class="badge badge-total">🟢 348 registros UAP</span>
+      <span class="badge badge-r1">🔵 348 registros totales</span>
+      <span class="badge badge-r2">🟡 Incluye CIA, ODNI, DOE, FBI, DoD, NASA, State Dept</span>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="comp-card">
+      <div class="comp-title">Total Registros Desclasificados</div>
+      <div class="comp-values">
+        <div class="comp-value"><div class="num" style="color:var(--accent4);font-size:2.5em">348</div><div class="label" style="color:var(--accent4)">REGISTROS UAP</div></div>
+      </div>
+      <div style="margin-top:8px;font-size:12px;color:var(--text-muted)">Release 1 + Release 2 · Actualizado Mayo 2026</div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-title">Distribucion por Tipo</div>
+      <div class="type-dist">
+        <div class="type-item PDF"><span class="count">206</span> PDF</div>
+<div class="type-item VID"><span class="count">106</span> VID</div>
+<div class="type-item IMG"><span class="count">28</span> IMG</div>
+<div class="type-item AUD"><span class="count">8</span> AUD</div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-title">Agencias</div>
+      <div class="agency-bars">
+        <div class="agency-bar-row"><span class="agency-bar-label">Departamento de Guerra</span><div class="agency-bar-track"><div class="agency-bar-fill" style="width:100%"></div></div><span class="agency-bar-count">203</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label">FBI</span><div class="agency-bar-track"><div class="agency-bar-fill" style="width:45%"></div></div><span class="agency-bar-count">92</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label">NASA</span><div class="agency-bar-track"><div class="agency-bar-fill" style="width:18%"></div></div><span class="agency-bar-count">36</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label">Departamento de Estado</span><div class="agency-bar-track"><div class="agency-bar-fill" style="width:6%"></div></div><span class="agency-bar-count">12</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label">Departamento de Energía (DOE)</span><div class="agency-bar-track"><div class="agency-bar-fill" style="width:1%"></div></div><span class="agency-bar-count">3</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label">Agencia Central de Inteligencia (CIA)</span><div class="agency-bar-track"><div class="agency-bar-fill" style="width:0%"></div></div><span class="agency-bar-count">1</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label">Oficina del Director de Inteligencia Nacional (ODNI)</span><div class="agency-bar-track"><div class="agency-bar-fill" style="width:0%"></div></div><span class="agency-bar-count">1</span></div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-title">Top Ubicaciones</div>
+      <div class="agency-bars">
+        <div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Oeste de EE.UU.</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:100%"></div></div><span class="agency-bar-count">50</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">CENTCOM</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:64%"></div></div><span class="agency-bar-count">32</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Siria</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:44%"></div></div><span class="agency-bar-count">22</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Golfo Arábigo</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:38%"></div></div><span class="agency-bar-count">19</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Luna</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:32%"></div></div><span class="agency-bar-count">16</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Irak</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:32%"></div></div><span class="agency-bar-count">16</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Estados Unidos</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:16%"></div></div><span class="agency-bar-count">8</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Órbita Terrestre Baja</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:16%"></div></div><span class="agency-bar-count">8</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Mar Mediterráneo</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:16%"></div></div><span class="agency-bar-count">8</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Oriente Medio</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:12%"></div></div><span class="agency-bar-count">6</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Grecia</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:12%"></div></div><span class="agency-bar-count">6</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Golfo Pérsico</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:12%"></div></div><span class="agency-bar-count">6</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">NORTHCOM</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:8%"></div></div><span class="agency-bar-count">4</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Emiratos Árabes Unidos</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:8%"></div></div><span class="agency-bar-count">4</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Golfo de Omán</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:8%"></div></div><span class="agency-bar-count">4</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slideshow -->
+  <div class="section-title"><span class="dot"></span> Galeria de Imagenes Destacadas</div>
+  <div class="slideshow-container">
+    <div class="slideshow-track">
+      <div class="slide"><img src="https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/CIA-UAP-D001_Intelligence_Information_Report_USSR_1973.jpg" alt="Slide" onclick="openModal('https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/CIA-UAP-D001_Intelligence_Information_Report_USSR_1973.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOE-UAP-D001_PANTEX_Image.jpg" alt="Slide" onclick="openModal('https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOE-UAP-D001_PANTEX_Image.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOW-UAP-D017_General_Correspondence_Of_Sandia.jpg" alt="Slide" onclick="openModal('https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOW-UAP-D017_General_Correspondence_Of_Sandia.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOW-UAP-PR050_4UAP_Formation_Iran_26_Aug_2022.jpg" alt="Slide" onclick="openModal('https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOW-UAP-PR050_4UAP_Formation_Iran_26_Aug_2022.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOW-UAP-PR051.jpg" alt="Slide" onclick="openModal('https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOW-UAP-PR051.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOW-UAP-PR052.jpg" alt="Slide" onclick="openModal('https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOW-UAP-PR052.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOW-UAP-PR071_USAF-ANG F-16C_callsign_CALLSIGN_Shoots_Down_UAP.jpg" alt="Slide" onclick="openModal('https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOW-UAP-PR071_USAF-ANG F-16C_callsign_CALLSIGN_Shoots_Down_UAP.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOW-UAP-PR086-UAP_from_Dec_2019_East_Coast.jpg" alt="Slide" onclick="openModal('https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/DOW-UAP-PR086-UAP_from_Dec_2019_East_Coast.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/NASA-UAP-D008_Apollo12_Medical_Debriefing.jpg" alt="Slide" onclick="openModal('https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/NASA-UAP-D008_Apollo12_Medical_Debriefing.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/ODNI-UAP-D001_USPER_Narrative_Senior_USIC.jpg" alt="Slide" onclick="openModal('https://www.war.gov/portals/1/Interactive/2026/UFO/Slideshow-2/ODNI-UAP-D001_USPER_Narrative_Senior_USIC.jpg', 'Slide')"></div>
+    </div>
+  </div>
+
+  <!-- Top 10 Section -->
+  <div class="section-title"><span class="dot"></span> TOP 10 · Registros Mas Importantes</div>
+  <div class="top10-grid">
+    <div class="top-card"><div class="rank">1</div><div class="score-badge">42</div><img class="card-image" src="https://www.war.gov/medialink/ufo/release_1/thumbnail/usper-statement-redacted.jpg" alt="USPER Statement about UAP Sighting" onclick="openModal('https://www.war.gov/medialink/ufo/release_1/thumbnail/usper-statement-redacted.jpg', 'USPER Statement about UAP Sighting')"><div class="card-body"><div class="card-type type-PDF">PDF</div><div class="card-title">USPER Statement about UAP Sighting</div><div class="card-meta"><span class="agency">FBI</span><span>Late 2025</span><span>Estados Unidos</span></div><div class="card-desc">Esta es una entrevista FBI 302 realizada a un alto oficial de inteligencia de EE.UU. sobre su testimonio de primera mano de un encuentro UAP en una instalación militar estadounidense. El testigo relat</div><div class="card-links"><a href="https://www.war.gov/medialink/ufo/release_1/usper-statement-redacted.pdf" target="_blank" class="btn-pdf">📄 PDF</a></div></div></div>
+<div class="top-card"><div class="rank">2</div><div class="score-badge">40</div><img class="card-image" src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/CIA-UAP-D001_Intelligence_Information_Report_USSR_1973.jpg" alt="CIA-UAP-D001, Intelligence Information Report, USSR, 1973" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/CIA-UAP-D001_Intelligence_Information_Report_USSR_1973.jpg', 'CIA-UAP-D001, Intelligence Information Report, USSR, 1973')"><div class="card-body"><div class="card-type type-PDF">PDF</div><div class="card-title">CIA-UAP-D001, Intelligence Information Report, USSR, 1973</div><div class="card-meta"><span class="agency">Agencia Central de Inteligencia (CIA)</span><span>12/20/73</span><span>USSR</span></div><div class="card-desc">Este documento es un informe de información de inteligencia (IIR) de la Agencia Central de Inteligencia (CIA) que describe actividades de recopilación de inteligencia humana enhe Union of Soviet Socia</div><div class="card-links"><a href="https://www.war.gov/medialink/ufo/052226/release_02/documents/CIA-UAP-D001_Intelligence_Information_Report_USSR_1973.pdf" target="_blank" class="btn-pdf">📄 PDF</a></div></div></div>
+<div class="top-card"><div class="rank">3</div><div class="score-badge">40</div><img class="card-image" src="https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm6-apollo-17-1972.jpg" alt="NASA-UAP-VM006, Apollo 17, 1972" onclick="openModal('https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm6-apollo-17-1972.jpg', 'NASA-UAP-VM006, Apollo 17, 1972')"><div class="card-body"><div class="card-type type-IMG">IMG</div><div class="card-title">NASA-UAP-VM006, Apollo 17, 1972</div><div class="card-meta"><span class="agency">NASA</span><span>1972</span><span>Luna</span></div><div class="card-desc">Como parte de la revisión de materiales históricos UAP bajo PURSUE, el Departamento de Guerra abrió un caso para investigar la fotografía de la NASA de la misión Apolo 17, tomada en diciembre de 1972.</div><div class="card-links"><a href="https://www.war.gov/medialink/ufo/release_1/nasa-uap-vm6-apollo-17-1972.jpg" target="_blank" class="btn-pdf">📄 PDF</a></div></div></div>
+<div class="top-card"><div class="rank">4</div><div class="score-badge">40</div><img class="card-image" src="https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm6-apollo-17-1972.jpg" alt="NASA-UAP-VM6, Apollo 17, 1972" onclick="openModal('https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm6-apollo-17-1972.jpg', 'NASA-UAP-VM6, Apollo 17, 1972')"><div class="card-body"><div class="card-type type-IMG">IMG</div><div class="card-title">NASA-UAP-VM6, Apollo 17, 1972</div><div class="card-meta"><span class="agency">NASA</span><span>1972</span><span>Luna</span></div><div class="card-desc">Como parte de la revisión de materiales históricos UAP bajo PURSUE, el Departamento de Guerra abrió un caso para investigar la fotografía de la NASA de la misión Apolo 17, tomada en diciembre de 1972.</div><div class="card-links"><a href="https://www.war.gov/medialink/ufo/release_1/nasa-uap-vm6-apollo-17-1972.jpg" target="_blank" class="btn-pdf">📄 PDF</a></div></div></div>
+<div class="top-card"><div class="rank">5</div><div class="score-badge">36</div><img class="card-image" src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/ODNI-UAP-D001_USPER_Narrative_Senior_USIC.jpg" alt="ODNI-UAP-D001, USPER Narrative, Senior USIC Official" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/ODNI-UAP-D001_USPER_Narrative_Senior_USIC.jpg', 'ODNI-UAP-D001, USPER Narrative, Senior USIC Official')"><div class="card-body"><div class="card-type type-PDF">PDF</div><div class="card-title">ODNI-UAP-D001, USPER Narrative, Senior USIC Official</div><div class="card-meta"><span class="agency">Oficina del Director de Inteligencia Nacional (ODNI)</span><span>2025</span><span>Oeste de EE.UU.</span></div><div class="card-desc">Este documento es un relato de primera mano escrito por un alto oficial de inteligencia de EE.UU. actualmente en servicio (mayo 2026). El oficial formaba parte de un equipo que investestigating report</div><div class="card-links"><a href="https://www.war.gov/medialink/ufo/052226/release_02/documents/ODNI-UAP-D001_USPER_Narrative_Senior_USIC.pdf" target="_blank" class="btn-pdf">📄 PDF</a></div></div></div>
+<div class="top-card"><div class="rank">6</div><div class="score-badge">36</div><img class="card-image" src="https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm1-apollo-12-1969.jpg" alt="NASA-UAP-VM001, Apollo 12, 1969" onclick="openModal('https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm1-apollo-12-1969.jpg', 'NASA-UAP-VM001, Apollo 12, 1969')"><div class="card-body"><div class="card-type type-IMG">IMG</div><div class="card-title">NASA-UAP-VM001, Apollo 12, 1969</div><div class="card-meta"><span class="agency">NASA</span><span>1969</span><span>Luna</span></div><div class="card-desc">Esta fotografía de archivo muestra la superficie lunar vista desde el lugar de alunizaje del Apolo 12. La imagen presenta un área de interés resaltada ligeramente a la derecha del eje vertical del fra</div><div class="card-links"><a href="https://www.war.gov/medialink/ufo/release_1/nasa-uap-vm1-apollo-12-1969.jpg" target="_blank" class="btn-pdf">📄 PDF</a></div></div></div>
+<div class="top-card"><div class="rank">7</div><div class="score-badge">36</div><img class="card-image" src="https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm2-apollo-12-1969.jpg" alt="NASA-UAP-VM002, Apollo 12, 1969" onclick="openModal('https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm2-apollo-12-1969.jpg', 'NASA-UAP-VM002, Apollo 12, 1969')"><div class="card-body"><div class="card-type type-IMG">IMG</div><div class="card-title">NASA-UAP-VM002, Apollo 12, 1969</div><div class="card-meta"><span class="agency">NASA</span><span>1969</span><span>Luna</span></div><div class="card-desc">Esta fotografía de archivo muestra la superficie lunar vista desde el lugar de alunizaje del Apolo 12. La imagen presenta dos áreas de interés resaltadas, etiquetadas “Area 1” and “Area 2,” slightly t</div><div class="card-links"><a href="https://www.war.gov/medialink/ufo/release_1/nasa-uap-vm2-apollo-12-1969.jpg" target="_blank" class="btn-pdf">📄 PDF</a></div></div></div>
+<div class="top-card"><div class="rank">8</div><div class="score-badge">36</div><img class="card-image" src="https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm3-apollo-12-1969.jpg" alt="NASA-UAP-VM003, Apollo 12, 1969" onclick="openModal('https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm3-apollo-12-1969.jpg', 'NASA-UAP-VM003, Apollo 12, 1969')"><div class="card-body"><div class="card-type type-IMG">IMG</div><div class="card-title">NASA-UAP-VM003, Apollo 12, 1969</div><div class="card-meta"><span class="agency">NASA</span><span>1969</span><span>Luna</span></div><div class="card-desc">Esta fotografía de archivo muestra la superficie lunar vista desde el lugar de alunizaje del Apolo 12. La imagen presenta un área de interés cerca del borde derecho del encuadre, sobre el horizonte, i</div><div class="card-links"><a href="https://www.war.gov/medialink/ufo/release_1/nasa-uap-vm3-apollo-12-1969.jpg" target="_blank" class="btn-pdf">📄 PDF</a></div></div></div>
+<div class="top-card"><div class="rank">9</div><div class="score-badge">36</div><img class="card-image" src="https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm4-apollo-12-1969.jpg" alt="NASA-UAP-VM004, Apollo 12, 1969" onclick="openModal('https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm4-apollo-12-1969.jpg', 'NASA-UAP-VM004, Apollo 12, 1969')"><div class="card-body"><div class="card-type type-IMG">IMG</div><div class="card-title">NASA-UAP-VM004, Apollo 12, 1969</div><div class="card-meta"><span class="agency">NASA</span><span>1969</span><span>Luna</span></div><div class="card-desc">Esta fotografía de archivo muestra la superficie lunar vista desde el lugar de alunizaje del Apolo 12. La imagen presenta un área de interés resaltada ligeramente a la izquierda del eje vertical delme</div><div class="card-links"><a href="https://www.war.gov/medialink/ufo/release_1/nasa-uap-vm4-apollo-12-1969.jpg" target="_blank" class="btn-pdf">📄 PDF</a></div></div></div>
+<div class="top-card"><div class="rank">10</div><div class="score-badge">36</div><img class="card-image" src="https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm5-apollo-12-1969.jpg" alt="NASA-UAP-VM005, Apollo 12, 1969" onclick="openModal('https://www.war.gov/medialink/ufo/release_1/thumbnail/nasa-uap-vm5-apollo-12-1969.jpg', 'NASA-UAP-VM005, Apollo 12, 1969')"><div class="card-body"><div class="card-type type-IMG">IMG</div><div class="card-title">NASA-UAP-VM005, Apollo 12, 1969</div><div class="card-meta"><span class="agency">NASA</span><span>1969</span><span>Luna</span></div><div class="card-desc">Esta fotografía de archivo muestra la superficie lunar vista desde el lugar de alunizaje del Apolo 12. La imagen presenta cinco áreas de interés resaltadas, etiquetadas “Area 1” through “Area 5,” abov</div><div class="card-links"><a href="https://www.war.gov/medialink/ufo/release_1/nasa-uap-vm5-apollo-12-1969.jpg" target="_blank" class="btn-pdf">📄 PDF</a></div></div></div>
+  </div>
+
+  <!-- Full Table -->
+  <div class="section-title"><span class="dot"></span> Todos los Registros (348)</div>
+  
+  <div class="search-container">
+    <input type="text" class="search-input" id="searchInput" placeholder="Buscar por titulo, agencia, ubicacion..." onkeyup="filterTable()">
+  </div>
+
+  <div class="table-container">
+    <table class="data-table" id="dataTable">
+      <thead>
+        <tr><th>#</th><th>Titulo</th><th>Agencia</th><th>Fecha</th><th>Ubicacion</th><th>Tipo</th><th>Score</th></tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td>1</td><td>USPER Statement about UAP Sighting</td><td>FBI</td><td>Late 2025</td><td>Estados Unidos</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">42</span></td></tr>
+<tr><td>2</td><td>CIA-UAP-D001, Intelligence Information Report, USSR, 1973</td><td>Agencia Central de Inteligencia (CIA)</td><td>12/20/73</td><td>USSR</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">40</span></td></tr>
+<tr><td>3</td><td>NASA-UAP-VM006, Apollo 17, 1972</td><td>NASA</td><td>1972</td><td>Luna</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">40</span></td></tr>
+<tr><td>4</td><td>NASA-UAP-VM6, Apollo 17, 1972</td><td>NASA</td><td>1972</td><td>Luna</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">40</span></td></tr>
+<tr><td>5</td><td>ODNI-UAP-D001, USPER Narrative, Senior USIC Official</td><td>Oficina del Director de Inteligencia Nacional (ODNI)</td><td>2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">36</span></td></tr>
+<tr><td>6</td><td>NASA-UAP-VM001, Apollo 12, 1969</td><td>NASA</td><td>1969</td><td>Luna</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">36</span></td></tr>
+<tr><td>7</td><td>NASA-UAP-VM002, Apollo 12, 1969</td><td>NASA</td><td>1969</td><td>Luna</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">36</span></td></tr>
+<tr><td>8</td><td>NASA-UAP-VM003, Apollo 12, 1969</td><td>NASA</td><td>1969</td><td>Luna</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">36</span></td></tr>
+<tr><td>9</td><td>NASA-UAP-VM004, Apollo 12, 1969</td><td>NASA</td><td>1969</td><td>Luna</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">36</span></td></tr>
+<tr><td>10</td><td>NASA-UAP-VM005, Apollo 12, 1969</td><td>NASA</td><td>1969</td><td>Luna</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">36</span></td></tr>
+<tr><td>11</td><td>NASA-UAP-VM1, Apollo 12, 1969</td><td>NASA</td><td>1969</td><td>Luna</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">36</span></td></tr>
+<tr><td>12</td><td>NASA-UAP-VM2, Apollo 12, 1969</td><td>NASA</td><td>1969</td><td>Luna</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">36</span></td></tr>
+<tr><td>13</td><td>NASA-UAP-VM3, Apollo 12, 1969</td><td>NASA</td><td>1969</td><td>Luna</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">36</span></td></tr>
+<tr><td>14</td><td>NASA-UAP-VM4, Apollo 12, 1969</td><td>NASA</td><td>1969</td><td>Luna</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">36</span></td></tr>
+<tr><td>15</td><td>NASA-UAP-VM5, Apollo 12, 1969</td><td>NASA</td><td>1969</td><td>Luna</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">36</span></td></tr>
+<tr><td>16</td><td>FBI September 2023 Sighting - Composite Sketch</td><td>FBI</td><td>9/1/23</td><td>Estados Unidos</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">34</span></td></tr>
+<tr><td>17</td><td>DOW-UAP-D017, UAP Reported at Sandia Base, 1948-1950</td><td>Departamento de Guerra</td><td>1948-1950</td><td>New Mexico</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">32</span></td></tr>
+<tr><td>18</td><td>NASA-UAP-D001, Apollo 12 Transcript, 1969</td><td>NASA</td><td>1969</td><td>Luna</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">31</span></td></tr>
+<tr><td>19</td><td>NASA-UAP-D002, Apollo 17 Transcript, 1972</td><td>NASA</td><td>1972</td><td>Luna</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">31</span></td></tr>
+<tr><td>20</td><td>NASA-UAP-D1, Apollo 12 Transcript, 1969</td><td>NASA</td><td>1969</td><td>Luna</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">31</span></td></tr>
+<tr><td>21</td><td>NASA-UAP-D2, Apollo 17 Transcript, 1972</td><td>NASA</td><td>1972</td><td>Luna</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">31</span></td></tr>
+<tr><td>22</td><td>NASA-UAP-D008, Apollo 12 Medical Debriefing - Tape 12, 1969</td><td>NASA</td><td>1969</td><td>Texas</td><td><span class="table-type AUD">AUD</span></td><td><span class="score-cell">29</span></td></tr>
+<tr><td>23</td><td>DOW-UAP-PR068, "IIR 1 666 S0151 23/Video Footage of Unidentified Aerial Phenomenon (UAP) captured by fifth generation aircraft on 20 Jan 23"</td><td>Departamento de Guerra</td><td>2023</td><td>NORTHCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">29</span></td></tr>
+<tr><td>24</td><td>DOW-UAP-PR073, IIR 1 655 S0053 23/Several Unidentified Aerial Phenomenon Encountered In The Vicinity of Columbus OH"</td><td>Departamento de Guerra</td><td>2022</td><td>Midwestern United States</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">29</span></td></tr>
+<tr><td>25</td><td>NASA-UAP-D009, Apollo 17 Audio Excerpt, December 7, 1972</td><td>NASA</td><td>12/7/72</td><td>Cislunar Space</td><td><span class="table-type AUD">AUD</span></td><td><span class="score-cell">29</span></td></tr>
+<tr><td>26</td><td>FBI September 2023 Sighting - Serial 003</td><td>FBI</td><td>9/1/23</td><td>Estados Unidos</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">28</span></td></tr>
+<tr><td>27</td><td>FBI September 2023 Sighting - Serial 004</td><td>FBI</td><td>9/1/23</td><td>Estados Unidos</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">28</span></td></tr>
+<tr><td>28</td><td>FBI September 2023 Sighting - Serial 005</td><td>FBI</td><td>9/1/23</td><td>Estados Unidos</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">28</span></td></tr>
+<tr><td>29</td><td>State Department UAP Cable 001, Papua New Guinea, January 28, 1985</td><td>Departamento de Estado</td><td>1/24/85</td><td>Papúa Nueva Guinea</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">28</span></td></tr>
+<tr><td>30</td><td>State Department UAP Cable 1, Papua New Guinea, January 28, 1985</td><td>Departamento de Estado</td><td>1/24/85</td><td>Papúa Nueva Guinea</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">28</span></td></tr>
+<tr><td>31</td><td>FBI September 2023 Sighting - Serial 3</td><td>FBI</td><td>9/1/23</td><td>Estados Unidos</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">28</span></td></tr>
+<tr><td>32</td><td>FBI September 2023 Sighting - Serial 4</td><td>FBI</td><td>9/1/23</td><td>Estados Unidos</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">28</span></td></tr>
+<tr><td>33</td><td>FBI September 2023 Sighting - Serial 5</td><td>FBI</td><td>9/1/23</td><td>Estados Unidos</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">28</span></td></tr>
+<tr><td>34</td><td>DOW-UAP-PR019, Unresolved UAP Report, Middle East, May 2022</td><td>Departamento de Guerra</td><td>N/A</td><td>Oriente Medio</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>35</td><td>DOW-UAP-PR021, Unresolved UAP Report, Iraq, May 2022</td><td>Departamento de Guerra</td><td>N/A</td><td>Irak</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>36</td><td>DOW-UAP-PR022, Unresolved UAP Report, Syria, July 2022</td><td>Departamento de Guerra</td><td>N/A</td><td>Siria</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>37</td><td>DOW-UAP-PR023, Unresolved UAP Report, Iraq, December 2022</td><td>Departamento de Guerra</td><td>N/A</td><td>Irak</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>38</td><td>DOW-UAP-PR026, Unresolved UAP Report, United Arab Emirates, October 2023</td><td>Departamento de Guerra</td><td>N/A</td><td>Emiratos Árabes Unidos</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>39</td><td>DOW-UAP-PR027, Unresolved UAP Report, United Arab Emirates, October 2023</td><td>Departamento de Guerra</td><td>N/A</td><td>Emiratos Árabes Unidos</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>40</td><td>DOW-UAP-PR028, Unresolved UAP Report, Greece, January 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>Grecia</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>41</td><td>DOW-UAP-PR029, Unresolved UAP Report, United Arab Emirates, June 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo de Omán</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>42</td><td>DOW-UAP-PR031, Unresolved UAP Report, Syria, October 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>Siria</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>43</td><td>DOW-UAP-PR032, Unresolved UAP Report, Syria, October 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>Siria</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>44</td><td>DOW-UAP-PR033, Unresolved UAP Report, Syria, October 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>Siria</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>45</td><td>DOW-UAP-PR034, Unresolved UAP Report, Greece, October 2023</td><td>Departamento de Guerra</td><td>N/A</td><td>Grecia</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>46</td><td>DOW-UAP-PR035, Unresolved UAP Report, Greece, October 2023</td><td>Departamento de Guerra</td><td>N/A</td><td>Grecia</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>47</td><td>DOW-UAP-PR036, Unresolved UAP Report, Middle East, May 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Oriente Medio</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>48</td><td>DOW-UAP-PR037, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo Arábigo</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>49</td><td>DOW-UAP-PR038, Unresolved UAP Report, Middle East, 2013</td><td>Departamento de Guerra</td><td>N/A</td><td>Oriente Medio</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>50</td><td>DOW-UAP-PR039, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo Arábigo</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>51</td><td>DOW-UAP-PR040, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo Arábigo</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>52</td><td>DOW-UAP-PR041, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo Arábigo</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>53</td><td>DOW-UAP-PR042, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo Arábigo</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>54</td><td>DOW-UAP-PR043, Unresolved UAP Report, Africa, 2025</td><td>Departamento de Guerra</td><td>N/A</td><td>Yibuti</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>55</td><td>DOW-UAP-PR044, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo Arábigo</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>56</td><td>DOW-UAP-PR045, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Sur de EE.UU.</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>57</td><td>DOW-UAP-PR046, Unresolved UAP Report, INDOPACOM, 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>Mar de China Oriental</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>58</td><td>DOW-UAP-PR047, Unresolved UAP Report, INDOPACOM, 2023</td><td>Departamento de Guerra</td><td>N/A</td><td>Japón</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>59</td><td>DOW-UAP-PR048, Unresolved UAP Report, INDOPACOM, 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>INDOPACOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>60</td><td>DOW-UAP-PR049, Unresolved UAP Report, Department of the Army, 2026</td><td>Departamento de Guerra</td><td>N/A</td><td>América del Norte</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>61</td><td>NASA-UAP-D004, Apollo 11 Technical Crew Debriefing, 1969</td><td>NASA</td><td>1969</td><td></td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>62</td><td>NASA-UAP-D005, Apollo 17 Crew Debriefing for Science, 1973</td><td>NASA</td><td>1973</td><td></td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>63</td><td>NASA-UAP-D006, Apollo 17 Technical Crew Debriefing, 1973</td><td>NASA</td><td>1973</td><td></td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>64</td><td>DOW-UAP-PR19, Unresolved UAP Report, Middle East, May 2022</td><td>Departamento de Guerra</td><td>N/A</td><td>Oriente Medio</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>65</td><td>DOW-UAP-PR21, Unresolved UAP Report, Iraq, May 2022</td><td>Departamento de Guerra</td><td>N/A</td><td>Irak</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>66</td><td>DOW-UAP-PR22, Unresolved UAP Report, Syria, July 2022</td><td>Departamento de Guerra</td><td>N/A</td><td>Siria</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>67</td><td>DOW-UAP-PR23, Unresolved UAP Report, Iraq, December 2022</td><td>Departamento de Guerra</td><td>N/A</td><td>Irak</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>68</td><td>DOW-UAP-PR26, Unresolved UAP Report, United Arab Emirates, October 2023</td><td>Departamento de Guerra</td><td>N/A</td><td>Emiratos Árabes Unidos</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>69</td><td>DOW-UAP-PR27, Unresolved UAP Report, United Arab Emirates, October 2023</td><td>Departamento de Guerra</td><td>N/A</td><td>Emiratos Árabes Unidos</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>70</td><td>DOW-UAP-PR28, Unresolved UAP Report, Greece, January 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>Grecia</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>71</td><td>DOW-UAP-PR29, Unresolved UAP Report, United Arab Emirates, June 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo de Omán</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>72</td><td>DOW-UAP-PR31, Unresolved UAP Report, Syria, October 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>Siria</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>73</td><td>DOW-UAP-PR32, Unresolved UAP Report, Syria, October 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>Siria</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>74</td><td>DOW-UAP-PR33, Unresolved UAP Report, Syria, October 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>Siria</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>75</td><td>DOW-UAP-PR34, Unresolved UAP Report, Greece, October 2023</td><td>Departamento de Guerra</td><td>N/A</td><td>Grecia</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>76</td><td>DOW-UAP-PR35, Unresolved UAP Report, Greece, October 2023</td><td>Departamento de Guerra</td><td>N/A</td><td>Grecia</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>77</td><td>DOW-UAP-PR36, Unresolved UAP Report, Middle East, May 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Oriente Medio</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>78</td><td>DOW-UAP-PR37, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo Arábigo</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>79</td><td>DOW-UAP-PR38, Unresolved UAP Report, Middle East, 2013</td><td>Departamento de Guerra</td><td>N/A</td><td>Oriente Medio</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>80</td><td>DOW-UAP-PR39, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo Arábigo</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>81</td><td>DOW-UAP-PR40, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo Arábigo</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>82</td><td>DOW-UAP-PR41, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo Arábigo</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>83</td><td>DOW-UAP-PR42, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo Arábigo</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>84</td><td>DOW-UAP-PR43, Unresolved UAP Report, Africa, 2025</td><td>Departamento de Guerra</td><td>N/A</td><td>Yibuti</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>85</td><td>DOW-UAP-PR44, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Golfo Arábigo</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>86</td><td>DOW-UAP-PR45, Unresolved UAP Report, Middle East, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Sur de EE.UU.</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>87</td><td>DOW-UAP-PR46, Unresolved UAP Report, INDOPACOM, 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>Mar de China Oriental</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>88</td><td>DOW-UAP-PR47, Unresolved UAP Report, INDOPACOM, 2023</td><td>Departamento de Guerra</td><td>N/A</td><td>Japón</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>89</td><td>DOW-UAP-PR48, Unresolved UAP Report, INDOPACOM, 2024</td><td>Departamento de Guerra</td><td>N/A</td><td>INDOPACOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>90</td><td>DOW-UAP-PR49, Unresolved UAP Report, Department of the Army, 2026</td><td>Departamento de Guerra</td><td>N/A</td><td>América del Norte</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>91</td><td>NASA-UAP-D4, Apollo 11 Technical Crew Debriefing, 1969</td><td>NASA</td><td>1969</td><td></td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>92</td><td>NASA-UAP-D5, Apollo 17 Crew Debriefing for Science, 1973</td><td>NASA</td><td>1973</td><td></td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>93</td><td>NASA-UAP-D6, Apollo 17 Technical Crew Debriefing, 1973</td><td>NASA</td><td>1973</td><td></td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">26</span></td></tr>
+<tr><td>94</td><td>DOW-UAP-PR020, Unresolved UAP Report, Kuwait, May 2022</td><td>Departamento de Guerra</td><td>N/A</td><td>Irak</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">25</span></td></tr>
+<tr><td>95</td><td>DOW-UAP-PR20, Unresolved UAP Report, Kuwait, May 2022</td><td>Departamento de Guerra</td><td>N/A</td><td>Irak</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">25</span></td></tr>
+<tr><td>96</td><td>State Department UAP Cable 005, Mexico, September 16, 2003</td><td>Departamento de Estado</td><td>9/12/03</td><td>México</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">24</span></td></tr>
+<tr><td>97</td><td>NASA-UAP-D3A, Gemini 7 Audio Excerpt, 1965</td><td>NASA</td><td>12/5/65</td><td>Órbita Terrestre Baja</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">24</span></td></tr>
+<tr><td>98</td><td>State Department UAP Cable 5, Mexico, September 16, 2003</td><td>Departamento de Estado</td><td>9/12/03</td><td>México</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">24</span></td></tr>
+<tr><td>99</td><td>NASA-UAP-D003, Gemini 7 Transcript, 1965</td><td>NASA</td><td>12/5/65</td><td>Órbita Terrestre Baja</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">23</span></td></tr>
+<tr><td>100</td><td>NASA-UAP-D3, Gemini 7 Transcript, 1965</td><td>NASA</td><td>12/5/65</td><td>Órbita Terrestre Baja</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">23</span></td></tr>
+<tr><td>101</td><td>341_110448_Records_Relating_to_the_Collection_and_Dissemination_of_Intelligence_1948-1955-TS_CONT_No.2_2-5300-2-5399</td><td>Departamento de Guerra</td><td>11/8/48</td><td>Países Bajos</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">22</span></td></tr>
+<tr><td>102</td><td>DOW-UAP-PR050, "4 UAP Formation Iran 26 Aug 2022 over water [CALLSIGN]"</td><td>Departamento de Guerra</td><td>2022</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>103</td><td>DOW-UAP-PR051, "Syrian UAP instant acceleration"</td><td>Departamento de Guerra</td><td>2021</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>104</td><td>DOW-UAP-PR053, "Cigar Shaped or Fast Sherical UAP clip 15 OCT 22"</td><td>Departamento de Guerra</td><td>2022</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>105</td><td>DOW-UAP-PR054, "Spherical UAP Erratic movement [CALLSIGN] (Mission) 2022"</td><td>Departamento de Guerra</td><td>2022</td><td>EUCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>106</td><td>DOW-UAP-PR055, "Spherical UAP over AFG in and out of clouds 23 Nov 2020"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>107</td><td>DOW-UAP-PR057a, "Spherical UAP in clouds"</td><td>Departamento de Guerra</td><td>2023</td><td>Yellow Sea</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>108</td><td>DOW-UAP-PR057b, "[Platform] Observes UAP in East China Sea 05 JAN 2023 INDOPACOM"</td><td>Departamento de Guerra</td><td>2023</td><td>Yellow Sea</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>109</td><td>DOW-UAP-PR059, "NAG UAP 1 Jun 20"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>110</td><td>DOW-UAP-PR060, "Spherical UAP [CALLSIGN] 2021/04/12 obj 2"</td><td>Departamento de Guerra</td><td>2021</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>111</td><td>DOW-UAP-PR061, "Spherical UAP [CALLSIGN] 2021/04/12 vid 0"</td><td>Departamento de Guerra</td><td>2021</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>112</td><td>DOW-UAP-PR062, "Spherical UAP [CALLSIGN] 2021/04/12 vid 1"</td><td>Departamento de Guerra</td><td>2021</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>113</td><td>DOW-UAP-PR063, "Spherical UAP [CALLSIGN] 2021/04/12 vid 2"</td><td>Departamento de Guerra</td><td>2021</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>114</td><td>DOW-UAP-PR065, "USCG C-144 Tyndall UAP 2 TIC TAC IR hot 24 April 2024"</td><td>Departamento de Guerra</td><td>2024</td><td>Southeastern United States</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>115</td><td>DOW-UAP-PR066, "USCG C-144 Tyndall UAP 1 TIC TAC IR hot 24 April 2024"</td><td>Departamento de Guerra</td><td>2024</td><td>Southeastern United States</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>116</td><td>DOW-UAP-PR070, "IIR 1 655 S0301 23/Eglin AFB Aircrew Observed Unidentified Aerial Phenomena (UAP) on 13 Feb 23"</td><td>Departamento de Guerra</td><td>2023</td><td>Southeastern United States</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>117</td><td>DOW-UAP-PR071, "USAF ANG F-16C (callsign [CALLSIGN]) Shoots Down UAP over Lake Huron with [Weapon System], 12 Feb 2023"</td><td>Departamento de Guerra</td><td>2023</td><td>NORTHCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>118</td><td>DOW-UAP-PR072, "ADMINISTRATIVE REVISION: IIR 1777 J0032 22 Kazakhstan - UAP in the vicinity of Karaganda International Airport"</td><td>Departamento de Guerra</td><td>2022</td><td>Kazajistán</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>119</td><td>DOW-UAP-PR074, "[CALLSIGN] (Mission)HD_20220613"</td><td>Departamento de Guerra</td><td>2022</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>120</td><td>DOW-UAP-PR075, "09JUN2021 [Platform] observed UAP in the ECS"</td><td>Departamento de Guerra</td><td>2021</td><td>Mar de China Oriental</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>121</td><td>DOW-UAP-PR076, "03 January 2021 [CALLSIGN] (Mission) observes UAP"</td><td>Departamento de Guerra</td><td>2021</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>122</td><td>DOW-UAP-PR077, "2 November 2020 [CALLSIGN] [CALLSIGN] Observes and tracks UAP 1 of 2"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>123</td><td>DOW-UAP-PR078, "2 November 2020 [CALLSIGN] [CALLSIGN] Observes and tracks UAP 2 of 2"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>124</td><td>DOW-UAP-PR079, "29 October 2020 [CALLSIGN] (Mission) observes 3 fast moving UAP&#39;s"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>125</td><td>DOW-UAP-PR080, "20 October 2020 [CALLSIGN] [CALLSIGN] Observes UAP"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>126</td><td>DOW-UAP-PR081, "18 Oct 2020 [CALLSIGN] observes UAP"</td><td>Departamento de Guerra</td><td>2020</td><td>AFRICOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>127</td><td>DOW-UAP-PR082, "16 OCT 2020 [CALLSIGN] views UAP"</td><td>Departamento de Guerra</td><td>2020</td><td>AFRICOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>128</td><td>DOW-UAP-PR083, "7 October 2020 [CALLSIGN] observes UAP"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>129</td><td>DOW-UAP-PR084, "17 Sept 2020 [CALLSIGN] observes UAP"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>130</td><td>DOW-UAP-PR085, "16 Sept 2020 [CALLSIGN] [CALLSIGN] observes UAP"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>131</td><td>DOW-UAP-PR086, "UAP from Dec 2019 (East Coast)"</td><td>Departamento de Guerra</td><td>2019</td><td>NORTHCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>132</td><td>DOW-UAP-PR087, "05 September 2020 [CALLSIGN] UAP"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>133</td><td>DOW-UAP-PR088, "31 AUG [CALLSIGN] [CALLSIGN] Observes UAP"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>134</td><td>DOW-UAP-PR089, "31 AUG [CALLSIGN] [CALLSIGN] Observes UAP part2"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>135</td><td>DOW-UAP-PR090, "24 AUG 2020 [CALLSIGN] (Mission) Observes UAP"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>136</td><td>DOW-UAP-PR091, "21 AUG [CALLSIGN] Observes UAP in Persian Gulf"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>137</td><td>DOW-UAP-PR092, "08 AUG 2020 [CALLSIGN] [CALLSIGN] UAP observation"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>138</td><td>DOW-UAP-PR093, "May 05 2020 Gulf of Arabia [CALLSIGN] (Platform) Dual UAP"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>139</td><td>DOW-UAP-PR094, "[CALLSIGN] (Mission) - HD 2020-02-13"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>140</td><td>DOW-UAP-PR095, "May 05 2020 Gulf of Arabia [CALLSIGN] (Platform) Dual UAP"</td><td>Departamento de Guerra</td><td>2020</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>141</td><td>DOW-UAP-PR096, "HH11 03 July 2018 UAPs"</td><td>Departamento de Guerra</td><td>2018</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>142</td><td>DOW-UAP-PR097, "Hi-Res: [CALLSIGN] Observes UAP on 25SEP19 at 2135Z"</td><td>Departamento de Guerra</td><td>2019</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>143</td><td>DOW-UAP-PR099, "Hi-Res: [CALLSIGN] Observes UAP on 25SEP19 at 1715Z"</td><td>Departamento de Guerra</td><td>2023</td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>144</td><td>NASA-UAP-D003A, Gemini 7 Audio Excerpt, 1965</td><td>NASA</td><td>12/5/65</td><td>Órbita Terrestre Baja</td><td><span class="table-type AUD">AUD</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>145</td><td>NASA-UAP-D010, Mercury Atlas 9 Audio Excerpt, May 15, 1963</td><td>NASA</td><td>5/15/63</td><td>Órbita Terrestre Baja</td><td><span class="table-type AUD">AUD</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>146</td><td>NASA-UAP-D011, Mercury Atlas 9 Audio Excerpt, May 15, 1963</td><td>NASA</td><td>5/15/63</td><td>Órbita Terrestre Baja</td><td><span class="table-type AUD">AUD</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>147</td><td>NASA-UAP-D012, Mercury Atlas 8 Audio Excerpt, October 3, 1962</td><td>NASA</td><td>10/3/62</td><td>Órbita Terrestre Baja</td><td><span class="table-type AUD">AUD</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>148</td><td>NASA-UAP-D013, Mercury Atlas 7, May 24, 1962</td><td>NASA</td><td>5/24/62</td><td>Órbita Terrestre Baja</td><td><span class="table-type AUD">AUD</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>149</td><td>NASA-UAP-D014, Mercury-Redstone 4, July 21, 1961</td><td>NASA</td><td>7/21/61</td><td>North Atlantic Ocean</td><td><span class="table-type AUD">AUD</span></td><td><span class="score-cell">21</span></td></tr>
+<tr><td>150</td><td>DOE-UAP-D003, Pajarito Astronomers Invitation, 1986</td><td>Departamento de Energía (DOE)</td><td>5/20/86</td><td>New Mexico</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">20</span></td></tr>
+<tr><td>151</td><td>State Department UAP Cable 002, Kazakhstan, January 31, 1994</td><td>Departamento de Estado</td><td>1/27/94</td><td>Kazajistán</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">20</span></td></tr>
+<tr><td>152</td><td>State Department UAP Cable 003, Tbilisi, Georgia, October 30, 2001</td><td>Departamento de Estado</td><td>10/28/2001-10/29/2001</td><td>Georgia</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">20</span></td></tr>
+<tr><td>153</td><td>State Department UAP Cable 004, Ashgabat, Turkmenistan, November 5, 2004</td><td>Departamento de Estado</td><td>11/5/04</td><td>Turkmenistán</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">20</span></td></tr>
+<tr><td>154</td><td>Western US Event</td><td>Departamento de Guerra</td><td>2023</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">20</span></td></tr>
+<tr><td>155</td><td>State Department UAP Cable 2, Kazakhstan, January 31, 1994</td><td>Departamento de Estado</td><td>1/27/94</td><td>Kazajistán</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">20</span></td></tr>
+<tr><td>156</td><td>State Department UAP Cable 3, Tbilisi, Georgia, October 30, 2001</td><td>Departamento de Estado</td><td>10/28/2001-10/29/2001</td><td>Georgia</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">20</span></td></tr>
+<tr><td>157</td><td>State Department UAP Cable 4, Ashgabat, Turkmenistan, November 5, 2004</td><td>Departamento de Estado</td><td>11/5/04</td><td>Turkmenistán</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">20</span></td></tr>
+<tr><td>158</td><td>DOE-UAP-D001, Enhanced PANTEX Imagery</td><td>Departamento de Energía (DOE)</td><td></td><td></td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>159</td><td>DOW-UAP-PR058, "[CALLSIGN] (Mission) UAP"</td><td>Departamento de Guerra</td><td></td><td>INDOPACOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>160</td><td>DOW-UAP-PR064, "AFSOC Kabul UAP Jul 2017"</td><td>Departamento de Guerra</td><td></td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>161</td><td>DOW-UAP-PR069, "F/A-18 FLIR UAP"</td><td>Departamento de Guerra</td><td></td><td>NORTHCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>162</td><td>DOW-UAP-PR098, "UFOs in formation over Persian Gulf?"</td><td>Departamento de Guerra</td><td></td><td>CENTCOM</td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>163</td><td>FBI Photo A001</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>164</td><td>FBI Photo A002</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>165</td><td>FBI Photo A003</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>166</td><td>FBI Photo A004</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>167</td><td>FBI Photo A005</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>168</td><td>FBI Photo A006</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>169</td><td>FBI Photo A007</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>170</td><td>FBI Photo A008</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>171</td><td>FBI Photo B001</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>172</td><td>FBI Photo B002</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>173</td><td>FBI Photo B003</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>174</td><td>FBI Photo B004</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>175</td><td>FBI Photo B005</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>176</td><td>FBI Photo B006</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>177</td><td>FBI Photo B007</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>178</td><td>FBI Photo B008</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>179</td><td>FBI Photo B009</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>180</td><td>FBI Photo B010</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>181</td><td>FBI Photo B011</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>182</td><td>FBI Photo B012</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>183</td><td>FBI Photo B013</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>184</td><td>FBI Photo B014</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>185</td><td>FBI Photo B015</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>186</td><td>FBI Photo B016</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>187</td><td>FBI Photo B017</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>188</td><td>FBI Photo B018</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>189</td><td>FBI Photo B019</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>190</td><td>FBI Photo B020</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>191</td><td>FBI Photo B021</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>192</td><td>FBI Photo B022</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>193</td><td>FBI Photo B023</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>194</td><td>FBI Photo B024</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>195</td><td>NASA-UAP-D007, Skylab Techincal Crew Debriefing 1973</td><td>NASA</td><td>1973</td><td></td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>196</td><td>FBI Photo A1</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>197</td><td>FBI Photo A2</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>198</td><td>FBI Photo A3</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>199</td><td>FBI Photo A4</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>200</td><td>FBI Photo A5</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>201</td><td>FBI Photo A6</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>202</td><td>FBI Photo A7</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>203</td><td>FBI Photo A8</td><td>FBI</td><td>Late 2025</td><td>N/D</td><td><span class="table-type IMG">IMG</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>204</td><td>FBI Photo B1</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>205</td><td>FBI Photo B10</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>206</td><td>FBI Photo B11</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>207</td><td>FBI Photo B12</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>208</td><td>FBI Photo B13</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>209</td><td>FBI Photo B14</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>210</td><td>FBI Photo B15</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>211</td><td>FBI Photo B16</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>212</td><td>FBI Photo B17</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>213</td><td>FBI Photo B18</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>214</td><td>FBI Photo B19</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>215</td><td>FBI Photo B2</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>216</td><td>FBI Photo B20</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>217</td><td>FBI Photo B21</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>218</td><td>FBI Photo B22</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>219</td><td>FBI Photo B23</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>220</td><td>FBI Photo B24</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>221</td><td>FBI Photo B3</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>222</td><td>FBI Photo B4</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>223</td><td>FBI Photo B5</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>224</td><td>FBI Photo B6</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>225</td><td>FBI Photo B7</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>226</td><td>FBI Photo B8</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>227</td><td>FBI Photo B9</td><td>FBI</td><td>Late 2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>228</td><td>NASA-UAP-D7, Skylab Techincal Crew Debriefing 1973</td><td>NASA</td><td>1973</td><td></td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>229</td><td>65_HS1-834228961_62-HQ-83894_Section_001</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>230</td><td>65_HS1-834228961_62-HQ-83894_Section_002</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>231</td><td>65_HS1-834228961_62-HQ-83894_Section_003</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>232</td><td>65_HS1-834228961_62-HQ-83894_Section_004</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>233</td><td>65_HS1-834228961_62-HQ-83894_Section_005</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>234</td><td>65_HS1-834228961_62-HQ-83894_Section_006</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>235</td><td>65_HS1-834228961_62-HQ-83894_Section_007</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>236</td><td>65_HS1-834228961_62-HQ-83894_Section_008</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>237</td><td>65_HS1-834228961_62-HQ-83894_Section_009</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>238</td><td>65_HS1-834228961_62-HQ-83894_Section_010</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>239</td><td>65_HS1-834228961_62-HQ-83894_Serial_130</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>240</td><td>65_HS1-834228961_62-HQ-83894_Serial_153</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>241</td><td>65_HS1-834228961_62-HQ-83894_Serial_164</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>242</td><td>65_HS1-834228961_62-HQ-83894_Serial_220</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>243</td><td>65_HS1-834228961_62-HQ-83894_Serial_403</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>244</td><td>65_HS1-834228961_62-HQ-83894_Serial_438</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>245</td><td>65_HS1-834228961_62-HQ-83894_Serial_449</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>246</td><td>65_HS1-834228961_62-HQ-83894_SUB_A</td><td>FBI</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">17</span></td></tr>
+<tr><td>247</td><td>65_HS1-101634279_100-DE-26505</td><td>FBI</td><td>11/7/57</td><td>Alemania</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">16</span></td></tr>
+<tr><td>248</td><td>341_110677_Numerical_File,_5-2500</td><td>Departamento de Guerra</td><td>10/14/55</td><td>Azerbaiyán</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">14</span></td></tr>
+<tr><td>249</td><td>65_HS1-101634279_100-DE-18221_Serial_844</td><td>FBI</td><td>4/17/58</td><td>Detroit, MI</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">14</span></td></tr>
+<tr><td>250</td><td>DOE-UAP-D002, James Tuck Correspondence, 1970s</td><td>Departamento de Energía (DOE)</td><td>1970s</td><td></td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">13</span></td></tr>
+<tr><td>251</td><td>DOW-UAP-PR052, "UAP USO Formation [CALLSIGN] (Mission)"</td><td>Departamento de Guerra</td><td></td><td></td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">13</span></td></tr>
+<tr><td>252</td><td>DOW-UAP-PR056, "Spherical UAP pulsing over water [CALLSIGN]"</td><td>Departamento de Guerra</td><td></td><td></td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">13</span></td></tr>
+<tr><td>253</td><td>DOW-UAP-PR067, "Multiple Spherical UAP USO near Sub. [CALLSIGN] 2022/03/25 in and out of water"</td><td>Departamento de Guerra</td><td></td><td></td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">13</span></td></tr>
+<tr><td>254</td><td>331_120752_Numeric_Files_1944–1945_37153_German_Armament_Equipment_Documents</td><td>Departamento de Guerra</td><td>3/18/45</td><td>Alemania</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>255</td><td>38_143685_box_Incident_Summaries_101-172</td><td>Departamento de Guerra</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>256</td><td>38_143685_box_Incident_Summaries_173-233</td><td>Departamento de Guerra</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>257</td><td>38_143685_box7_Incident_Summaries_1-100</td><td>Departamento de Guerra</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>258</td><td>DOW-UAP-D010, Mission Report, Middle East, May 2022</td><td>Departamento de Guerra</td><td>5/6/22</td><td>Irak</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>259</td><td>DOW-UAP-D012, Mission Report, Iraq, May 2022</td><td>Departamento de Guerra</td><td>5/20/22</td><td>Irak</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>260</td><td>DOW-UAP-D014, Mission Report, Iraq, May 2022</td><td>Departamento de Guerra</td><td>5/29/22</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>261</td><td>DOW-UAP-D016, Mission Report, Syria, July 2022</td><td>Departamento de Guerra</td><td>7/31/22</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>262</td><td>DOW-UAP-D018, Mission Report, Iraq, December 2022</td><td>Departamento de Guerra</td><td>12/1/22</td><td>Irak</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>263</td><td>DOW-UAP-D019, Mission Report, Syria, February 21, 2023</td><td>Departamento de Guerra</td><td>2/21/23</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>264</td><td>DOW-UAP-D020, Mission Report, Iraq, 2023</td><td>Departamento de Guerra</td><td>3/31/23</td><td>Irak</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>265</td><td>DOW-UAP-D023, Mission Report, United Arab Emirates, October 2023</td><td>Departamento de Guerra</td><td>10/31/23</td><td>Golfo Arábigo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>266</td><td>DOW-UAP-D025, Mission Report, Greece, January 2024</td><td>Departamento de Guerra</td><td>1/25/24</td><td>Mar Mediterráneo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>267</td><td>DOW-UAP-D027, Mission Report, United Arab Emirates, October 2023</td><td>Departamento de Guerra</td><td>6/7/24</td><td>Golfo de Omán</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>268</td><td>DOW-UAP-D028, Mission Report, Iraq, September 2024</td><td>Departamento de Guerra</td><td>9/20/24</td><td>Irak</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>269</td><td>DOW-UAP-D032, Mission Report, Syria, October 2024</td><td>Departamento de Guerra</td><td>10/20/24</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>270</td><td>DOW-UAP-D033, Mission Report, Greece, October 2023</td><td>Departamento de Guerra</td><td>10/27/23</td><td>Mar Egeo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>271</td><td>DOW-UAP-D035, Mission Report, Greece, October 2023</td><td>Departamento de Guerra</td><td>10/29/23</td><td>Mar Egeo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>272</td><td>DOW-UAP-D038, Range Fouler Debrief, Middle East, May 2020</td><td>Departamento de Guerra</td><td>5/14/20</td><td>Golfo Arábigo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>273</td><td>DOW-UAP-D042, Range Fouler Debrief, Japan, 2023</td><td>Departamento de Guerra</td><td>8/31/20</td><td>Golfo Arábigo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>274</td><td>DOW-UAP-D044, Range Fouler Reporting Form, Gulf of Aden, October 2020</td><td>Departamento de Guerra</td><td>10/15/20</td><td>Mar Arábigo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>275</td><td>DOW-UAP-D051, Email Correspondence, Pacific Time Zone, March 2023</td><td>Departamento de Guerra</td><td>3/23/26</td><td>Pacific Time Zone</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>276</td><td>DOW-UAP-D055, Mission Report, Syria, November 2016</td><td>Departamento de Guerra</td><td>11/18/16</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>277</td><td>DOW-UAP-D056, Range Fouler Debrief, Arabian Sea, August 2020</td><td>Departamento de Guerra</td><td>8/24/20</td><td>Mar Arábigo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>278</td><td>DOW-UAP-D057, Range Fouler Reporting Form, Gulf of Aden, September 2020</td><td>Departamento de Guerra</td><td>9/4/20</td><td>Golfo de Adén</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>279</td><td>DOW-UAP-D060, Mission Report, Arabian Gulf, August 2020</td><td>Departamento de Guerra</td><td>8/8/20</td><td>Golfo Arábigo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>280</td><td>DOW-UAP-D061, Mission Report, Arabian Gulf, August 2020</td><td>Departamento de Guerra</td><td>8/27/20</td><td>Golfo Arábigo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>281</td><td>DOW-UAP-D062, Mission Report, Strait of Hormuz, September 2020</td><td>Departamento de Guerra</td><td>9/16/20</td><td>Estrecho de Ormuz</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>282</td><td>DOW-UAP-D063, Mission Report, Strait of Hormuz, October 2020</td><td>Departamento de Guerra</td><td>10/1/20</td><td>Estrecho de Ormuz</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>283</td><td>DOW-UAP-D064, Mission Report, Iran, November 2020</td><td>Departamento de Guerra</td><td>11/2/20</td><td>Iran</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>284</td><td>DOW-UAP-D065, Mission Report, Arabian Gulf, July 2020</td><td>Departamento de Guerra</td><td>7/16/20</td><td>Golfo Arábigo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>285</td><td>DOW-UAP-D074, Mission Report, Syria, November 2023</td><td>Departamento de Guerra</td><td>11/9/23</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>286</td><td>DOW-UAP-D075, Mission Report, Gulf of Aden, July 2024</td><td>Departamento de Guerra</td><td>7/14/24</td><td>Golfo de Adén</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>287</td><td>DOW-UAP-D10, Mission Report, Middle East, May 2022</td><td>Departamento de Guerra</td><td>5/6/22</td><td>Irak</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>288</td><td>DOW-UAP-D12, Mission Report, Iraq, May 2022</td><td>Departamento de Guerra</td><td>5/20/22</td><td>Irak</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>289</td><td>DOW-UAP-D14, Mission Report, Iraq, May 2022</td><td>Departamento de Guerra</td><td>5/29/22</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>290</td><td>DOW-UAP-D16, Mission Report, Syria, July 2022</td><td>Departamento de Guerra</td><td>7/31/22</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>291</td><td>DOW-UAP-D18, Mission Report, Iraq, December 2022</td><td>Departamento de Guerra</td><td>12/1/22</td><td>Irak</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>292</td><td>DOW-UAP-D19, Mission Report, Syria, February 21, 2023</td><td>Departamento de Guerra</td><td>2/21/23</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>293</td><td>DOW-UAP-D20, Mission Report, Iraq, 2023</td><td>Departamento de Guerra</td><td>3/31/23</td><td>Irak</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>294</td><td>DOW-UAP-D23, Mission Report, United Arab Emirates, October 2023</td><td>Departamento de Guerra</td><td>10/31/23</td><td>Golfo Pérsico</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>295</td><td>DOW-UAP-D23, Mission Report, United Arab Emirates, October 2023</td><td>Departamento de Guerra</td><td>10/31/23</td><td>Golfo Pérsico</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>296</td><td>DOW-UAP-D25, Mission Report, Greece, January 2024</td><td>Departamento de Guerra</td><td>1/25/24</td><td>Mar Mediterráneo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>297</td><td>DOW-UAP-D27, Mission Report, United Arab Emirates, October 2023</td><td>Departamento de Guerra</td><td>6/7/24</td><td>Golfo de Omán</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>298</td><td>DOW-UAP-D28, Mission Report, Iraq, September 2024</td><td>Departamento de Guerra</td><td>9/20/24</td><td>Irak</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>299</td><td>DOW-UAP-D32, Mission Report, Syria, October 2024</td><td>Departamento de Guerra</td><td>10/20/24</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>300</td><td>DOW-UAP-D32, Mission Report, Syria, October 2024</td><td>Departamento de Guerra</td><td>10/20/24</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>301</td><td>DOW-UAP-D32, Mission Report, Syria, October 2024</td><td>Departamento de Guerra</td><td>10/20/24</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>302</td><td>DOW-UAP-D33, Mission Report, Greece, October 2023</td><td>Departamento de Guerra</td><td>10/27/23</td><td>Mar Egeo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>303</td><td>DOW-UAP-D35, Mission Report, Greece, October 2023</td><td>Departamento de Guerra</td><td>10/29/23</td><td>Mar Egeo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>304</td><td>DOW-UAP-D38, Range Fouler Debrief, Middle East, May 2020</td><td>Departamento de Guerra</td><td>5/14/20</td><td>Golfo Pérsico</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>305</td><td>DOW-UAP-D42, Range Fouler Debrief, Japan, 2023</td><td>Departamento de Guerra</td><td>8/31/20</td><td>Golfo Arábigo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>306</td><td>DOW-UAP-D44, Range Fouler Reporting Form, Gulf of Aden, October 2020</td><td>Departamento de Guerra</td><td>10/15/20</td><td>Mar Arábigo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>307</td><td>DOW-UAP-D51, Email Correspondence, Pacific Time Zone, March 2023</td><td>Departamento de Guerra</td><td>3/23/26</td><td>Pacific Time Zone</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>308</td><td>DOW-UAP-D55, Mission Report, Syria, November 2016</td><td>Departamento de Guerra</td><td>11/18/16</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>309</td><td>DOW-UAP-D56, Range Fouler Debrief, Arabian Sea, August 2020</td><td>Departamento de Guerra</td><td>8/24/20</td><td>Mar Arábigo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>310</td><td>DOW-UAP-D57, Range Fouler Reporting Form, Gulf of Aden, September 2020</td><td>Departamento de Guerra</td><td>9/4/20</td><td>Golfo de Adén</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>311</td><td>DOW-UAP-D60, Mission Report, Persian Gulf, August 2020</td><td>Departamento de Guerra</td><td>8/8/20</td><td>Golfo Pérsico</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>312</td><td>DOW-UAP-D61, Mission Report, Persian Gulf, August 2020</td><td>Departamento de Guerra</td><td>8/27/20</td><td>Golfo Pérsico</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>313</td><td>DOW-UAP-D62, Mission Report, Strait of Hormuz, September 2020</td><td>Departamento de Guerra</td><td>9/16/20</td><td>Estrecho de Ormuz</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>314</td><td>DOW-UAP-D63, Mission Report, Strait of Hormuz, October 2020</td><td>Departamento de Guerra</td><td>10/1/20</td><td>Estrecho de Ormuz</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>315</td><td>DOW-UAP-D64, Mission Report, Iran, November 2020</td><td>Departamento de Guerra</td><td>11/2/20</td><td>Iran</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>316</td><td>DOW-UAP-D65, Mission Report, Persian Gulf, July 2020</td><td>Departamento de Guerra</td><td>7/16/20</td><td>Golfo Pérsico</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>317</td><td>DOW-UAP-D74, Mission Report, Syria, November 2023</td><td>Departamento de Guerra</td><td>11/9/23</td><td>Siria</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>318</td><td>DOW-UAP-D75, Mission Report, Gulf of Aden, July 2024</td><td>Departamento de Guerra</td><td>7/14/24</td><td>Golfo de Adén</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">12</span></td></tr>
+<tr><td>319</td><td>342_HS1-416511228_319.1 Flying Discs 1949</td><td>Departamento de Guerra</td><td>1/9/50</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">11</span></td></tr>
+<tr><td>320</td><td>59_214434_SP 16 [7.18.1963]</td><td>Departamento de Estado</td><td>7/18/63</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">11</span></td></tr>
+<tr><td>321</td><td>18_6369445_General_1948_Vol_1</td><td>Departamento de Guerra</td><td>6/15/48</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">9</span></td></tr>
+<tr><td>322</td><td>DOW-UAP-D005, Mission Report, Arabian Gulf, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Mar Mediterráneo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">9</span></td></tr>
+<tr><td>323</td><td>DOW-UAP-D006, Mission Report, Arabian Gulf, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Pacific Ocean</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">9</span></td></tr>
+<tr><td>324</td><td>DOW-UAP-D008, Mission Report, Djibouti, 2025</td><td>Departamento de Guerra</td><td>N/A</td><td>Mar Mediterráneo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">9</span></td></tr>
+<tr><td>325</td><td>DOW-UAP-D054, Mission Report, Mediterranean Sea, NA</td><td>Departamento de Guerra</td><td>N/A</td><td>Mar Mediterráneo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">9</span></td></tr>
+<tr><td>326</td><td>DOW-UAP-D5, Mission Report, Arabian Gulf, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Mar Mediterráneo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">9</span></td></tr>
+<tr><td>327</td><td>DOW-UAP-D54, Mission Report, Mediterranean Sea, NA</td><td>Departamento de Guerra</td><td>N/A</td><td>Mar Mediterráneo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">9</span></td></tr>
+<tr><td>328</td><td>DOW-UAP-D6, Mission Report, Arabian Gulf, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>Pacific Ocean</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">9</span></td></tr>
+<tr><td>329</td><td>DOW-UAP-D8, Mission Report, Djibouti, 2025</td><td>Departamento de Guerra</td><td>N/A</td><td>Mar Mediterráneo</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">9</span></td></tr>
+<tr><td>330</td><td>255_413270_UFO&#39;s_and_Defense_What_Should_we_Prepare_For</td><td>NASA</td><td></td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">7</span></td></tr>
+<tr><td>331</td><td>59_64634_711.5612[7-2852</td><td>Departamento de Estado</td><td>7/28/52</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">7</span></td></tr>
+<tr><td>332</td><td>DOW-UAP-D048, Department of the Air Force Report, 1996</td><td>Departamento de Guerra</td><td>9/10/96</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">7</span></td></tr>
+<tr><td>333</td><td>DOW-UAP-D050, Email Correspondence, INDOPACOM, April 2025</td><td>Departamento de Guerra</td><td>4/10/2025-4/11/2025</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">7</span></td></tr>
+<tr><td>334</td><td>DOW-UAP-D052, Email Correspondance, NA, August 2024</td><td>Departamento de Guerra</td><td>10/31/24</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">7</span></td></tr>
+<tr><td>335</td><td>DOW-UAP-D058, Range Fouler Debrief, NA, October 2020</td><td>Departamento de Guerra</td><td>10/27/20</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">7</span></td></tr>
+<tr><td>336</td><td>DOW-UAP-D48, Department of the Air Force Report, 1996</td><td>Departamento de Guerra</td><td>9/10/96</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">7</span></td></tr>
+<tr><td>337</td><td>DOW-UAP-D50, Email Correspondence, INDOPACOM, April 2025</td><td>Departamento de Guerra</td><td>4/10/2025-4/11/2025</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">7</span></td></tr>
+<tr><td>338</td><td>DOW-UAP-D52, Email Correspondance, NA, August 2024</td><td>Departamento de Guerra</td><td>10/31/24</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">7</span></td></tr>
+<tr><td>339</td><td>DOW-UAP-D58, Range Fouler Debrief, NA, October 2020</td><td>Departamento de Guerra</td><td>10/27/20</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">7</span></td></tr>
+<tr><td>340</td><td>18_100754_ General 1946-7_Vol_2</td><td>Departamento de Guerra</td><td>12/30/47</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">5</span></td></tr>
+<tr><td>341</td><td>DOW-UAP-D049, Launch Summary, Vandenberg AFB, 2000</td><td>Departamento de Guerra</td><td>2/3/00</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">5</span></td></tr>
+<tr><td>342</td><td>DOW-UAP-D49, Launch Summary, Vandenberg AFB, 2000</td><td>Departamento de Guerra</td><td>2/3/00</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">5</span></td></tr>
+<tr><td>343</td><td>DOW-UAP-D003, Mission Report, Arabian Gulf, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">4</span></td></tr>
+<tr><td>344</td><td>DOW-UAP-D004, Mission Report, Arabian Gulf, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">4</span></td></tr>
+<tr><td>345</td><td>DOW-UAP-D007, Mission Report, Arabian Gulf, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">4</span></td></tr>
+<tr><td>346</td><td>DOW-UAP-D3, Mission Report, Arabian Gulf, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">4</span></td></tr>
+<tr><td>347</td><td>DOW-UAP-D4, Mission Report, Arabian Gulf, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">4</span></td></tr>
+<tr><td>348</td><td>DOW-UAP-D7, Mission Report, Arabian Gulf, 2020</td><td>Departamento de Guerra</td><td>N/A</td><td>N/D</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">4</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <p>🛸 <strong>CENTRAL OVNIS</strong> · Datos desclasificados del gobierno de EE.UU.</p>
+    <p style="margin-top:4px">Fuentes: <a href="https://www.war.gov" target="_blank">war.gov</a> · <a href="https://www.aaro.mil" target="_blank">AARO</a></p>
+    <p style="margin-top:4px;font-size:10px;color:var(--text-muted)">Generado el 23/05/2026 22:00</p>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="imageModal" onclick="closeModal()">
+  <button class="modal-close" onclick="closeModal()">&times;</button>
+  <img id="modalImage" src="" alt="">
+  <div class="modal-title" id="modalTitle"></div>
+</div>
+
+<script>
+function openModal(src, title) {
+  document.getElementById('modalImage').src = src;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('imageModal').classList.add('active');
+}
+function closeModal() {
+  document.getElementById('imageModal').classList.remove('active');
+}
+function filterTable() {
+  var input = document.getElementById('searchInput');
+  var filter = input.value.toUpperCase();
+  var table = document.getElementById('dataTable');
+  var tr = table.getElementsByTagName('tr');
+  for (var i = 1; i < tr.length; i++) {
+    var tdArray = tr[i].getElementsByTagName('td');
+    var found = false;
+    for (var j = 0; j < tdArray.length; j++) {
+      if (tdArray[j]) {
+        var txtValue = tdArray[j].textContent || tdArray[j].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          found = true;
+          break;
+        }
+      }
+    }
+    tr[i].style.display = found ? '' : 'none';
+  }
+}
+</script>
+
+</body>
+</html>

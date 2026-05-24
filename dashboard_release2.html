@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CENTRAL OVNIS - NUEVOS REGISTROS Release 2 | Datos Desclasificados UAP</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg-primary:#0a0e1a;--bg-secondary:#111827;--bg-card:#1a1f35;--bg-card-hover:#222a45;--text-primary:#e2e8f0;--text-secondary:#94a3b8;--text-muted:#64748b;--accent:#00d4ff;--accent2:#7c3aed;--accent3:#f59e0b;--accent4:#10b981;--border:#1e293b;--success:#10b981;--danger:#ef4444;--warning:#f59e0b}
+body{font-family:'Inter',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,212,255,0.03) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(124,58,237,0.03) 0%,transparent 50%);pointer-events:none;z-index:0}
+.container{max-width:1400px;margin:0 auto;padding:20px;position:relative;z-index:1}
+.header{text-align:center;padding:40px 20px 30px;border-bottom:1px solid var(--border);margin-bottom:30px}
+.header h1{font-family:'Orbitron',sans-serif;font-size:2.2em;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px}
+.header .subtitle{color:var(--text-secondary);font-size:1em;margin-top:8px;letter-spacing:4px;text-transform:uppercase}
+.header .badge-row{display:flex;justify-content:center;gap:15px;margin-top:15px;flex-wrap:wrap}
+.header .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-total{background:rgba(16,185,129,0.15);color:var(--accent4);border:1px solid rgba(16,185,129,0.3)}
+.badge-r2{background:rgba(245,158,11,0.15);color:var(--accent3);border:1px solid rgba(245,158,11,0.3)}
+.badge-new{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3)}
+
+/* Stats Grid */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:30px}
+.comp-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;transition:all .3s}
+.comp-card:hover{border-color:rgba(0,212,255,0.2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+.comp-title{font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.comp-values{display:flex;align-items:center;justify-content:center;gap:12px}
+.comp-value{text-align:center;flex:1}
+.comp-value .num{font-size:2em;font-weight:800;font-family:'Orbitron',sans-serif}
+.comp-value .label{font-size:11px;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:1px}
+.comp-vs{font-size:14px;font-weight:700;color:var(--text-muted);padding:0 8px}
+
+/* Type Distribution */
+.type-dist{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.type-item{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600}
+.type-item.PDF{background:rgba(239,68,68,0.15);color:#ef4444}
+.type-item.VID{background:rgba(139,92,246,0.15);color:#8b5cf6}
+.type-item.IMG{background:rgba(16,185,129,0.15);color:#10b981}
+.type-item.AUD{background:rgba(245,158,11,0.15);color:#f59e0b}
+.type-item .count{font-family:'Orbitron',sans-serif;font-size:14px}
+
+/* Agency Bars */
+.agency-bars{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.agency-bar-row{display:flex;align-items:center;gap:8px}
+.agency-bar-label{font-size:11px;color:var(--text-secondary);width:100px;text-align:right;flex-shrink:0}
+.agency-bar-track{flex:1;height:18px;background:var(--bg-secondary);border-radius:4px;overflow:hidden;position:relative}
+.agency-bar-fill{height:100%;border-radius:4px;transition:width 1s ease;position:relative;background:linear-gradient(90deg,var(--accent),rgba(0,212,255,0.4))}
+.agency-bar-fill.loc{background:linear-gradient(90deg,var(--accent3),rgba(245,158,11,0.4))}
+.agency-bar-count{font-size:11px;color:var(--text-muted);width:30px;text-align:left;flex-shrink:0}
+
+/* Slideshow */
+.slideshow-container{overflow:hidden;margin-bottom:30px;border-radius:16px;border:1px solid var(--border);background:var(--bg-card)}
+.slideshow-track{display:flex;gap:12px;padding:16px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent) var(--bg-secondary)}
+.slideshow-track::-webkit-scrollbar{height:6px}
+.slideshow-track::-webkit-scrollbar-track{background:var(--bg-secondary);border-radius:3px}
+.slideshow-track::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+.slide{flex:0 0 auto;width:280px;height:180px;border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .3s;border:1px solid var(--border)}
+.slide:hover{transform:scale(1.03);border-color:var(--accent)}
+.slide img{width:100%;height:100%;object-fit:cover}
+
+/* Top 10 Grid */
+.section-title{font-family:'Orbitron',sans-serif;font-size:1.3em;font-weight:700;color:var(--text-primary);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.section-title .dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.top10-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:40px}
+.top-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .3s;position:relative}
+.top-card:hover{border-color:rgba(0,212,255,0.3);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.4)}
+.top-card .rank{position:absolute;top:10px;left:10px;width:32px;height:32px;background:rgba(0,0,0,0.7);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--accent);z-index:2;font-family:'Orbitron',sans-serif;border:1px solid rgba(0,212,255,0.3)}
+.top-card .score-badge{position:absolute;top:10px;right:10px;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;z-index:2;letter-spacing:1px;background:rgba(16,185,129,0.2);color:var(--accent4);border:1px solid rgba(16,185,129,0.3)}
+.card-image{width:100%;height:180px;object-fit:cover;cursor:pointer;transition:transform .3s}
+.card-image:hover{transform:scale(1.05)}
+.card-image-placeholder{width:100%;height:180px;display:flex;align-items:center;justify-content:center;font-size:3em;background:linear-gradient(135deg,var(--bg-secondary),var(--bg-card))}
+.card-body{padding:14px}
+.card-type{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:6px}
+.type-PDF{background:rgba(239,68,68,0.2);color:#ef4444}
+.type-VID{background:rgba(139,92,246,0.2);color:#8b5cf6}
+.type-IMG{background:rgba(16,185,129,0.2);color:#10b981}
+.type-AUD{background:rgba(245,158,11,0.2);color:#f59e0b}
+.card-title{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:6px;line-height:1.3}
+.card-meta{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;color:var(--text-muted);margin-bottom:8px}
+.card-meta .agency{color:var(--accent);font-weight:600}
+.card-desc{font-size:12px;color:var(--text-secondary);line-height:1.5;margin-bottom:10px}
+.card-links{display:flex;gap:8px}
+.btn-pdf{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;background:rgba(239,68,68,0.15);color:#ef4444;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;transition:all .2s}
+.btn-pdf:hover{background:rgba(239,68,68,0.3)}
+
+/* Full Table */
+.table-container{overflow-x:auto;margin-bottom:40px}
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{background:var(--bg-secondary);color:var(--text-muted);padding:10px 12px;text-align:left;font-weight:600;text-transform:uppercase;letter-spacing:1px;font-size:10px;border-bottom:2px solid var(--border);position:sticky;top:0;z-index:2}
+.data-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+.data-table tr:hover td{background:var(--bg-card-hover)}
+.table-type{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.table-type.PDF{background:rgba(239,68,68,0.15);color:#ef4444}
+.table-type.VID{background:rgba(139,92,246,0.15);color:#8b5cf6}
+.table-type.IMG{background:rgba(16,185,129,0.15);color:#10b981}
+.table-type.AUD{background:rgba(245,158,11,0.15);color:#f59e0b}
+.score-cell{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--accent4);font-weight:700}
+
+/* Search */
+.search-container{margin-bottom:20px}
+.search-input{width:100%;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;color:var(--text-primary);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all .3s}
+.search-input:focus{border-color:var(--accent);box-shadow:0 0 20px rgba(0,212,255,0.1)}
+.search-input::placeholder{color:var(--text-muted)}
+
+/* Modal */
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal.active{display:flex}
+.modal img{max-width:90vw;max-height:85vh;border-radius:8px;object-fit:contain}
+.modal-close{position:absolute;top:20px;right:30px;font-size:30px;color:white;cursor:pointer;background:none;border:none;z-index:1001}
+.modal-title{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:white;font-size:14px;text-align:center;background:rgba(0,0,0,0.7);padding:8px 16px;border-radius:8px;max-width:80%}
+
+/* Footer */
+.footer{text-align:center;padding:30px;border-top:1px solid var(--border);color:var(--text-muted);font-size:12px;margin-top:20px}
+.footer a{color:var(--accent);text-decoration:none}
+
+/* Responsive */
+@media(max-width:768px){
+  .header h1{font-size:1.5em}
+  .stats-grid{grid-template-columns:1fr}
+  .top10-grid{grid-template-columns:1fr}
+  .agency-bar-label{width:70px;font-size:10px}
+  .comp-value .num{font-size:1.5em}
+  .slide{width:200px;height:130px}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>🛸 CENTRAL OVNIS</h1>
+    <div class="subtitle">NUEVOS REGISTROS · Release 2 · Datos Desclasificados del Gobierno de EE.UU.</div>
+    <div class="badge-row">
+      <span class="badge badge-total">🟢 9 nuevos registros UAP</span>
+      <span class="badge badge-r2">🟡 Release 2 · Mayo 2026</span>
+      <span class="badge badge-new">🔴 CIA · ODNI · DOE · Nuevos DoD</span>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="comp-card">
+      <div class="comp-title">Nuevos Registros Desclasificados</div>
+      <div class="comp-values">
+        <div class="comp-value"><div class="num" style="color:var(--accent3);font-size:2.5em">9</div><div class="label" style="color:var(--accent3)">NUEVOS REGISTROS UAP</div></div>
+      </div>
+      <div style="margin-top:8px;font-size:12px;color:var(--text-muted)">Release 2 · Publicado Mayo 2026 · Incluye CIA, ODNI, DOE</div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-title">Distribucion por Tipo</div>
+      <div class="type-dist">
+        <div class="type-item PDF"><span class="count">6</span> PDF</div>
+<div class="type-item VID"><span class="count">3</span> VID</div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-title">Agencias (Nuevas)</div>
+      <div class="agency-bars">
+        <div class="agency-bar-row"><span class="agency-bar-label">Departamento de Guerra</span><div class="agency-bar-track"><div class="agency-bar-fill" style="width:100%"></div></div><span class="agency-bar-count">4</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label">Departamento de Energía (DOE)</span><div class="agency-bar-track"><div class="agency-bar-fill" style="width:75%"></div></div><span class="agency-bar-count">3</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label">Agencia Central de Inteligencia (CIA)</span><div class="agency-bar-track"><div class="agency-bar-fill" style="width:25%"></div></div><span class="agency-bar-count">1</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label">Oficina del Director de Inteligencia Nacional (ODNI)</span><div class="agency-bar-track"><div class="agency-bar-fill" style="width:25%"></div></div><span class="agency-bar-count">1</span></div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-title">Top Ubicaciones</div>
+      <div class="agency-bars">
+        <div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">New Mexico</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:100%"></div></div><span class="agency-bar-count">2</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">USSR</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:50%"></div></div><span class="agency-bar-count">1</span></div>
+<div class="agency-bar-row"><span class="agency-bar-label" style="width:140px">Oeste de EE.UU.</span><div class="agency-bar-track"><div class="agency-bar-fill loc" style="width:50%"></div></div><span class="agency-bar-count">1</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slideshow -->
+  <div class="section-title"><span class="dot"></span> Galeria de Imagenes · Release 2</div>
+  <div class="slideshow-container">
+    <div class="slideshow-track">
+      <div class="slide"><img src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/CIA-UAP-D001_Intelligence_Information_Report_USSR_1973.jpg" alt="Slide" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/CIA-UAP-D001_Intelligence_Information_Report_USSR_1973.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/ODNI-UAP-D001_USPER_Narrative_Senior_USIC.jpg" alt="Slide" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/ODNI-UAP-D001_USPER_Narrative_Senior_USIC.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOW-UAP-D017_General_Correspondence_Of_Sandia.jpg" alt="Slide" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOW-UAP-D017_General_Correspondence_Of_Sandia.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOE-UAP-D003_Pajarito_Astronomers.jpg" alt="Slide" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOE-UAP-D003_Pajarito_Astronomers.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOE-UAP-D001_PANTEX_Image.jpg" alt="Slide" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOE-UAP-D001_PANTEX_Image.jpg', 'Slide')"></div>
+<div class="slide"><img src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOE-UAP-D002_JamesTuck_Correspondence.jpg" alt="Slide" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOE-UAP-D002_JamesTuck_Correspondence.jpg', 'Slide')"></div>
+    </div>
+  </div>
+
+  <!-- Top 10 Section -->
+  <div class="section-title"><span class="dot"></span> TOP 10 · Nuevos Registros Mas Importantes</div>
+  <div class="top10-grid">
+    <div class="top-card"><div class="rank">1</div><div class="score-badge">40</div><img class="card-image" src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/CIA-UAP-D001_Intelligence_Information_Report_USSR_1973.jpg" alt="CIA-UAP-D001, Intelligence Information Report, USSR, 1973" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/CIA-UAP-D001_Intelligence_Information_Report_USSR_1973.jpg', 'CIA-UAP-D001, Intelligence Information Report, USSR, 1973')"><div class="card-body"><div class="card-type type-PDF">PDF</div><div class="card-title">CIA-UAP-D001, Intelligence Information Report, USSR, 1973</div><div class="card-meta"><span class="agency">Agencia Central de Inteligencia (CIA)</span><span>12/20/73</span><span>USSR</span></div><div class="card-desc">Este documento es un informe de información de inteligencia (IIR) de la Agencia Central de Inteligencia (CIA) que describe actividades de recopilación de inteligencia humana enhe Union of Soviet Socia</div><div class="card-links"></div></div></div>
+<div class="top-card"><div class="rank">2</div><div class="score-badge">36</div><img class="card-image" src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/ODNI-UAP-D001_USPER_Narrative_Senior_USIC.jpg" alt="ODNI-UAP-D001, USPER Narrative, Senior USIC Official" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/ODNI-UAP-D001_USPER_Narrative_Senior_USIC.jpg', 'ODNI-UAP-D001, USPER Narrative, Senior USIC Official')"><div class="card-body"><div class="card-type type-PDF">PDF</div><div class="card-title">ODNI-UAP-D001, USPER Narrative, Senior USIC Official</div><div class="card-meta"><span class="agency">Oficina del Director de Inteligencia Nacional (ODNI)</span><span>2025</span><span>Oeste de EE.UU.</span></div><div class="card-desc">Este documento es un relato de primera mano escrito por un alto oficial de inteligencia de EE.UU. actualmente en servicio (mayo 2026). El oficial formaba parte de un equipo que investestigating report</div><div class="card-links"></div></div></div>
+<div class="top-card"><div class="rank">3</div><div class="score-badge">32</div><img class="card-image" src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOW-UAP-D017_General_Correspondence_Of_Sandia.jpg" alt="DOW-UAP-D017, UAP Reported at Sandia Base, 1948-1950" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOW-UAP-D017_General_Correspondence_Of_Sandia.jpg', 'DOW-UAP-D017, UAP Reported at Sandia Base, 1948-1950')"><div class="card-body"><div class="card-type type-PDF">PDF</div><div class="card-title">DOW-UAP-D017, UAP Reported at Sandia Base, 1948-1950</div><div class="card-meta"><span class="agency">Departamento de Guerra</span><span>1948-1950</span><span>New Mexico</span></div><div class="card-desc">This file contains 116 pages of documentation from the Armed Forces Special Weapons Program (AFSWP) – the direct, post-World War II successor to the Manhattan Project – and from the U.S. Air Force – r</div><div class="card-links"></div></div></div>
+<div class="top-card"><div class="rank">4</div><div class="score-badge">20</div><img class="card-image" src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOE-UAP-D003_Pajarito_Astronomers.jpg" alt="DOE-UAP-D003, Pajarito Astronomers Invitation, 1986" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOE-UAP-D003_Pajarito_Astronomers.jpg', 'DOE-UAP-D003, Pajarito Astronomers Invitation, 1986')"><div class="card-body"><div class="card-type type-PDF">PDF</div><div class="card-title">DOE-UAP-D003, Pajarito Astronomers Invitation, 1986</div><div class="card-meta"><span class="agency">Departamento de Energía (DOE)</span><span>5/20/86</span><span>New Mexico</span></div><div class="card-desc">A letter to the members of the Pajarito Astronomers club regarding an upcoming meeting featuring a presentation from a Los Alamos National Laboratory-affiliated physicist, Dr. John Warren, titled “Why</div><div class="card-links"></div></div></div>
+<div class="top-card"><div class="rank">5</div><div class="score-badge">18</div><img class="card-image" src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOE-UAP-D001_PANTEX_Image.jpg" alt="DOE-UAP-D001, Enhanced PANTEX Imagery" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOE-UAP-D001_PANTEX_Image.jpg', 'DOE-UAP-D001, Enhanced PANTEX Imagery')"><div class="card-body"><div class="card-type type-PDF">PDF</div><div class="card-title">DOE-UAP-D001, Enhanced PANTEX Imagery</div><div class="card-meta"><span class="agency">Departamento de Energía (DOE)</span><span></span><span></span></div><div class="card-desc">A Pantex Unidentified Object Incident Report that includes an enhanced image from ground surveillance radar tower.</div><div class="card-links"></div></div></div>
+<div class="top-card"><div class="rank">6</div><div class="score-badge">13</div><img class="card-image" src="https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOE-UAP-D002_JamesTuck_Correspondence.jpg" alt="DOE-UAP-D002, James Tuck Correspondence, 1970s" onclick="openModal('https://www.war.gov/medialink/ufo/052226/release_02/thumbnails/DOE-UAP-D002_JamesTuck_Correspondence.jpg', 'DOE-UAP-D002, James Tuck Correspondence, 1970s')"><div class="card-body"><div class="card-type type-PDF">PDF</div><div class="card-title">DOE-UAP-D002, James Tuck Correspondence, 1970s</div><div class="card-meta"><span class="agency">Departamento de Energía (DOE)</span><span>1970s</span><span></span></div><div class="card-desc">Personal correspondence to and from James Tuck, a Los Alamos National Laboratory-affiliated physicist, regarding his interest in unidentified anomalous phenomena circa 1970s.</div><div class="card-links"></div></div></div>
+<div class="top-card"><div class="rank">7</div><div class="score-badge">13</div><div class="card-image-placeholder">🛸</div><div class="card-body"><div class="card-type type-VID">VID</div><div class="card-title">DOW-UAP-PR052, "UAP USO Formation [CALLSIGN] (Mission)"</div><div class="card-meta"><span class="agency">Departamento de Guerra</span><span></span><span></span></div><div class="card-desc">On March 6, 2026, eight members of the U.S. House of Representatives requested access to 51 potentially UAP-related records allegedly held by the Department of War and the Intelligence Community. The </div><div class="card-links"></div></div></div>
+<div class="top-card"><div class="rank">8</div><div class="score-badge">13</div><div class="card-image-placeholder">🛸</div><div class="card-body"><div class="card-type type-VID">VID</div><div class="card-title">DOW-UAP-PR056, "Spherical UAP pulsing over water [CALLSIGN]"</div><div class="card-meta"><span class="agency">Departamento de Guerra</span><span></span><span></span></div><div class="card-desc">On March 6, 2026, eight members of the U.S. House of Representatives requested access to 51 potentially UAP-related records allegedly held by the Department of War and the Intelligence Community. The </div><div class="card-links"></div></div></div>
+<div class="top-card"><div class="rank">9</div><div class="score-badge">13</div><div class="card-image-placeholder">🛸</div><div class="card-body"><div class="card-type type-VID">VID</div><div class="card-title">DOW-UAP-PR067, "Multiple Spherical UAP USO near Sub. [CALLSIGN] 2022/03/25 in and out of water"</div><div class="card-meta"><span class="agency">Departamento de Guerra</span><span></span><span></span></div><div class="card-desc">On March 6, 2026, eight members of the U.S. House of Representatives requested access to 51 potentially UAP-related records allegedly held by the Department of War and the Intelligence Community. The </div><div class="card-links"></div></div></div>
+  </div>
+
+  <!-- Full Table -->
+  <div class="section-title"><span class="dot"></span> Todos los Nuevos Registros (9)</div>
+  
+  <div class="search-container">
+    <input type="text" class="search-input" id="searchInput" placeholder="Buscar por titulo, agencia, ubicacion..." onkeyup="filterTable()">
+  </div>
+
+  <div class="table-container">
+    <table class="data-table" id="dataTable">
+      <thead>
+        <tr><th>#</th><th>Titulo</th><th>Agencia</th><th>Fecha</th><th>Ubicacion</th><th>Tipo</th><th>Score</th></tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td>1</td><td>CIA-UAP-D001, Intelligence Information Report, USSR, 1973</td><td>Agencia Central de Inteligencia (CIA)</td><td>12/20/73</td><td>USSR</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">40</span></td></tr>
+<tr><td>2</td><td>ODNI-UAP-D001, USPER Narrative, Senior USIC Official</td><td>Oficina del Director de Inteligencia Nacional (ODNI)</td><td>2025</td><td>Oeste de EE.UU.</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">36</span></td></tr>
+<tr><td>3</td><td>DOW-UAP-D017, UAP Reported at Sandia Base, 1948-1950</td><td>Departamento de Guerra</td><td>1948-1950</td><td>New Mexico</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">32</span></td></tr>
+<tr><td>4</td><td>DOE-UAP-D003, Pajarito Astronomers Invitation, 1986</td><td>Departamento de Energía (DOE)</td><td>5/20/86</td><td>New Mexico</td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">20</span></td></tr>
+<tr><td>5</td><td>DOE-UAP-D001, Enhanced PANTEX Imagery</td><td>Departamento de Energía (DOE)</td><td></td><td></td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">18</span></td></tr>
+<tr><td>6</td><td>DOE-UAP-D002, James Tuck Correspondence, 1970s</td><td>Departamento de Energía (DOE)</td><td>1970s</td><td></td><td><span class="table-type PDF">PDF</span></td><td><span class="score-cell">13</span></td></tr>
+<tr><td>7</td><td>DOW-UAP-PR052, "UAP USO Formation [CALLSIGN] (Mission)"</td><td>Departamento de Guerra</td><td></td><td></td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">13</span></td></tr>
+<tr><td>8</td><td>DOW-UAP-PR056, "Spherical UAP pulsing over water [CALLSIGN]"</td><td>Departamento de Guerra</td><td></td><td></td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">13</span></td></tr>
+<tr><td>9</td><td>DOW-UAP-PR067, "Multiple Spherical UAP USO near Sub. [CALLSIGN] 2022/03/25 in and out of water"</td><td>Departamento de Guerra</td><td></td><td></td><td><span class="table-type VID">VID</span></td><td><span class="score-cell">13</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <p>🛸 <strong>CENTRAL OVNIS</strong> · Datos desclasificados del gobierno de EE.UU.</p>
+    <p style="margin-top:4px">Fuentes: <a href="https://www.war.gov" target="_blank">war.gov</a> · <a href="https://www.aaro.mil" target="_blank">AARO</a></p>
+    <p style="margin-top:4px;font-size:10px;color:var(--text-muted)">Generado el 23/05/2026 22:02 · Solo registros Release 2</p>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="imageModal" onclick="closeModal()">
+  <button class="modal-close" onclick="closeModal()">&times;</button>
+  <img id="modalImage" src="" alt="">
+  <div class="modal-title" id="modalTitle"></div>
+</div>
+
+<script>
+function openModal(src, title) {
+  document.getElementById('modalImage').src = src;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('imageModal').classList.add('active');
+}
+function closeModal() {
+  document.getElementById('imageModal').classList.remove('active');
+}
+function filterTable() {
+  var input = document.getElementById('searchInput');
+  var filter = input.value.toUpperCase();
+  var table = document.getElementById('dataTable');
+  var tr = table.getElementsByTagName('tr');
+  for (var i = 1; i < tr.length; i++) {
+    var tdArray = tr[i].getElementsByTagName('td');
+    var found = false;
+    for (var j = 0; j < tdArray.length; j++) {
+      if (tdArray[j]) {
+        var txtValue = tdArray[j].textContent || tdArray[j].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          found = true;
+          break;
+        }
+      }
+    }
+    tr[i].style.display = found ? '' : 'none';
+  }
+}
+</script>
+
+</body>
+</html>
