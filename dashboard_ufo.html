@@ -717,6 +717,12 @@ body::before {
     <button class="nav-btn" data-tab="videos" onclick="switchTab('videos')">
       🎬 Videos <span class="nav-count" id="videoCount">0</span>
     </button>
+    <button class="nav-btn" data-tab="imagenes" onclick="switchTab('imagenes')">
+      📷 Imágenes <span class="nav-count" id="imageCount">0</span>
+    </button>
+    <button class="nav-btn" data-tab="documentos" onclick="switchTab('documentos')">
+      📑 Documentos <span class="nav-count" id="pdfCount">0</span>
+    </button>
     <button class="nav-btn" data-tab="nuevo" onclick="switchTab('nuevo')">
       🆕 Lo Nuevo
     </button>
@@ -751,14 +757,14 @@ body::before {
         <div class="label">Videos</div>
         <div class="stat-detail" id="detailVideos"></div>
       </div>
-      <div class="stat-card" onclick="document.getElementById('topImagesGrid').scrollIntoView({behavior:'smooth'})" title="Ver imágenes destacadas">
+      <div class="stat-card" onclick="switchTab('imagenes')" title="Ver todas las imágenes">
         <div class="stat-bg-icon">📷</div>
         <div class="icon">📷</div>
         <div class="value" id="totalImages">-</div>
         <div class="label">Imágenes</div>
         <div class="stat-detail" id="detailImages"></div>
       </div>
-      <div class="stat-card" onclick="switchTab('nuevo')" title="Ver documentos PDF">
+      <div class="stat-card" onclick="switchTab('documentos')" title="Ver todos los documentos PDF">
         <div class="stat-bg-icon">📑</div>
         <div class="icon">📑</div>
         <div class="value" id="totalPDFs">-</div>
@@ -828,6 +834,40 @@ body::before {
     <div id="videoResultCount" class="result-count">Mostrando todos los videos</div>
     <div class="video-grid" id="videoGrid">
       <div class="loading"><div class="spinner"></div><p>Cargando videos...</p></div>
+    </div>
+  </div>
+
+  <!-- ===== TAB: IMÁGENES ===== -->
+  <div class="tab-content" id="tab-imagenes">
+    <div class="section-title">
+      📷 Todas las Imágenes <span class="badge" id="allImageCount">0</span>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="imageSearch" placeholder="Buscar imágenes por título, agencia, ubicación..." oninput="filterImages()">
+      <select id="imageAgencyFilter" onchange="filterImages()">
+        <option value="">Todas las agencias</option>
+      </select>
+    </div>
+    <div id="imageResultCount" class="result-count">Mostrando todas las imágenes</div>
+    <div class="top-grid" id="imageGrid">
+      <div class="loading"><div class="spinner"></div><p>Cargando imágenes...</p></div>
+    </div>
+  </div>
+
+  <!-- ===== TAB: DOCUMENTOS ===== -->
+  <div class="tab-content" id="tab-documentos">
+    <div class="section-title">
+      📑 Todos los Documentos <span class="badge" id="allPdfCount">0</span>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="pdfSearch" placeholder="Buscar documentos por título, agencia, ubicación..." oninput="filterPdfs()">
+      <select id="pdfAgencyFilter" onchange="filterPdfs()">
+        <option value="">Todas las agencias</option>
+      </select>
+    </div>
+    <div id="pdfResultCount" class="result-count">Mostrando todos los documentos</div>
+    <div class="new-grid" id="pdfGrid">
+      <div class="loading"><div class="spinner"></div><p>Cargando documentos...</p></div>
     </div>
   </div>
 
@@ -920,8 +960,12 @@ async function loadData() {
     renderTopVideos();
     renderLatest();
     renderAllVideos();
+    renderAllImages();
+    renderAllPdfs();
     renderAllNew();
     document.getElementById('videoCount').textContent = VIDEO_DATA.length;
+    document.getElementById('imageCount').textContent = IMAGE_DATA.length;
+    document.getElementById('pdfCount').textContent = ALL_DATA.filter(r => r.type === 'PDF').length;
   } catch(e) {
     document.querySelectorAll('.loading').forEach(el => {
       el.innerHTML = '<p style="color:var(--danger)">Error al cargar datos. Verifica que los archivos JSON estén disponibles.</p>';
@@ -1302,8 +1346,150 @@ function filterNew() {
   });
 }
 
+// ===== ALL IMAGES TAB =====
+function renderAllImages() {
+  const grid = document.getElementById('imageGrid');
+  const count = document.getElementById('allImageCount');
+  count.textContent = IMAGE_DATA.length;
+  grid.innerHTML = '';
+
+  if (IMAGE_DATA.length === 0) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No se encontraron imágenes</div>';
+    return;
+  }
+
+  IMAGE_DATA.forEach(r => {
+    const title = r.title || 'Sin título';
+    const agency = r.agency || '';
+    const location = r.incident_location || '';
+    const date = r.incident_date || '';
+    const pdfLink = r.pdf_image_link || r.pdf_link || '';
+
+    const card = document.createElement('div');
+    card.className = 'top-card';
+    card.dataset.title = title.toLowerCase();
+    card.dataset.agency = agency.toLowerCase();
+    card.dataset.location = location.toLowerCase();
+    card.innerHTML = `
+      <div class="top-media">
+        <img src="${escHtml(r.modal_image)}" alt="${escHtml(title)}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-secondary);color:var(--text-muted);font-size:12px;\\'>📷 Sin imagen</div>'">
+      </div>
+      <div class="card-body">
+        <h3>${escHtml(title)}</h3>
+        <div class="meta">
+          ${agency ? '<span class="agency">🏛️ ' + escHtml(agency) + '</span>' : ''}
+          ${location ? '<span class="location">📍 ' + escHtml(location) + '</span>' : ''}
+          ${date ? '<span>📅 ' + escHtml(date) + '</span>' : ''}
+          <span class="type-badge img">IMG</span>
+        </div>
+        <div class="desc">${escHtml((r.description || '').substring(0, 150))}</div>
+        ${pdfLink ? '<a class="btn-link" href="' + escHtml(pdfLink) + '" target="_blank">📄 Ver Documento</a>' : ''}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Populate agency filter
+  const agencies = [...new Set(IMAGE_DATA.map(r => r.agency).filter(Boolean))].sort();
+  const sel = document.getElementById('imageAgencyFilter');
+  agencies.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a;
+    opt.textContent = a;
+    sel.appendChild(opt);
+  });
+}
+
+function filterImages() {
+  const q = document.getElementById('imageSearch').value.toLowerCase();
+  const agency = document.getElementById('imageAgencyFilter').value.toLowerCase();
+  const cards = document.querySelectorAll('#imageGrid .top-card');
+  let count = 0;
+  cards.forEach(c => {
+    const matchTitle = c.dataset.title.includes(q) || c.dataset.location.includes(q);
+    const matchAgency = !agency || c.dataset.agency === agency;
+    const show = matchTitle && matchAgency;
+    c.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+  document.getElementById('allImageCount').textContent = count;
+  document.getElementById('imageResultCount').textContent =
+    count === cards.length ? 'Mostrando todas las ' + count + ' imágenes' :
+    'Mostrando ' + count + ' de ' + cards.length + ' imágenes';
+}
+
+// ===== ALL PDFS TAB =====
+function renderAllPdfs() {
+  const pdfData = ALL_DATA.filter(r => r.type === 'PDF');
+  const grid = document.getElementById('pdfGrid');
+  const count = document.getElementById('allPdfCount');
+  count.textContent = pdfData.length;
+  grid.innerHTML = '';
+
+  if (pdfData.length === 0) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No se encontraron documentos PDF</div>';
+    return;
+  }
+
+  pdfData.forEach(r => {
+    const title = r.title || 'Sin título';
+    const agency = r.agency || '';
+    const date = r.release_date || '';
+    const desc = (r.description || '').substring(0, 150);
+    const thumb = r.modal_image || '';
+    const pdfLink = r.pdf_image_link || r.pdf_link || '';
+
+    const card = document.createElement('div');
+    card.className = 'new-card';
+    card.dataset.title = title.toLowerCase();
+    card.dataset.agency = agency.toLowerCase();
+    card.dataset.desc = desc.toLowerCase();
+    card.innerHTML = `
+      <div class="new-badge">📄 PDF</div>
+      ${thumb ? '<img class="new-thumb" src="' + escHtml(thumb) + '" alt="' + escHtml(title) + '" loading="lazy" onerror="this.style.display=\'none\'">' :
+        '<div style="height:140px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px;">📑 Documento PDF</div>'}
+      <div class="card-body">
+        <h3>${escHtml(title)}</h3>
+        <div class="meta">${agency ? '🏛️ ' + escHtml(agency) : ''} ${date ? '· 📅 ' + escHtml(date) : ''}</div>
+        <div class="desc">${escHtml(desc)}</div>
+        ${pdfLink ? '<a class="btn-pdf" href="' + escHtml(pdfLink) + '" target="_blank">📄 Abrir Documento</a>' : ''}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Populate agency filter
+  const agencies = [...new Set(pdfData.map(r => r.agency).filter(Boolean))].sort();
+  const sel = document.getElementById('pdfAgencyFilter');
+  agencies.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a;
+    opt.textContent = a;
+    sel.appendChild(opt);
+  });
+}
+
+function filterPdfs() {
+  const q = document.getElementById('pdfSearch').value.toLowerCase();
+  const agency = document.getElementById('pdfAgencyFilter').value.toLowerCase();
+  const cards = document.querySelectorAll('#pdfGrid .new-card');
+  let count = 0;
+  cards.forEach(c => {
+    const matchTitle = c.dataset.title.includes(q) || c.dataset.desc.includes(q);
+    const matchAgency = !agency || c.dataset.agency === agency;
+    const show = matchTitle && matchAgency;
+    c.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+  document.getElementById('allPdfCount').textContent = count;
+  document.getElementById('pdfResultCount').textContent =
+    count === cards.length ? 'Mostrando todos los ' + count + ' documentos' :
+    'Mostrando ' + count + ' de ' + cards.length + ' documentos';
+}
+
 // ===== UTILITIES =====
 function escHtml(str) {
+
   if (!str) return '';
   const div = document.createElement('div');
   div.textContent = str;

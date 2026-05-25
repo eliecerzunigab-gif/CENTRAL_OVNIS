@@ -4,7 +4,7 @@ Dashboard interactivo con los datos más recientes del **All-domain Anomaly Reso
 
 ## 🌐 Link Público
 
-[https://eliecerzunigab-gif.github.io/central-ovnis-dashboard/dashboard_ufo.html](https://eliecerzunigab-gif.github.io/central-ovnis-dashboard/dashboard_ufo.html)
+[https://eliecerzunigab-gif.github.io/CENTRAL_OVNIS/dashboard_ufo.html](https://eliecerzunigab-gif.github.io/CENTRAL_OVNIS/dashboard_ufo.html)
 
 ## 📊 Datos
 
@@ -12,6 +12,20 @@ Dashboard interactivo con los datos más recientes del **All-domain Anomaly Reso
 - **7 agencias**: FBI, CIA, NASA, ODNI, Depto. de Guerra, Depto. de Estado, DOE
 - **10 imágenes** del Slideshow-2
 - **Top 10** con los casos más relevantes
+
+## 🎯 Navegación
+
+El dashboard cuenta con **5 secciones** navegables:
+
+| Sección | Descripción |
+|---------|-------------|
+| 📊 **Dashboard** | Vista general con estadísticas, imágenes destacadas, top videos y últimas publicaciones |
+| 🎬 **Videos** | Todos los videos con reproductor embebido, buscador y filtro por agencia |
+| 📷 **Imágenes** | Galería completa de imágenes con buscador y filtro por agencia |
+| 📑 **Documentos** | Todos los documentos PDF con thumbnail, buscador y filtro por agencia |
+| 🆕 **Lo Nuevo** | Todos los registros ordenados por fecha de publicación |
+
+Los botones de estadísticas en el Dashboard (Videos, Imágenes, Documentos) te llevan directamente a la sección correspondiente.
 
 ## 🔄 Actualización
 
