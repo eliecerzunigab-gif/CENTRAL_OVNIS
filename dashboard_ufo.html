@@ -967,15 +967,13 @@ function renderVideoCard(r, rank) {
     // DVIDS video - show iframe directly (reproduce en la misma pagina)
     mediaHtml = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>`;
   } else {
-    // War.gov video - try to play directly with <video> tag
-    const videoUrl = getVideoUrl(title);
+    // War.gov video - show thumbnail with play button that opens war.gov
     mediaHtml = `
-      <video controls preload="metadata" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;background:#000;"
-        poster="${escHtml(thumb)}"
-        onerror="this.controls=false;this.style.display='none';this.parentElement.innerHTML+='<img src=\\'${escHtml(thumb)}\\' alt=\\'${escHtml(title)}\\' style=\\'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;background:#000;\\' onerror=\\'this.parentElement.innerHTML=\\\"<div style=\\\\\\"position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1f35,#0a0e1a);flex-direction:column;gap:8px;\\\\\\"><span style=\\\\\\"font-size:36px;\\\\\\">🎬</span><span style=\\\\\\"color:var(--text-muted);font-size:11px;\\\\\\">${escHtml(title.substring(0,50))}</span></div>\\'><div class=\\'play-overlay\\'><div class=\\'play-btn\\'>▶</div></div>'">
-        <source src="${escHtml(videoUrl)}" type="video/mp4">
-        Tu navegador no soporta este video.
-      </video>
+      <img src="${escHtml(thumb)}" alt="${escHtml(title)}" loading="lazy" 
+        onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1f35,#0a0e1a);flex-direction:column;gap:8px;\\'><span style=\\'font-size:36px;\\'>🎬</span><span style=\\'color:var(--text-muted);font-size:11px;\\'>${escHtml(title.substring(0,50))}</span></div>'">
+      <div class="play-overlay" onclick="event.stopPropagation();window.open('${escHtml(warLink)}','_blank')">
+        <div class="play-btn">▶</div>
+      </div>
       ${warLink ? `<span class="dvid-badge">war.gov</span>` : ''}
     `;
   }
