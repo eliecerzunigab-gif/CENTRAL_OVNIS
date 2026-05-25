@@ -177,19 +177,6 @@ body::before {
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(0,212,255,0.1);
 }
-.stat-card::after {
-  content: '🔗';
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  font-size: 10px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.stat-card:hover::after {
-  opacity: 0.5;
-}
-
 .stat-card .stat-bg-icon {
   position: absolute;
   right: -5px;
@@ -218,26 +205,6 @@ body::before {
   letter-spacing: 1px;
   position: relative; z-index: 1;
 }
-.stat-card .stat-detail {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: var(--bg-card);
-  border: 1px solid var(--accent);
-  border-radius: 0 0 12px 12px;
-  padding: 10px;
-  z-index: 10;
-  font-size: 11px;
-  color: var(--text-secondary);
-  text-align: left;
-  max-height: 200px;
-  overflow-y: auto;
-}
-.stat-card:hover .stat-detail {
-  display: block;
-}
 
 /* Section Title */
 .section-title {
@@ -261,16 +228,166 @@ body::before {
   font-family: 'Inter', sans-serif;
 }
 
-/* Featured Item (Top 1) */
-.featured-item {
+/* Grids */
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+/* Card Base */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 40px rgba(0,212,255,0.15);
+}
+
+/* Card Media */
+.card-media {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  background: #000;
+  overflow: hidden;
+}
+.card-media img {
+  position: absolute;
+  top:0;left:0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  transition: transform 0.3s ease;
+}
+.card:hover .card-media img {
+  transform: scale(1.02);
+}
+.card-media .play-overlay {
+  position: absolute;
+  top:0;left:0;right:0;bottom:0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.3);
+  transition: background 0.3s ease;
+}
+.card:hover .play-overlay {
+  background: rgba(0,0,0,0.1);
+}
+.card-media .play-overlay .play-btn {
+  width: 60px;
+  height: 60px;
+  background: rgba(0,212,255,0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0,212,255,0.4);
+}
+.card:hover .play-overlay .play-btn {
+  transform: scale(1.1);
+  background: var(--accent);
+}
+.card-media .dvid-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.7);
+  color: var(--accent);
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  z-index: 2;
+  font-weight: 600;
+}
+.card-media iframe {
+  position: absolute;
+  top:0;left:0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Card Body */
+.card-body {
+  padding: 12px 14px;
+}
+.card-body h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.card-body .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.card-body .meta span {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+.card-body .meta .agency { color: var(--accent); }
+.card-body .meta .location { color: var(--accent3); }
+.card-body .desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-body .btn-link {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: white;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.card-body .btn-link:hover {
+  transform: scale(1.05);
+}
+
+/* Featured Card */
+.featured-card {
   background: var(--bg-card);
   border: 2px solid var(--accent3);
   border-radius: 16px;
   overflow: hidden;
   margin-bottom: 20px;
   position: relative;
+  cursor: pointer;
 }
-.featured-item .featured-badge {
+.featured-card .featured-badge {
   position: absolute;
   top: 12px;
   left: 12px;
@@ -285,20 +402,13 @@ body::before {
   z-index: 3;
   box-shadow: 0 4px 15px rgba(245,158,11,0.4);
 }
-.featured-item .featured-media {
+.featured-card .featured-media {
   position: relative;
   width: 100%;
   padding-top: 42%;
   background: #000;
 }
-.featured-item .featured-media iframe {
-  position: absolute;
-  top:0;left:0;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-.featured-item .featured-media img {
+.featured-card .featured-media img {
   position: absolute;
   top:0;left:0;
   width: 100%;
@@ -306,294 +416,39 @@ body::before {
   object-fit: contain;
   background: #000;
 }
-.featured-item .card-body {
+.featured-card .featured-media iframe {
+  position: absolute;
+  top:0;left:0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.featured-card .card-body {
   padding: 18px 20px;
 }
-.featured-item .card-body h2 {
+.featured-card .card-body h2 {
   font-size: 18px;
   font-weight: 700;
   color: var(--accent3);
   margin-bottom: 6px;
 }
-.featured-item .card-body .meta {
+.featured-card .card-body .meta {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 8px;
 }
-.featured-item .card-body .meta span {
+.featured-card .card-body .meta span {
   font-size: 12px;
   padding: 3px 10px;
   border-radius: 6px;
   background: var(--bg-secondary);
   color: var(--text-secondary);
 }
-.featured-item .card-body .meta .agency { color: var(--accent); }
-.featured-item .card-body .meta .location { color: var(--accent3); }
-.featured-item .card-body .desc {
+.featured-card .card-body .desc {
   font-size: 13px;
   color: var(--text-muted);
   line-height: 1.5;
-}
-.featured-item .card-body .btn-link {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 6px 16px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: white;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-.featured-item .card-body .btn-link:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0,212,255,0.3);
-}
-
-/* Top Grid (2-20) */
-.top-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-.top-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
-  transition: all 0.4s ease;
-  position: relative;
-}
-.top-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--accent);
-  box-shadow: 0 12px 40px rgba(0,212,255,0.15);
-}
-.top-card .rank {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Orbitron', monospace;
-  font-weight: 700;
-  font-size: 14px;
-  color: white;
-  z-index: 2;
-  box-shadow: 0 4px 15px rgba(0,212,255,0.3);
-}
-.top-card .rank.gold { background: linear-gradient(135deg, #f59e0b, #d97706); }
-.top-card .rank.silver { background: linear-gradient(135deg, #94a3b8, #64748b); }
-.top-card .rank.bronze { background: linear-gradient(135deg, #b45309, #92400e); }
-.top-card .top-media {
-  position: relative;
-  width: 100%;
-  padding-top: 56.25%;
-  background: #000;
-}
-.top-card .top-media iframe {
-  position: absolute;
-  top:0;left:0;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-.top-card .top-media img {
-  position: absolute;
-  top:0;left:0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  background: #000;
-}
-.top-card .card-body {
-  padding: 12px;
-}
-.top-card .card-body h3 {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-  line-height: 1.3;
-}
-.top-card .card-body .meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 4px;
-}
-.top-card .card-body .meta span {
-  font-size: 10px;
-  padding: 2px 7px;
-  border-radius: 5px;
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-}
-.top-card .card-body .meta .agency { color: var(--accent); }
-.top-card .card-body .meta .location { color: var(--accent3); }
-.top-card .card-body .desc {
-  font-size: 11px;
-  color: var(--text-muted);
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.top-card .card-body .btn-link {
-  display: inline-block;
-  margin-top: 6px;
-  padding: 3px 10px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: white;
-  border-radius: 6px;
-  font-size: 10px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-.top-card .card-body .btn-link:hover {
-  transform: scale(1.05);
-}
-
-/* Video Grid (All Videos) */
-.video-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-.video-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-.video-card:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
-}
-.video-card .video-wrapper {
-  position: relative;
-  width: 100%;
-  padding-top: 56.25%;
-  background: #000;
-}
-.video-card .video-wrapper iframe {
-  position: absolute;
-  top:0;left:0;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-.video-card .card-body {
-  padding: 10px 12px;
-}
-.video-card .card-body h3 {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 3px;
-}
-.video-card .card-body .meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  font-size: 10px;
-  color: var(--text-muted);
-}
-.video-card .card-body .meta span {
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: var(--bg-secondary);
-}
-
-/* Lo Nuevo Section */
-.new-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
-  margin-bottom: 24px;
-}
-.new-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  position: relative;
-}
-.new-card:hover {
-  border-color: var(--accent3);
-  transform: translateY(-2px);
-}
-.new-card .new-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: var(--accent3);
-  color: #000;
-  font-size: 9px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 6px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  z-index: 2;
-}
-.new-card .new-thumb {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  background: var(--bg-secondary);
-  display: block;
-}
-.new-card .card-body {
-  padding: 10px 12px;
-}
-.new-card .card-body h3 {
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 3px;
-}
-.new-card .card-body .meta {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-bottom: 3px;
-}
-.new-card .card-body .desc {
-  font-size: 11px;
-  color: var(--text-muted);
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.new-card .card-body .btn-pdf {
-  display: inline-block;
-  margin-top: 6px;
-  padding: 4px 12px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: white;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-.new-card .card-body .btn-pdf:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0,212,255,0.3);
 }
 
 /* Tab Content */
@@ -650,8 +505,6 @@ body::before {
   outline: none;
   cursor: pointer;
 }
-
-/* Result count */
 .result-count {
   font-size: 13px;
   color: var(--text-muted);
@@ -674,7 +527,6 @@ body::before {
 .type-badge.vid { background: rgba(0,212,255,0.15); color: var(--accent); }
 .type-badge.img { background: rgba(16,185,129,0.15); color: var(--success); }
 .type-badge.pdf { background: rgba(245,158,11,0.15); color: var(--accent3); }
-.type-badge.aud { background: rgba(124,58,237,0.15); color: var(--accent2); }
 
 /* Score bar */
 .score-bar {
@@ -703,9 +555,7 @@ body::before {
   padding: 20px;
   backdrop-filter: blur(8px);
 }
-.modal-overlay.active {
-  display: flex;
-}
+.modal-overlay.active { display: flex; }
 .modal-content {
   position: relative;
   max-width: 95vw;
@@ -757,7 +607,6 @@ body::before {
   height: 100%;
   object-fit: contain;
   max-height: 70vh;
-  cursor: zoom-in;
 }
 .modal-media iframe {
   width: 100%;
@@ -845,11 +694,11 @@ body::before {
 /* Responsive */
 @media (max-width: 768px) {
   .header h1 { font-size: 1.3em; }
-  .top-grid { grid-template-columns: 1fr; }
-  .video-grid { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr; }
   .nav-brand { font-size: 0.85em; margin-right: 6px; }
   .nav-btn { padding: 5px 10px; font-size: 12px; }
-  .featured-item .featured-media { padding-top: 56.25%; }
+  .featured-card .featured-media { padding-top: 56.25%; }
 }
 </style>
 </head>
@@ -862,24 +711,12 @@ body::before {
   <!-- Navigation -->
   <div class="nav-bar">
     <div class="nav-brand">🛸 CENTRAL OVNIS</div>
-    <button class="nav-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">
-      📊 Dashboard
-    </button>
-    <button class="nav-btn" data-tab="videos" onclick="switchTab('videos')">
-      🎬 Videos <span class="nav-count" id="videoCount">0</span>
-    </button>
-    <button class="nav-btn" data-tab="imagenes" onclick="switchTab('imagenes')">
-      📷 Imágenes <span class="nav-count" id="imageCount">0</span>
-    </button>
-    <button class="nav-btn" data-tab="documentos" onclick="switchTab('documentos')">
-      📑 Documentos <span class="nav-count" id="pdfCount">0</span>
-    </button>
-    <button class="nav-btn" data-tab="nuevo" onclick="switchTab('nuevo')">
-      🆕 Lo Nuevo
-    </button>
-    <a href="https://www.war.gov/ufo/" target="_blank" style="margin-left:auto;color:var(--text-muted);font-size:12px;text-decoration:none;padding:5px 10px;border:1px solid var(--border);border-radius:8px;">
-      war.gov/ufo ↗
-    </a>
+    <button class="nav-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 Dashboard</button>
+    <button class="nav-btn" data-tab="videos" onclick="switchTab('videos')">🎬 Videos <span class="nav-count" id="videoCount">0</span></button>
+    <button class="nav-btn" data-tab="imagenes" onclick="switchTab('imagenes')">📷 Imágenes <span class="nav-count" id="imageCount">0</span></button>
+    <button class="nav-btn" data-tab="documentos" onclick="switchTab('documentos')">📑 Documentos <span class="nav-count" id="pdfCount">0</span></button>
+    <button class="nav-btn" data-tab="nuevo" onclick="switchTab('nuevo')">🆕 Lo Nuevo</button>
+    <a href="https://www.war.gov/ufo/" target="_blank" style="margin-left:auto;color:var(--text-muted);font-size:12px;text-decoration:none;padding:5px 10px;border:1px solid var(--border);border-radius:8px;">war.gov/ufo ↗</a>
   </div>
 
   <!-- Header -->
@@ -891,148 +728,101 @@ body::before {
 
   <!-- ===== TAB: DASHBOARD ===== -->
   <div class="tab-content active" id="tab-dashboard">
-
-    <!-- Stats -->
     <div class="stats-grid" id="statsGrid">
-      <div class="stat-card" onclick="switchTab('nuevo')" title="Ver todos los registros">
+      <div class="stat-card" onclick="switchTab('nuevo')">
         <div class="stat-bg-icon">📄</div>
         <div class="icon">📄</div>
         <div class="value" id="totalRecords">-</div>
         <div class="label">Total Registros</div>
-        <div class="stat-detail" id="detailRecords"></div>
       </div>
-      <div class="stat-card" onclick="switchTab('videos')" title="Ver todos los videos">
+      <div class="stat-card" onclick="switchTab('videos')">
         <div class="stat-bg-icon">🎬</div>
         <div class="icon">🎬</div>
         <div class="value" id="totalVideos">-</div>
         <div class="label">Videos</div>
-        <div class="stat-detail" id="detailVideos"></div>
       </div>
-      <div class="stat-card" onclick="switchTab('imagenes')" title="Ver todas las imágenes">
+      <div class="stat-card" onclick="switchTab('imagenes')">
         <div class="stat-bg-icon">📷</div>
         <div class="icon">📷</div>
         <div class="value" id="totalImages">-</div>
         <div class="label">Imágenes</div>
-        <div class="stat-detail" id="detailImages"></div>
       </div>
-      <div class="stat-card" onclick="switchTab('documentos')" title="Ver todos los documentos PDF">
+      <div class="stat-card" onclick="switchTab('documentos')">
         <div class="stat-bg-icon">📑</div>
         <div class="icon">📑</div>
         <div class="value" id="totalPDFs">-</div>
         <div class="label">Documentos PDF</div>
-        <div class="stat-detail" id="detailPDFs"></div>
       </div>
-      <div class="stat-card" onclick="switchTab('nuevo')" title="Ver por agencia">
+      <div class="stat-card" onclick="switchTab('nuevo')">
         <div class="stat-bg-icon">🏛️</div>
         <div class="icon">🏛️</div>
         <div class="value" id="totalAgencies">-</div>
         <div class="label">Agencias</div>
-        <div class="stat-detail" id="detailAgencies"></div>
       </div>
-      <div class="stat-card" onclick="switchTab('nuevo')" title="Ver últimas publicaciones">
+      <div class="stat-card" onclick="switchTab('nuevo')">
         <div class="stat-bg-icon">📅</div>
         <div class="icon">📅</div>
         <div class="value" id="latestRelease">-</div>
         <div class="label">Última Publicación</div>
-        <div class="stat-detail" id="detailRelease"></div>
       </div>
     </div>
 
-
-    <!-- Galería de Imágenes Destacadas -->
-    <div class="section-title">
-      🖼️ Imágenes Más Destacadas <span class="badge">Top 20</span>
-    </div>
-    <div class="top-grid" id="topImagesGrid">
-      <div class="loading"><div class="spinner"></div><p>Cargando imágenes destacadas...</p></div>
+    <!-- Imágenes Destacadas -->
+    <div class="section-title">🖼️ Imágenes Más Destacadas <span class="badge">Top 20</span></div>
+    <div class="grid-4" id="topImagesGrid">
+      <div class="loading"><div class="spinner"></div><p>Cargando imágenes...</p></div>
     </div>
 
     <!-- Videos Más Impactantes -->
-    <div class="section-title">
-      🔥 Videos Más Impactantes <span class="badge">Top 10</span>
-    </div>
-
-    <!-- Featured Video #1 -->
-    <div id="featuredVideo">
-      <div class="loading"><div class="spinner"></div><p>Cargando video destacado...</p></div>
-    </div>
-
-    <!-- Top Videos #2-10 -->
-    <div class="top-grid" id="topGrid">
-      <div class="loading"><div class="spinner"></div><p>Cargando top videos...</p></div>
-    </div>
+    <div class="section-title">🔥 Videos Más Impactantes <span class="badge">Top 10</span></div>
+    <div id="featuredVideo"><div class="loading"><div class="spinner"></div><p>Cargando video destacado...</p></div></div>
+    <div class="grid-4" id="topGrid"><div class="loading"><div class="spinner"></div><p>Cargando top videos...</p></div></div>
 
     <!-- Últimas Publicaciones -->
-    <div class="section-title">
-      🆕 Últimas Publicaciones <span class="badge">Nuevo</span>
-    </div>
-    <div class="new-grid" id="latestGrid">
-      <div class="loading"><div class="spinner"></div><p>Cargando...</p></div>
-    </div>
+    <div class="section-title">🆕 Últimas Publicaciones <span class="badge">Nuevo</span></div>
+    <div class="grid-3" id="latestGrid"><div class="loading"><div class="spinner"></div><p>Cargando...</p></div></div>
   </div>
 
   <!-- ===== TAB: VIDEOS ===== -->
   <div class="tab-content" id="tab-videos">
-    <div class="section-title">
-      🎬 Todos los Videos <span class="badge" id="allVideoCount">0</span>
-    </div>
+    <div class="section-title">🎬 Todos los Videos <span class="badge" id="allVideoCount">0</span></div>
     <div class="search-bar">
-      <input type="text" id="videoSearch" placeholder="Buscar videos por título, agencia, ubicación..." oninput="filterVideos()">
-      <select id="agencyFilter" onchange="filterVideos()">
-        <option value="">Todas las agencias</option>
-      </select>
+      <input type="text" id="videoSearch" placeholder="Buscar videos..." oninput="filterVideos()">
+      <select id="agencyFilter" onchange="filterVideos()"><option value="">Todas las agencias</option></select>
     </div>
     <div id="videoResultCount" class="result-count">Mostrando todos los videos</div>
-    <div class="video-grid" id="videoGrid">
-      <div class="loading"><div class="spinner"></div><p>Cargando videos...</p></div>
-    </div>
+    <div class="grid-4" id="videoGrid"><div class="loading"><div class="spinner"></div><p>Cargando videos...</p></div></div>
   </div>
 
   <!-- ===== TAB: IMÁGENES ===== -->
   <div class="tab-content" id="tab-imagenes">
-    <div class="section-title">
-      📷 Todas las Imágenes <span class="badge" id="allImageCount">0</span>
-    </div>
+    <div class="section-title">📷 Todas las Imágenes <span class="badge" id="allImageCount">0</span></div>
     <div class="search-bar">
-      <input type="text" id="imageSearch" placeholder="Buscar imágenes por título, agencia, ubicación..." oninput="filterImages()">
-      <select id="imageAgencyFilter" onchange="filterImages()">
-        <option value="">Todas las agencias</option>
-      </select>
+      <input type="text" id="imageSearch" placeholder="Buscar imágenes..." oninput="filterImages()">
+      <select id="imageAgencyFilter" onchange="filterImages()"><option value="">Todas las agencias</option></select>
     </div>
     <div id="imageResultCount" class="result-count">Mostrando todas las imágenes</div>
-    <div class="top-grid" id="imageGrid">
-      <div class="loading"><div class="spinner"></div><p>Cargando imágenes...</p></div>
-    </div>
+    <div class="grid-4" id="imageGrid"><div class="loading"><div class="spinner"></div><p>Cargando imágenes...</p></div></div>
   </div>
 
   <!-- ===== TAB: DOCUMENTOS ===== -->
   <div class="tab-content" id="tab-documentos">
-    <div class="section-title">
-      📑 Todos los Documentos <span class="badge" id="allPdfCount">0</span>
-    </div>
+    <div class="section-title">📑 Todos los Documentos <span class="badge" id="allPdfCount">0</span></div>
     <div class="search-bar">
-      <input type="text" id="pdfSearch" placeholder="Buscar documentos por título, agencia, ubicación..." oninput="filterPdfs()">
-      <select id="pdfAgencyFilter" onchange="filterPdfs()">
-        <option value="">Todas las agencias</option>
-      </select>
+      <input type="text" id="pdfSearch" placeholder="Buscar documentos..." oninput="filterPdfs()">
+      <select id="pdfAgencyFilter" onchange="filterPdfs()"><option value="">Todas las agencias</option></select>
     </div>
     <div id="pdfResultCount" class="result-count">Mostrando todos los documentos</div>
-    <div class="new-grid" id="pdfGrid">
-      <div class="loading"><div class="spinner"></div><p>Cargando documentos...</p></div>
-    </div>
+    <div class="grid-3" id="pdfGrid"><div class="loading"><div class="spinner"></div><p>Cargando documentos...</p></div></div>
   </div>
 
   <!-- ===== TAB: LO NUEVO ===== -->
   <div class="tab-content" id="tab-nuevo">
-    <div class="section-title">
-      🆕 Lo Nuevo Publicado <span class="badge">Todos los registros</span>
-    </div>
+    <div class="section-title">🆕 Lo Nuevo Publicado <span class="badge">Todos los registros</span></div>
     <div class="search-bar">
-      <input type="text" id="newSearch" placeholder="Buscar en nuevas publicaciones..." oninput="filterNew()">
+      <input type="text" id="newSearch" placeholder="Buscar..." oninput="filterNew()">
     </div>
-    <div class="new-grid" id="newGrid">
-      <div class="loading"><div class="spinner"></div><p>Cargando...</p></div>
-    </div>
+    <div class="grid-3" id="newGrid"><div class="loading"><div class="spinner"></div><p>Cargando...</p></div></div>
   </div>
 
 </div>
@@ -1050,73 +840,52 @@ body::before {
 
 <script>
 // ===== DATA =====
-let ALL_DATA = [];          // Combined data from both JSONs
-let VIDEO_DATA = [];        // Unique videos with dvid_video_id
-let IMAGE_DATA = [];        // Unique images with modal_image
-let DASHBOARD_META = null;  // Metadata from dashboard_data.json
+let ALL_DATA = [];
+let VIDEO_DATA = [];
+let IMAGE_DATA = [];
+let DASHBOARD_META = null;
 
 async function loadData() {
   try {
-    // Load both JSON files
     const [ufoResp, dashResp] = await Promise.all([
       fetch('ufo_records.json'),
       fetch('dashboard_data.json')
     ]);
     const ufoData = await ufoResp.json();
     const dashData = await dashResp.json();
-
     DASHBOARD_META = dashData;
 
-    // Merge: use dashboard_data.json all_records as primary (has scores, pdf_link, etc.)
-    // and supplement with ufo_records.json for any missing records
+    // Merge data
     const mergedMap = new Map();
-
-    // First add all from dashboard_data.json all_records
     if (dashData.all_records) {
-      dashData.all_records.forEach(r => {
-        const key = r.title || r.pdf_image_link || Math.random();
-        mergedMap.set(key, r);
-      });
+      dashData.all_records.forEach(r => mergedMap.set(r.title || r.pdf_image_link || Math.random(), r));
     }
-
-    // Then add/merge from ufo_records.json (adds dvid_video_id, etc.)
     ufoData.forEach(r => {
       const key = r.title || r.pdf_image_link || Math.random();
       if (mergedMap.has(key)) {
-        // Merge: keep existing but add missing fields
         const existing = mergedMap.get(key);
-        Object.keys(r).forEach(k => {
-          if (!existing[k] && r[k]) existing[k] = r[k];
-        });
+        Object.keys(r).forEach(k => { if (!existing[k] && r[k]) existing[k] = r[k]; });
       } else {
         mergedMap.set(key, r);
       }
     });
-
     ALL_DATA = Array.from(mergedMap.values());
 
-    // Extract unique videos - include both DVIDS and war.gov videos
+    // Extract unique videos
     const seenVid = new Set();
     ALL_DATA.forEach(r => {
       if (r.type === 'VID') {
-        const dvid = r.dvid_video_id || '';
-        const key = dvid || r.title;
-        if (!seenVid.has(key)) {
-          seenVid.add(key);
-          VIDEO_DATA.push(r);
-        }
+        const key = r.dvid_video_id || r.title;
+        if (!seenVid.has(key)) { seenVid.add(key); VIDEO_DATA.push(r); }
       }
     });
 
-    // Extract unique images (type IMG or records with modal_image)
+    // Extract unique images
     const seenImg = new Set();
     ALL_DATA.forEach(r => {
       if (r.modal_image && r.modal_image.trim() !== '') {
         const key = r.modal_image;
-        if (!seenImg.has(key)) {
-          seenImg.add(key);
-          IMAGE_DATA.push(r);
-        }
+        if (!seenImg.has(key)) { seenImg.add(key); IMAGE_DATA.push(r); }
       }
     });
 
@@ -1133,10 +902,158 @@ async function loadData() {
     document.getElementById('pdfCount').textContent = ALL_DATA.filter(r => r.type === 'PDF').length;
   } catch(e) {
     document.querySelectorAll('.loading').forEach(el => {
-      el.innerHTML = '<p style="color:var(--danger)">Error al cargar datos. Verifica que los archivos JSON estén disponibles.</p>';
+      el.innerHTML = '<p style="color:var(--danger)">Error al cargar datos.</p>';
     });
     console.error(e);
   }
+}
+
+// ===== HELPERS =====
+function escHtml(str) { if (!str) return ''; const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+function getPRId(title) {
+  const m = (title || '').match(/(DOW-UAP-PR\d+)/i);
+  return m ? m[1].toLowerCase() : null;
+}
+
+function getWarGovLink(title) {
+  const m = (title || '').match(/(DOW-UAP-PR\d+),\s*["\u201c]?(.+?)["\u201d]?\s*$/);
+  if (m) {
+    let desc = m[2].trim();
+    desc = desc.replace(/[\[\]\(\)]/g, '').replace(/\s+/g, '-').replace(/[^a-zA-Z0-9\-]/g, '');
+    return `https://www.war.gov/ufo/#${m[1]}-${desc}`;
+  }
+  const m2 = (title || '').match(/(DOW-UAP-PR\d+),\s*(.+?)$/);
+  if (m2) {
+    let desc = m2[2].trim();
+    desc = desc.replace(/[\[\]\(\)]/g, '').replace(/\s+/g, '-').replace(/[^a-zA-Z0-9\-]/g, '');
+    return `https://www.war.gov/ufo/#${m2[1]}-${desc}`;
+  }
+  return '';
+}
+
+function getThumbnailUrl(title) {
+  const pr = getPRId(title);
+  if (pr) {
+    // Try slideshow images first, then thumbnail
+    return `https://www.war.gov/medialink/ufo/release_1/thumbnail/${pr}.jpg`;
+  }
+  return '';
+}
+
+// ===== RENDER VIDEO CARD =====
+function renderVideoCard(r, rank) {
+  const dvid = r.dvid_video_id || '';
+  const title = r.title || 'Sin título';
+  const agency = r.agency || '';
+  const location = r.incident_location || '';
+  const date = r.incident_date || '';
+  const desc = (r.description || '').substring(0, 150);
+  const pdfLink = r.pdf_image_link || r.pdf_link || '';
+  const warLink = getWarGovLink(title);
+  const thumb = r.modal_image || getThumbnailUrl(title);
+  const isDVIDS = !!dvid;
+
+  let mediaHtml = '';
+  if (isDVIDS) {
+    // DVIDS video - show iframe directly
+    mediaHtml = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>`;
+  } else {
+    // War.gov video - show thumbnail with play button overlay
+    mediaHtml = `
+      <img src="${escHtml(thumb)}" alt="${escHtml(title)}" loading="lazy" 
+        onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1f35,#0a0e1a);flex-direction:column;gap:8px;\\'><span style=\\'font-size:36px;\\'>🎬</span><span style=\\'color:var(--text-muted);font-size:11px;\\'>${escHtml(title.substring(0,50))}</span></div>'">
+      <div class="play-overlay">
+        <div class="play-btn">▶</div>
+      </div>
+      ${warLink ? `<span class="dvid-badge">war.gov</span>` : ''}
+    `;
+  }
+
+  const rankHtml = rank ? `<div class="rank" style="position:absolute;top:10px;left:10px;width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-weight:700;font-size:14px;color:white;z-index:2;box-shadow:0 4px 15px rgba(0,212,255,0.3);">${rank}</div>` : '';
+
+  return `
+    <div class="card" data-type="video" data-title="${escHtml(title).toLowerCase()}" data-agency="${escHtml(agency).toLowerCase()}" data-location="${escHtml(location).toLowerCase()}">
+      <div class="card-media">
+        ${rankHtml}
+        ${mediaHtml}
+      </div>
+      <div class="card-body">
+        <h3>${escHtml(title)}</h3>
+        <div class="meta">
+          ${agency ? '<span class="agency">🏛️ ' + escHtml(agency) + '</span>' : ''}
+          ${location ? '<span class="location">📍 ' + escHtml(location) + '</span>' : ''}
+          ${date ? '<span>📅 ' + escHtml(date) + '</span>' : ''}
+          <span class="type-badge vid">${isDVIDS ? 'DVIDS' : 'VID'}</span>
+        </div>
+        <div class="desc">${escHtml(desc)}</div>
+        ${pdfLink ? '<a class="btn-link" href="' + escHtml(pdfLink) + '" target="_blank">📄 Documento</a>' : ''}
+        ${(!isDVIDS && warLink) ? '<a class="btn-link" href="' + escHtml(warLink) + '" target="_blank" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🎬 Ver en war.gov</a>' : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ===== RENDER IMAGE CARD =====
+function renderImageCard(r, rank) {
+  const title = r.title || 'Sin título';
+  const agency = r.agency || '';
+  const location = r.incident_location || '';
+  const date = r.incident_date || '';
+  const desc = (r.description || '').substring(0, 150);
+  const pdfLink = r.pdf_image_link || r.pdf_link || '';
+  const imgUrl = r.modal_image || '';
+
+  const rankHtml = rank ? `<div class="rank" style="position:absolute;top:10px;left:10px;width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-weight:700;font-size:14px;color:white;z-index:2;box-shadow:0 4px 15px rgba(0,212,255,0.3);">${rank}</div>` : '';
+
+  return `
+    <div class="card" data-type="image" data-title="${escHtml(title).toLowerCase()}" data-agency="${escHtml(agency).toLowerCase()}" data-location="${escHtml(location).toLowerCase()}">
+      <div class="card-media">
+        ${rankHtml}
+        <img src="${escHtml(imgUrl)}" alt="${escHtml(title)}" loading="lazy" 
+          onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-secondary);flex-direction:column;gap:8px;\\'><span style=\\'font-size:36px;\\'>📷</span><span style=\\'color:var(--text-muted);font-size:11px;\\'>${escHtml(title.substring(0,50))}</span></div>'">
+      </div>
+      <div class="card-body">
+        <h3>${escHtml(title)}</h3>
+        <div class="meta">
+          ${agency ? '<span class="agency">🏛️ ' + escHtml(agency) + '</span>' : ''}
+          ${location ? '<span class="location">📍 ' + escHtml(location) + '</span>' : ''}
+          ${date ? '<span>📅 ' + escHtml(date) + '</span>' : ''}
+          <span class="type-badge img">IMG</span>
+        </div>
+        <div class="desc">${escHtml(desc)}</div>
+        ${pdfLink ? '<a class="btn-link" href="' + escHtml(pdfLink) + '" target="_blank">📄 Documento</a>' : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ===== RENDER NEW CARD (for latest, pdfs, all new) =====
+function renderNewCard(r) {
+  const title = r.title || 'Sin título';
+  const agency = r.agency || '';
+  const date = r.release_date || r.incident_date || '';
+  const desc = (r.description || '').substring(0, 120);
+  const thumb = r.modal_image || '';
+  const pdfLink = r.pdf_image_link || r.pdf_link || '';
+  const type = r.type || '';
+  const warLink = getWarGovLink(title);
+
+  return `
+    <div class="card" data-type="${escHtml(type)}" data-title="${escHtml(title).toLowerCase()}" data-agency="${escHtml(agency).toLowerCase()}" data-desc="${escHtml(desc).toLowerCase()}">
+      <div class="card-media" style="padding-top:45%;">
+        ${thumb ? '<img src="' + escHtml(thumb) + '" alt="' + escHtml(title) + '" loading="lazy" onerror="this.style.display=\'none\'">' :
+          '<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-secondary);color:var(--text-muted);font-size:13px;">' + escHtml(type) + '</div>'}
+      </div>
+      <div class="card-body">
+        <h3>${escHtml(title)}</h3>
+        <div class="meta">${agency ? '🏛️ ' + escHtml(agency) : ''} ${date ? '· 📅 ' + escHtml(date) : ''}</div>
+        <div class="desc">${escHtml(desc)}</div>
+        ${pdfLink ? '<a class="btn-link" href="' + escHtml(pdfLink) + '" target="_blank">📄 Documento</a>' : ''}
+        ${(type === 'VID' && !r.dvid_video_id && warLink) ? '<a class="btn-link" href="' + escHtml(warLink) + '" target="_blank" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🎬 Ver en war.gov</a>' : ''}
+      </div>
+    </div>
+  `;
 }
 
 // ===== STATS =====
@@ -1146,89 +1063,29 @@ function renderStats() {
   const vids = data.filter(r => r.type === 'VID').length;
   const imgs = data.filter(r => r.type === 'IMG').length;
   const pdfs = data.filter(r => r.type === 'PDF').length;
-  const auds = data.filter(r => r.type === 'AUD').length;
-
-  // Use dashboard_data.json metadata if available for more accurate counts
-  let totalDisplay = total;
-  let vidsDisplay = vids;
-  let imgsDisplay = imgs;
-  let pdfsDisplay = pdfs;
-  let audsDisplay = auds;
-
-  if (DASHBOARD_META && DASHBOARD_META.total_records) {
-    totalDisplay = DASHBOARD_META.total_records;
-    if (DASHBOARD_META.types) {
-      vidsDisplay = DASHBOARD_META.types.VID || vids;
-      imgsDisplay = DASHBOARD_META.types.IMG || imgs;
-      pdfsDisplay = DASHBOARD_META.types.PDF || pdfs;
-      audsDisplay = DASHBOARD_META.types.AUD || auds;
-    }
-  }
-
-  const agenciesMap = {};
-  data.forEach(r => {
-    const a = r.agency;
-    if (a) agenciesMap[a] = (agenciesMap[a] || 0) + 1;
-  });
-  const agencyEntries = Object.entries(agenciesMap).sort((a,b) => b[1] - a[1]);
-
-  // Get dates from both sources
+  const agencies = [...new Set(data.map(r => r.agency).filter(Boolean))];
   const dates = data.map(r => r.release_date).filter(Boolean).sort();
   const latest = dates.length > 0 ? dates[dates.length - 1] : 'N/A';
 
-  document.getElementById('totalRecords').textContent = totalDisplay;
-  document.getElementById('totalVideos').textContent = vidsDisplay;
-  document.getElementById('totalImages').textContent = imgsDisplay;
-  document.getElementById('totalPDFs').textContent = pdfsDisplay;
-  document.getElementById('totalAgencies').textContent = agencyEntries.length;
+  document.getElementById('totalRecords').textContent = total;
+  document.getElementById('totalVideos').textContent = vids;
+  document.getElementById('totalImages').textContent = imgs;
+  document.getElementById('totalPDFs').textContent = pdfs;
+  document.getElementById('totalAgencies').textContent = agencies.length;
   document.getElementById('latestRelease').textContent = latest;
-
-  // Details on hover
-  document.getElementById('detailRecords').innerHTML =
-    `<strong>Desglose por tipo:</strong><br>
-     🎬 Videos: ${vidsDisplay}<br>
-     📷 Imágenes: ${imgsDisplay}<br>
-     📑 PDFs: ${pdfsDisplay}<br>
-     🎵 Audios: ${audsDisplay}<br>
-     <small>Total registros únicos: ${total}</small>`;
-
-  document.getElementById('detailVideos').innerHTML =
-    `<strong>Videos con DVIDS:</strong> ${VIDEO_DATA.length}<br>
-     <strong>Total tipo VID:</strong> ${vidsDisplay}`;
-
-  document.getElementById('detailImages').innerHTML =
-    `<strong>Imágenes con thumbnail:</strong> ${IMAGE_DATA.length}<br>
-     <strong>Total tipo IMG:</strong> ${imgsDisplay}`;
-
-  document.getElementById('detailPDFs').innerHTML =
-    `<strong>Total documentos PDF:</strong> ${pdfsDisplay}`;
-
-  document.getElementById('detailAgencies').innerHTML =
-    `<strong>Agencias (${agencyEntries.length}):</strong><br>` +
-    agencyEntries.slice(0, 10).map(([name, count]) =>
-      `🏛️ ${escHtml(name)}: ${count}`
-    ).join('<br>');
-
-  document.getElementById('detailRelease').innerHTML =
-    `<strong>Última actualización:</strong> ${latest}<br>
-     <strong>Rango de fechas:</strong> ${dates[0] || 'N/A'} → ${latest}`;
 }
 
-// ===== TOP IMAGES (Dashboard) =====
+// ===== TOP IMAGES =====
 function renderTopImages() {
   const grid = document.getElementById('topImagesGrid');
-
-  // Use dashboard_data.json top10 first, then supplement with scored items
   let topItems = [];
 
+  // Use top10 from dashboard_data.json
   if (DASHBOARD_META && DASHBOARD_META.top10) {
-    // Use top10 from dashboard_data.json (they have scores)
-    topItems = DASHBOARD_META.top10
-      .filter(r => r.modal_image && r.modal_image.trim() !== '')
-      .map(r => ({ ...r, sortScore: r.score || 0 }));
+    topItems = DASHBOARD_META.top10.filter(r => r.modal_image && r.modal_image.trim() !== '');
   }
 
-  // Also add slideshow_images as featured images
+  // Add slideshow images
   if (DASHBOARD_META && DASHBOARD_META.slideshow_images) {
     DASHBOARD_META.slideshow_images.forEach((imgUrl, idx) => {
       if (!topItems.some(t => t.modal_image === imgUrl)) {
@@ -1236,20 +1093,16 @@ function renderTopImages() {
           title: 'Imagen Destacada ' + (idx + 1),
           modal_image: imgUrl,
           agency: 'Gobierno de EE.UU.',
-          incident_location: '',
-          incident_date: '',
           type: 'IMG',
-          description: 'Imagen oficial del archivo desclasificado UAP del Departamento de Guerra.',
+          description: 'Imagen oficial del archivo desclasificado UAP.',
           sortScore: 30 - idx
         });
       }
     });
   }
 
-  // Sort by score descending
-  topItems.sort((a, b) => b.sortScore - a.sortScore);
-
-  // Take top 20 unique by modal_image
+  // Sort and take top 20 unique
+  topItems.sort((a, b) => (b.sortScore || b.score || 0) - (a.sortScore || a.score || 0));
   const seen = new Set();
   const top20 = [];
   for (const item of topItems) {
@@ -1261,140 +1114,46 @@ function renderTopImages() {
   }
 
   grid.innerHTML = '';
-
   if (top20.length === 0) {
-    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No se encontraron imágenes destacadas</div>';
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No se encontraron imágenes</div>';
     return;
   }
 
   top20.forEach((r, i) => {
-    const rankNum = i + 1;
-    const rankClass = rankNum === 1 ? 'gold' : rankNum === 2 ? 'silver' : rankNum === 3 ? 'bronze' : '';
-    const card = document.createElement('div');
-    card.className = 'top-card';
-    const pdfLink = r.pdf_image_link || r.pdf_link || '';
-    const isVideo = r.type === 'VID' && r.dvid_video_id;
-    card.innerHTML = `
-      <div class="rank ${rankClass}">${rankNum}</div>
-      <div class="top-media">
-        ${isVideo
-          ? `<iframe src="https://www.dvidshub.net/video/embed/${r.dvid_video_id}" allowfullscreen loading="lazy"></iframe>`
-          : `<img src="${escHtml(r.modal_image)}" alt="${escHtml(r.title || '')}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-secondary);color:var(--text-muted);font-size:12px;\\'>📷 ${escHtml(r.type || '')}</div>'">`
-        }
-      </div>
-      <div class="card-body">
-        <h3>${escHtml(r.title || 'Sin título')}</h3>
-        <div class="meta">
-          ${r.agency ? '<span class="agency">🏛️ ' + escHtml(r.agency) + '</span>' : ''}
-          ${r.incident_location ? '<span class="location">📍 ' + escHtml(r.incident_location) + '</span>' : ''}
-          ${r.incident_date ? '<span>📅 ' + escHtml(r.incident_date) + '</span>' : ''}
-          <span class="type-badge ${(r.type || '').toLowerCase()}">${r.type || ''}</span>
-        </div>
-        <div class="desc">${escHtml((r.description || '').substring(0, 150))}</div>
-        ${pdfLink ? '<a class="btn-link" href="' + escHtml(pdfLink) + '" target="_blank">📄 Ver Documento</a>' : ''}
-        <div class="score-bar"><div class="fill" style="width:${Math.min(100, (r.sortScore || 0) * 2.5)}%"></div></div>
-      </div>
-    `;
-    grid.appendChild(card);
+    grid.insertAdjacentHTML('beforeend', renderImageCard(r, i + 1));
   });
 }
 
-// ===== BUILD WAR.GOV VIDEO LINK =====
-function buildWarGovLink(title) {
-  // Build a war.gov/ufo link from a title like DOW-UAP-PR050, "4 UAP Formation..."
-  const match = title.match(/(DOW-UAP-PR\d+),\s*["\u201c]?(.+?)["\u201d]?\s*$/);
-  if (match) {
-    const prId = match[1];
-    let desc = match[2].trim();
-    desc = desc.replace(/[\[\]\(\)]/g, '');
-    desc = desc.replace(/\s+/g, '-');
-    desc = desc.replace(/[^a-zA-Z0-9\-]/g, '');
-    return `https://www.war.gov/ufo/#${prId}-${desc}`;
-  }
-  // Try without quotes
-  const match2 = title.match(/(DOW-UAP-PR\d+),\s*(.+?)$/);
-  if (match2) {
-    const prId = match2[1];
-    let desc = match2[2].trim();
-    desc = desc.replace(/[\[\]\(\)]/g, '');
-    desc = desc.replace(/\s+/g, '-');
-    desc = desc.replace(/[^a-zA-Z0-9\-]/g, '');
-    return `https://www.war.gov/ufo/#${prId}-${desc}`;
-  }
-  return '';
-}
-
-// ===== BUILD DIRECT VIDEO URL (MP4) =====
-function buildDirectVideoUrl(title) {
-  // Try to build a direct MP4 URL for war.gov videos
-  const match = title.match(/(DOW-UAP-PR\d+)/i);
-  if (match) {
-    const prId = match[1].toLowerCase();
-    // Try multiple possible URL patterns
-    return [
-      `https://www.war.gov/medialink/ufo/release_1/video/${prId}.mp4`,
-      `https://www.war.gov/medialink/ufo/video/${prId}.mp4`,
-      `https://www.war.gov/medialink/ufo/release_1/video/${prId}.webm`
-    ];
-  }
-  return [];
-}
-
-// ===== RENDER VIDEO MEDIA (DVIDS iframe or war.gov video player) =====
-function renderVideoMedia(r) {
-  const dvid = r.dvid_video_id || '';
-  if (dvid) {
-    return `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>`;
-  }
-  
-  // Try direct video URLs first
-  const videoUrls = buildDirectVideoUrl(r.title || '');
-  if (videoUrls.length > 0) {
-    const sources = videoUrls.map(url => 
-      `<source src="${escHtml(url)}" type="${url.endsWith('.webm') ? 'video/webm' : 'video/mp4'}">`
-    ).join('');
-    const warLink = buildWarGovLink(r.title || '');
-    const safeTitle = escHtml(r.title ? r.title.substring(0, 60) : '');
-    const safeWarLink = escHtml(warLink);
-    // Use a unique ID for the video element to handle errors via JS
-    const vidId = 'vid-' + Math.random().toString(36).substr(2, 9);
-    return `
-      <div id="${vidId}" style="width:100%;height:100%;position:absolute;top:0;left:0;">
-        <video controls preload="metadata" style="width:100%;height:100%;object-fit:contain;background:#000;" 
-          onerror="document.getElementById('${vidId}').innerHTML='<a href=\\'${safeWarLink}\\' target=\\'_blank\\' style=\\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg,#1a1f35,#0a0e1a);color:var(--accent);text-decoration:none;flex-direction:column;gap:8px;\\'><span style=\\'font-size:40px;\\'>🎬</span><span style=\\'font-size:13px;font-weight:600;\\'>Abrir en war.gov</span><span style=\\'font-size:10px;color:var(--text-muted);\\'>${safeTitle}</span></a>'">
-          ${sources}
-          Tu navegador no soporta este video.
-        </video>
-      </div>`;
-  }
-  
-  // Fallback: link to war.gov
-  const warLink = buildWarGovLink(r.title || '');
-  if (warLink) {
-    return `<a href="${escHtml(warLink)}" target="_blank" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg,#1a1f35,#0a0e1a);color:var(--accent);text-decoration:none;flex-direction:column;gap:8px;">
-      <span style="font-size:40px;">🎬</span>
-      <span style="font-size:13px;font-weight:600;">Abrir en war.gov</span>
-      <span style="font-size:10px;color:var(--text-muted);">${escHtml(r.title ? r.title.substring(0, 60) : '')}</span>
-    </a>`;
-  }
-  return `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);color:var(--text-muted);font-size:12px;">🎬 Video sin enlace disponible</div>`;
-}
-
-// ===== TOP VIDEOS (Dashboard) =====
+// ===== TOP VIDEOS =====
 function renderTopVideos() {
   if (VIDEO_DATA.length === 0) return;
+  const sorted = [...VIDEO_DATA].sort((a, b) => (b.score || 0) - (a.score || 0));
 
-  // Sort videos by score if available
-  const sortedVids = [...VIDEO_DATA].sort((a, b) => (b.score || 0) - (a.score || 0));
+  // Featured #1
+  const f = sorted[0];
+  const dvid = f.dvid_video_id || '';
+  const warLink = getWarGovLink(f.title || '');
+  const thumb = f.modal_image || getThumbnailUrl(f.title || '');
+  const isDVIDS = !!dvid;
 
-  // Featured Video #1
-  const f = sortedVids[0];
-  const featuredDiv = document.getElementById('featuredVideo');
-  featuredDiv.innerHTML = `
-    <div class="featured-item">
+  let featuredMedia = '';
+  if (isDVIDS) {
+    featuredMedia = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>`;
+  } else {
+    featuredMedia = `
+      <img src="${escHtml(thumb)}" alt="${escHtml(f.title || '')}" loading="lazy"
+        onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1f35,#0a0e1a);flex-direction:column;gap:12px;\\'><span style=\\'font-size:48px;\\'>🎬</span><span style=\\'color:var(--text-muted);font-size:13px;\\'>Video no disponible</span></div>'">
+      <div class="play-overlay">
+        <div class="play-btn" style="width:80px;height:80px;font-size:36px;">▶</div>
+      </div>
+    `;
+  }
+
+  document.getElementById('featuredVideo').innerHTML = `
+    <div class="featured-card" onclick="${isDVIDS ? '' : (warLink ? 'window.open(\'' + escHtml(warLink) + '\',\'_blank\')' : '')}">
       <div class="featured-badge">🔥 #1 Más Impactante</div>
       <div class="featured-media">
-        ${renderVideoMedia(f)}
+        ${featuredMedia}
       </div>
       <div class="card-body">
         <h2>${escHtml(f.title || 'Sin título')}</h2>
@@ -1408,345 +1167,282 @@ function renderTopVideos() {
     </div>
   `;
 
-  // Top Videos #2-10
-  const top = sortedVids.slice(1, 10);
+  // Top #2-10
+  const top = sorted.slice(1, 10);
   const grid = document.getElementById('topGrid');
   grid.innerHTML = '';
-
   top.forEach((r, i) => {
-    const rankNum = i + 2;
-    const rankClass = rankNum === 2 ? 'gold' : rankNum === 3 ? 'silver' : rankNum === 4 ? 'bronze' : '';
-    const card = document.createElement('div');
-    card.className = 'top-card';
-    card.innerHTML = `
-      <div class="rank ${rankClass}">${rankNum}</div>
-      <div class="top-media">
-        ${renderVideoMedia(r)}
-      </div>
-      <div class="card-body">
-        <h3>${escHtml(r.title || 'Sin título')}</h3>
-        <div class="meta">
-          ${r.agency ? '<span class="agency">🏛️ ' + escHtml(r.agency) + '</span>' : ''}
-          ${r.incident_location ? '<span class="location">📍 ' + escHtml(r.incident_location) + '</span>' : ''}
-          ${r.incident_date ? '<span>📅 ' + escHtml(r.incident_date) + '</span>' : ''}
-        </div>
-        <div class="desc">${escHtml((r.description || '').substring(0, 150))}</div>
-      </div>
-    `;
-    grid.appendChild(card);
+    grid.insertAdjacentHTML('beforeend', renderVideoCard(r, i + 2));
   });
 }
 
-// ===== LATEST RELEASES (Dashboard) =====
+// ===== LATEST =====
 function renderLatest() {
-  const sorted = [...ALL_DATA].sort((a, b) => {
-    const da = a.release_date || '';
-    const db = b.release_date || '';
-    return db.localeCompare(da);
-  });
+  const sorted = [...ALL_DATA].sort((a, b) => (b.release_date || '').localeCompare(a.release_date || ''));
   const latest = sorted.slice(0, 6);
   const grid = document.getElementById('latestGrid');
   grid.innerHTML = '';
-
-  latest.forEach(r => {
-    const title = r.title || 'Sin título';
-    const agency = r.agency || '';
-    const date = r.release_date || '';
-    const desc = (r.description || '').substring(0, 120);
-    const thumb = r.modal_image || '';
-    const pdfLink = r.pdf_image_link || r.pdf_link || '';
-    const type = r.type || '';
-
-    const card = document.createElement('div');
-    card.className = 'new-card';
-    card.innerHTML = `
-      <div class="new-badge">${escHtml(date)}</div>
-      ${thumb ? '<img class="new-thumb" src="' + escHtml(thumb) + '" alt="' + escHtml(title) + '" loading="lazy" onerror="this.style.display=\'none\'">' :
-        '<div style="height:140px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px;">' + escHtml(type) + '</div>'}
-      <div class="card-body">
-        <h3>${escHtml(title)}</h3>
-        <div class="meta">${agency ? '🏛️ ' + escHtml(agency) : ''} ${date ? '· 📅 ' + escHtml(date) : ''}</div>
-        <div class="desc">${escHtml(desc)}</div>
-        ${pdfLink ? '<a class="btn-pdf" href="' + escHtml(pdfLink) + '" target="_blank">📄 Ver Documento</a>' : ''}
-      </div>
-    `;
-    grid.appendChild(card);
-  });
+  latest.forEach(r => grid.insertAdjacentHTML('beforeend', renderNewCard(r)));
 }
 
-// ===== ALL VIDEOS TAB =====
+// ===== ALL VIDEOS =====
 function renderAllVideos() {
   const grid = document.getElementById('videoGrid');
-  const count = document.getElementById('allVideoCount');
-  count.textContent = VIDEO_DATA.length;
+  document.getElementById('allVideoCount').textContent = VIDEO_DATA.length;
   grid.innerHTML = '';
-
   if (VIDEO_DATA.length === 0) {
     grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No se encontraron videos</div>';
     return;
   }
-
-  VIDEO_DATA.forEach(r => {
-    const dvid = r.dvid_video_id || '';
-    const title = r.title || 'Sin título';
-    const agency = r.agency || '';
-    const location = r.incident_location || '';
-    const date = r.incident_date || '';
-
-    const card = document.createElement('div');
-    card.className = 'video-card';
-    card.dataset.title = title.toLowerCase();
-    card.dataset.agency = agency.toLowerCase();
-    card.dataset.location = location.toLowerCase();
-    card.innerHTML = `
-      <div class="video-wrapper">
-        ${renderVideoMedia(r)}
-      </div>
-      <div class="card-body">
-        <h3>${escHtml(title)}</h3>
-        <div class="meta">
-          ${agency ? '<span>🏛️ ' + escHtml(agency) + '</span>' : ''}
-          ${location ? '<span>📍 ' + escHtml(location) + '</span>' : ''}
-          ${date ? '<span>📅 ' + escHtml(date) + '</span>' : ''}
-        </div>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
+  VIDEO_DATA.forEach(r => grid.insertAdjacentHTML('beforeend', renderVideoCard(r)));
 
   // Populate agency filter
   const agencies = [...new Set(VIDEO_DATA.map(r => r.agency).filter(Boolean))].sort();
   const sel = document.getElementById('agencyFilter');
-  agencies.forEach(a => {
-    const opt = document.createElement('option');
-    opt.value = a;
-    opt.textContent = a;
-    sel.appendChild(opt);
-  });
+  agencies.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; sel.appendChild(o); });
 }
 
 function filterVideos() {
   const q = document.getElementById('videoSearch').value.toLowerCase();
   const agency = document.getElementById('agencyFilter').value.toLowerCase();
-  const cards = document.querySelectorAll('#videoGrid .video-card');
+  const cards = document.querySelectorAll('#videoGrid .card');
   let count = 0;
   cards.forEach(c => {
-    const matchTitle = c.dataset.title.includes(q) || c.dataset.location.includes(q);
-    const matchAgency = !agency || c.dataset.agency === agency;
-    const show = matchTitle && matchAgency;
+    const match = c.dataset.title.includes(q) || c.dataset.location.includes(q);
+    const matchA = !agency || c.dataset.agency === agency;
+    const show = match && matchA;
     c.style.display = show ? '' : 'none';
     if (show) count++;
   });
   document.getElementById('allVideoCount').textContent = count;
   document.getElementById('videoResultCount').textContent =
-    count === cards.length ? 'Mostrando todos los ' + count + ' videos' :
-    'Mostrando ' + count + ' de ' + cards.length + ' videos';
+    count === cards.length ? 'Mostrando todos los ' + count + ' videos' : 'Mostrando ' + count + ' de ' + cards.length + ' videos';
 }
 
-// ===== ALL NEW (Lo Nuevo Tab) =====
-function renderAllNew() {
-  const sorted = [...ALL_DATA].sort((a, b) => {
-    const da = a.release_date || '';
-    const db = b.release_date || '';
-    return db.localeCompare(da);
-  });
+// ===== ALL IMAGES =====
+function renderAllImages() {
+  const grid = document.getElementById('imageGrid');
+  document.getElementById('allImageCount').textContent = IMAGE_DATA.length;
+  grid.innerHTML = '';
+  if (IMAGE_DATA.length === 0) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No se encontraron imágenes</div>';
+    return;
+  }
+  IMAGE_DATA.forEach(r => grid.insertAdjacentHTML('beforeend', renderImageCard(r)));
 
+  const agencies = [...new Set(IMAGE_DATA.map(r => r.agency).filter(Boolean))].sort();
+  const sel = document.getElementById('imageAgencyFilter');
+  agencies.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; sel.appendChild(o); });
+}
+
+function filterImages() {
+  const q = document.getElementById('imageSearch').value.toLowerCase();
+  const agency = document.getElementById('imageAgencyFilter').value.toLowerCase();
+  const cards = document.querySelectorAll('#imageGrid .card');
+  let count = 0;
+  cards.forEach(c => {
+    const match = c.dataset.title.includes(q) || c.dataset.location.includes(q);
+    const matchA = !agency || c.dataset.agency === agency;
+    const show = match && matchA;
+    c.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+  document.getElementById('allImageCount').textContent = count;
+  document.getElementById('imageResultCount').textContent =
+    count === cards.length ? 'Mostrando todas las ' + count + ' imágenes' : 'Mostrando ' + count + ' de ' + cards.length + ' imágenes';
+}
+
+// ===== ALL PDFS =====
+function renderAllPdfs() {
+  const pdfData = ALL_DATA.filter(r => r.type === 'PDF');
+  const grid = document.getElementById('pdfGrid');
+  document.getElementById('allPdfCount').textContent = pdfData.length;
+  grid.innerHTML = '';
+  if (pdfData.length === 0) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No se encontraron documentos</div>';
+    return;
+  }
+  pdfData.forEach(r => grid.insertAdjacentHTML('beforeend', renderNewCard(r)));
+
+  const agencies = [...new Set(pdfData.map(r => r.agency).filter(Boolean))].sort();
+  const sel = document.getElementById('pdfAgencyFilter');
+  agencies.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; sel.appendChild(o); });
+}
+
+function filterPdfs() {
+  const q = document.getElementById('pdfSearch').value.toLowerCase();
+  const agency = document.getElementById('pdfAgencyFilter').value.toLowerCase();
+  const cards = document.querySelectorAll('#pdfGrid .card');
+  let count = 0;
+  cards.forEach(c => {
+    const match = c.dataset.title.includes(q) || c.dataset.desc.includes(q);
+    const matchA = !agency || c.dataset.agency === agency;
+    const show = match && matchA;
+    c.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+  document.getElementById('allPdfCount').textContent = count;
+  document.getElementById('pdfResultCount').textContent =
+    count === cards.length ? 'Mostrando todos los ' + count + ' documentos' : 'Mostrando ' + count + ' de ' + cards.length + ' documentos';
+}
+
+// ===== ALL NEW =====
+function renderAllNew() {
+  const sorted = [...ALL_DATA].sort((a, b) => (b.release_date || '').localeCompare(a.release_date || ''));
   const grid = document.getElementById('newGrid');
   grid.innerHTML = '';
-
-  sorted.forEach(r => {
-    const title = r.title || 'Sin título';
-    const agency = r.agency || '';
-    const date = r.release_date || '';
-    const desc = (r.description || '').substring(0, 150);
-    const thumb = r.modal_image || '';
-    const pdfLink = r.pdf_image_link || r.pdf_link || '';
-    const type = r.type || '';
-
-    const card = document.createElement('div');
-    card.className = 'new-card';
-    card.dataset.title = title.toLowerCase();
-    card.dataset.agency = agency.toLowerCase();
-    card.dataset.desc = desc.toLowerCase();
-    card.innerHTML = `
-      <div class="new-badge">${escHtml(date)}</div>
-      ${thumb ? '<img class="new-thumb" src="' + escHtml(thumb) + '" alt="' + escHtml(title) + '" loading="lazy" onerror="this.style.display=\'none\'">' :
-        '<div style="height:140px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px;">' + escHtml(type) + '</div>'}
-      <div class="card-body">
-        <h3>${escHtml(title)}</h3>
-        <div class="meta">${agency ? '🏛️ ' + escHtml(agency) : ''} ${date ? '· 📅 ' + escHtml(date) : ''}</div>
-        <div class="desc">${escHtml(desc)}</div>
-        ${pdfLink ? '<a class="btn-pdf" href="' + escHtml(pdfLink) + '" target="_blank">📄 Ver Documento</a>' : ''}
-      </div>
-    `;
-    grid.appendChild(card);
-  });
+  sorted.forEach(r => grid.insertAdjacentHTML('beforeend', renderNewCard(r)));
 }
 
 function filterNew() {
   const q = document.getElementById('newSearch').value.toLowerCase();
-  const cards = document.querySelectorAll('#newGrid .new-card');
+  const cards = document.querySelectorAll('#newGrid .card');
   cards.forEach(c => {
     const match = c.dataset.title.includes(q) || c.dataset.agency.includes(q) || c.dataset.desc.includes(q);
     c.style.display = match ? '' : 'none';
   });
 }
 
-// ===== ALL IMAGES TAB =====
-function renderAllImages() {
-  const grid = document.getElementById('imageGrid');
-  const count = document.getElementById('allImageCount');
-  count.textContent = IMAGE_DATA.length;
-  grid.innerHTML = '';
+// ===== MODAL =====
+let modalItems = [];
+let modalIndex = 0;
 
-  if (IMAGE_DATA.length === 0) {
-    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No se encontraron imágenes</div>';
-    return;
+function openModal(items, index) {
+  modalItems = items;
+  modalIndex = index;
+  showModalItem();
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  document.addEventListener('keydown', modalKeyHandler);
+}
+
+function closeModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', modalKeyHandler);
+  const vids = document.querySelectorAll('#modalMedia video');
+  vids.forEach(v => v.pause());
+}
+
+function navigateModal(dir) {
+  modalIndex = (modalIndex + dir + modalItems.length) % modalItems.length;
+  showModalItem();
+}
+
+function showModalItem() {
+  const item = modalItems[modalIndex];
+  const mediaDiv = document.getElementById('modalMedia');
+  const infoDiv = document.getElementById('modalInfo');
+  
+  document.getElementById('modalPrev').style.display = modalItems.length > 1 ? '' : 'none';
+  document.getElementById('modalNext').style.display = modalItems.length > 1 ? '' : 'none';
+  
+  let mediaHtml = '';
+  const dvid = item.dvid_video_id || '';
+  const warLink = getWarGovLink(item.title || '');
+  const thumb = item.modal_image || getThumbnailUrl(item.title || '');
+  
+  if (item.type === 'VID') {
+    if (dvid) {
+      mediaHtml = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen></iframe>`;
+    } else if (warLink) {
+      mediaHtml = `
+        <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:#000;flex-direction:column;gap:16px;padding:20px;">
+          <img src="${escHtml(thumb)}" alt="${escHtml(item.title || '')}" style="max-width:80%;max-height:50vh;object-fit:contain;border-radius:8px;" onerror="this.style.display='none'">
+          <span style="font-size:48px;">🎬</span>
+          <p style="color:var(--text-muted);font-size:14px;">Este video está alojado en war.gov</p>
+          <a href="${escHtml(warLink)}" target="_blank" class="btn-external" style="display:inline-block;padding:12px 32px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px;">▶ Reproducir en war.gov</a>
+        </div>`;
+    } else {
+      mediaHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);color:var(--text-muted);font-size:14px;">🎬 Video no disponible</div>`;
+    }
+  } else if (item.modal_image) {
+    mediaHtml = `<img src="${escHtml(item.modal_image)}" alt="${escHtml(item.title || '')}" style="width:100%;height:100%;object-fit:contain;max-height:70vh;" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);color:var(--text-muted);font-size:14px;\\'>📷 Imagen no disponible</div>'">`;
+  } else if (item.type === 'PDF' || item.pdf_image_link || item.pdf_link) {
+    const pdfUrl = item.pdf_image_link || item.pdf_link || '';
+    mediaHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);flex-direction:column;gap:12px;padding:20px;">
+      <span style="font-size:48px;">📄</span>
+      <p style="color:var(--text-muted);font-size:14px;">Documento PDF</p>
+      ${pdfUrl ? '<a href="' + escHtml(pdfUrl) + '" target="_blank" class="btn-external" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-radius:8px;text-decoration:none;font-weight:600;">Abrir PDF ↗</a>' : ''}
+    </div>`;
+  } else {
+    mediaHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);color:var(--text-muted);font-size:14px;">📄 ${escHtml(item.type || '')}</div>`;
+  }
+  
+  mediaDiv.innerHTML = mediaHtml;
+  
+  const pdfLink = item.pdf_image_link || item.pdf_link || '';
+  infoDiv.innerHTML = `
+    <h2>${escHtml(item.title || 'Sin título')}</h2>
+    <div class="meta">
+      ${item.agency ? '<span>🏛️ ' + escHtml(item.agency) + '</span>' : ''}
+      ${item.incident_location ? '<span>📍 ' + escHtml(item.incident_location) + '</span>' : ''}
+      ${item.incident_date ? '<span>📅 ' + escHtml(item.incident_date) + '</span>' : ''}
+      ${item.release_date ? '<span>📆 ' + escHtml(item.release_date) + '</span>' : ''}
+      ${item.type ? '<span class="type-badge ' + (item.type || '').toLowerCase() + '">' + item.type + '</span>' : ''}
+    </div>
+    <div class="desc">${escHtml(item.description || '')}</div>
+    ${pdfLink ? '<a class="btn-external" href="' + escHtml(pdfLink) + '" target="_blank">📄 Ver Documento Original</a>' : ''}
+    ${(item.type === 'VID' && !dvid && warLink) ? '<a class="btn-external" href="' + escHtml(warLink) + '" target="_blank" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🎬 Ver en war.gov</a>' : ''}
+    ${modalItems.length > 1 ? '<div style="margin-top:8px;font-size:11px;color:var(--text-muted);text-align:center;">' + (modalIndex + 1) + ' / ' + modalItems.length + '</div>' : ''}
+  `;
+}
+
+function modalKeyHandler(e) {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'ArrowLeft') navigateModal(-1);
+  if (e.key === 'ArrowRight') navigateModal(1);
+}
+
+// ===== CLICK HANDLERS =====
+function setupClickHandlers() {
+  // Videos - click opens modal for DVIDS, or war.gov for others
+  document.querySelectorAll('#videoGrid .card, #topGrid .card').forEach(card => {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('iframe')) return;
+      const idx = Array.from(this.parentElement.children).indexOf(this);
+      if (VIDEO_DATA.length > 0) {
+        openModal(VIDEO_DATA, Math.min(idx, VIDEO_DATA.length - 1));
+      }
+    });
+  });
+
+  // Featured video
+  const featured = document.querySelector('#featuredVideo .featured-card');
+  if (featured) {
+    featured.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('iframe')) return;
+      if (VIDEO_DATA.length > 0) openModal(VIDEO_DATA, 0);
+    });
   }
 
-  IMAGE_DATA.forEach(r => {
-    const title = r.title || 'Sin título';
-    const agency = r.agency || '';
-    const location = r.incident_location || '';
-    const date = r.incident_date || '';
-    const pdfLink = r.pdf_image_link || r.pdf_link || '';
-
-    const card = document.createElement('div');
-    card.className = 'top-card';
-    card.dataset.title = title.toLowerCase();
-    card.dataset.agency = agency.toLowerCase();
-    card.dataset.location = location.toLowerCase();
-    card.innerHTML = `
-      <div class="top-media">
-        <img src="${escHtml(r.modal_image)}" alt="${escHtml(title)}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-secondary);color:var(--text-muted);font-size:12px;\\'>📷 Sin imagen</div>'">
-      </div>
-      <div class="card-body">
-        <h3>${escHtml(title)}</h3>
-        <div class="meta">
-          ${agency ? '<span class="agency">🏛️ ' + escHtml(agency) + '</span>' : ''}
-          ${location ? '<span class="location">📍 ' + escHtml(location) + '</span>' : ''}
-          ${date ? '<span>📅 ' + escHtml(date) + '</span>' : ''}
-          <span class="type-badge img">IMG</span>
-        </div>
-        <div class="desc">${escHtml((r.description || '').substring(0, 150))}</div>
-        ${pdfLink ? '<a class="btn-link" href="' + escHtml(pdfLink) + '" target="_blank">📄 Ver Documento</a>' : ''}
-      </div>
-    `;
-    grid.appendChild(card);
+  // Images
+  document.querySelectorAll('#topImagesGrid .card, #imageGrid .card').forEach(card => {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a')) return;
+      const idx = Array.from(this.parentElement.children).indexOf(this);
+      if (IMAGE_DATA.length > 0) openModal(IMAGE_DATA, Math.min(idx, IMAGE_DATA.length - 1));
+    });
   });
 
-  // Populate agency filter
-  const agencies = [...new Set(IMAGE_DATA.map(r => r.agency).filter(Boolean))].sort();
-  const sel = document.getElementById('imageAgencyFilter');
-  agencies.forEach(a => {
-    const opt = document.createElement('option');
-    opt.value = a;
-    opt.textContent = a;
-    sel.appendChild(opt);
+  // New cards (latest, all new, pdfs)
+  document.querySelectorAll('#latestGrid .card, #newGrid .card, #pdfGrid .card').forEach(card => {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a')) return;
+      const idx = Array.from(this.parentElement.children).indexOf(this);
+      openModal(ALL_DATA, Math.min(idx, ALL_DATA.length - 1));
+    });
   });
 }
 
-function filterImages() {
-  const q = document.getElementById('imageSearch').value.toLowerCase();
-  const agency = document.getElementById('imageAgencyFilter').value.toLowerCase();
-  const cards = document.querySelectorAll('#imageGrid .top-card');
-  let count = 0;
-  cards.forEach(c => {
-    const matchTitle = c.dataset.title.includes(q) || c.dataset.location.includes(q);
-    const matchAgency = !agency || c.dataset.agency === agency;
-    const show = matchTitle && matchAgency;
-    c.style.display = show ? '' : 'none';
-    if (show) count++;
-  });
-  document.getElementById('allImageCount').textContent = count;
-  document.getElementById('imageResultCount').textContent =
-    count === cards.length ? 'Mostrando todas las ' + count + ' imágenes' :
-    'Mostrando ' + count + ' de ' + cards.length + ' imágenes';
-}
-
-// ===== ALL PDFS TAB =====
-function renderAllPdfs() {
-  const pdfData = ALL_DATA.filter(r => r.type === 'PDF');
-  const grid = document.getElementById('pdfGrid');
-  const count = document.getElementById('allPdfCount');
-  count.textContent = pdfData.length;
-  grid.innerHTML = '';
-
-  if (pdfData.length === 0) {
-    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No se encontraron documentos PDF</div>';
-    return;
-  }
-
-  pdfData.forEach(r => {
-    const title = r.title || 'Sin título';
-    const agency = r.agency || '';
-    const date = r.release_date || '';
-    const desc = (r.description || '').substring(0, 150);
-    const thumb = r.modal_image || '';
-    const pdfLink = r.pdf_image_link || r.pdf_link || '';
-
-    const card = document.createElement('div');
-    card.className = 'new-card';
-    card.dataset.title = title.toLowerCase();
-    card.dataset.agency = agency.toLowerCase();
-    card.dataset.desc = desc.toLowerCase();
-    card.innerHTML = `
-      <div class="new-badge">📄 PDF</div>
-      ${thumb ? '<img class="new-thumb" src="' + escHtml(thumb) + '" alt="' + escHtml(title) + '" loading="lazy" onerror="this.style.display=\'none\'">' :
-        '<div style="height:140px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px;">📑 Documento PDF</div>'}
-      <div class="card-body">
-        <h3>${escHtml(title)}</h3>
-        <div class="meta">${agency ? '🏛️ ' + escHtml(agency) : ''} ${date ? '· 📅 ' + escHtml(date) : ''}</div>
-        <div class="desc">${escHtml(desc)}</div>
-        ${pdfLink ? '<a class="btn-pdf" href="' + escHtml(pdfLink) + '" target="_blank">📄 Abrir Documento</a>' : ''}
-      </div>
-    `;
-    grid.appendChild(card);
-  });
-
-  // Populate agency filter
-  const agencies = [...new Set(pdfData.map(r => r.agency).filter(Boolean))].sort();
-  const sel = document.getElementById('pdfAgencyFilter');
-  agencies.forEach(a => {
-    const opt = document.createElement('option');
-    opt.value = a;
-    opt.textContent = a;
-    sel.appendChild(opt);
-  });
-}
-
-function filterPdfs() {
-  const q = document.getElementById('pdfSearch').value.toLowerCase();
-  const agency = document.getElementById('pdfAgencyFilter').value.toLowerCase();
-  const cards = document.querySelectorAll('#pdfGrid .new-card');
-  let count = 0;
-  cards.forEach(c => {
-    const matchTitle = c.dataset.title.includes(q) || c.dataset.desc.includes(q);
-    const matchAgency = !agency || c.dataset.agency === agency;
-    const show = matchTitle && matchAgency;
-    c.style.display = show ? '' : 'none';
-    if (show) count++;
-  });
-  document.getElementById('allPdfCount').textContent = count;
-  document.getElementById('pdfResultCount').textContent =
-    count === cards.length ? 'Mostrando todos los ' + count + ' documentos' :
-    'Mostrando ' + count + ' de ' + cards.length + ' documentos';
-}
-
-// ===== UTILITIES =====
-function escHtml(str) {
-
-  if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
+// ===== SWITCH TAB =====
 function switchTab(name) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  document.querySelector(`.nav-btn[data-tab="${name}"]`).classList.add('active');
+  document.querySelector('.nav-btn[data-tab="' + name + '"]').classList.add('active');
+  setTimeout(setupClickHandlers, 200);
 }
 
 // ===== STARS =====
@@ -1764,209 +1460,27 @@ function createStars() {
   }
 }
 
-// ===== MODAL =====
-let modalItems = [];
-let modalIndex = 0;
-
-function openModal(items, index) {
-  modalItems = items;
-  modalIndex = index;
-  showModalItem();
-  document.getElementById('modalOverlay').classList.add('active');
-  document.body.style.overflow = 'hidden';
-  // Keyboard navigation
-  document.addEventListener('keydown', modalKeyHandler);
-}
-
-function closeModal(e) {
-  if (e && e.target !== e.currentTarget) return;
-  document.getElementById('modalOverlay').classList.remove('active');
-  document.body.style.overflow = '';
-  document.removeEventListener('keydown', modalKeyHandler);
-  // Stop any playing video
-  const media = document.getElementById('modalMedia');
-  const vids = media.querySelectorAll('video');
-  vids.forEach(v => v.pause());
-}
-
-function navigateModal(dir) {
-  modalIndex = (modalIndex + dir + modalItems.length) % modalItems.length;
-  showModalItem();
-}
-
-function showModalItem() {
-  const item = modalItems[modalIndex];
-  const mediaDiv = document.getElementById('modalMedia');
-  const infoDiv = document.getElementById('modalInfo');
-  
-  // Show/hide navigation buttons
-  document.getElementById('modalPrev').style.display = modalItems.length > 1 ? '' : 'none';
-  document.getElementById('modalNext').style.display = modalItems.length > 1 ? '' : 'none';
-  
-  // Build media content
-  let mediaHtml = '';
-  if (item.type === 'VID') {
-    const dvid = item.dvid_video_id || '';
-    if (dvid) {
-      mediaHtml = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen></iframe>`;
-    } else {
-      // Try direct video URL
-      const urls = buildDirectVideoUrl(item.title || '');
-      if (urls.length > 0) {
-        const sources = urls.map(u => `<source src="${escHtml(u)}" type="${u.endsWith('.webm') ? 'video/webm' : 'video/mp4'}">`).join('');
-        mediaHtml = `<video controls autoplay style="width:100%;height:100%;object-fit:contain;background:#000;">${sources}</video>`;
-      } else {
-        const warLink = buildWarGovLink(item.title || '');
-        mediaHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);flex-direction:column;gap:12px;padding:20px;">
-          <span style="font-size:48px;">🎬</span>
-          <p style="color:var(--text-muted);font-size:14px;">Video no disponible para reproducción directa</p>
-          ${warLink ? '<a href="' + escHtml(warLink) + '" target="_blank" class="btn-external" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-radius:8px;text-decoration:none;font-weight:600;">Abrir en war.gov ↗</a>' : ''}
-        </div>`;
-      }
-    }
-  } else if (item.type === 'IMG' || item.modal_image) {
-    mediaHtml = `<img src="${escHtml(item.modal_image)}" alt="${escHtml(item.title || '')}" style="width:100%;height:100%;object-fit:contain;max-height:70vh;" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);color:var(--text-muted);font-size:14px;\\'>📷 Imagen no disponible</div>'">`;
-  } else if (item.type === 'PDF' || item.pdf_image_link || item.pdf_link) {
-    const pdfUrl = item.pdf_image_link || item.pdf_link || '';
-    mediaHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);flex-direction:column;gap:12px;padding:20px;">
-      <span style="font-size:48px;">📄</span>
-      <p style="color:var(--text-muted);font-size:14px;">Documento PDF</p>
-      ${pdfUrl ? '<a href="' + escHtml(pdfUrl) + '" target="_blank" class="btn-external" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-radius:8px;text-decoration:none;font-weight:600;">Abrir PDF ↗</a>' : ''}
-    </div>`;
-  } else {
-    mediaHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);color:var(--text-muted);font-size:14px;">📄 ${escHtml(item.type || '')}</div>`;
-  }
-  
-  mediaDiv.innerHTML = mediaHtml;
-  
-  // Build info
-  const pdfLink = item.pdf_image_link || item.pdf_link || '';
-  infoDiv.innerHTML = `
-    <h2>${escHtml(item.title || 'Sin título')}</h2>
-    <div class="meta">
-      ${item.agency ? '<span>🏛️ ' + escHtml(item.agency) + '</span>' : ''}
-      ${item.incident_location ? '<span>📍 ' + escHtml(item.incident_location) + '</span>' : ''}
-      ${item.incident_date ? '<span>📅 ' + escHtml(item.incident_date) + '</span>' : ''}
-      ${item.release_date ? '<span>📆 ' + escHtml(item.release_date) + '</span>' : ''}
-      ${item.type ? '<span class="type-badge ' + (item.type || '').toLowerCase() + '">' + item.type + '</span>' : ''}
-    </div>
-    <div class="desc">${escHtml(item.description || '')}</div>
-    ${pdfLink ? '<a class="btn-external" href="' + escHtml(pdfLink) + '" target="_blank">📄 Ver Documento Original</a>' : ''}
-    ${modalItems.length > 1 ? '<div style="margin-top:8px;font-size:11px;color:var(--text-muted);text-align:center;">' + (modalIndex + 1) + ' / ' + modalItems.length + '</div>' : ''}
-  `;
-}
-
-function modalKeyHandler(e) {
-  if (e.key === 'Escape') closeModal();
-  if (e.key === 'ArrowLeft') navigateModal(-1);
-  if (e.key === 'ArrowRight') navigateModal(1);
-}
-
-// Make images and videos clickable - add click handlers after rendering
-function makeMediaClickable() {
-  // Images in top-grid
-  document.querySelectorAll('#topImagesGrid .top-card, #imageGrid .top-card').forEach(card => {
-    card.style.cursor = 'pointer';
-    card.addEventListener('click', function(e) {
-      // Don't open modal if clicking a link
-      if (e.target.closest('a')) return;
-      const idx = Array.from(this.parentElement.children).indexOf(this);
-      const items = IMAGE_DATA.length > 0 ? IMAGE_DATA : [];
-      if (items.length > 0) {
-        openModal(items, Math.min(idx, items.length - 1));
-      }
-    });
-  });
-  
-  // Videos in video-grid
-  document.querySelectorAll('#videoGrid .video-card').forEach(card => {
-    card.style.cursor = 'pointer';
-    card.addEventListener('click', function(e) {
-      if (e.target.closest('a') || e.target.closest('iframe') || e.target.closest('video')) return;
-      const idx = Array.from(this.parentElement.children).indexOf(this);
-      if (VIDEO_DATA.length > 0) {
-        openModal(VIDEO_DATA, Math.min(idx, VIDEO_DATA.length - 1));
-      }
-    });
-  });
-  
-  // Featured video
-  const featured = document.querySelector('#featuredVideo .featured-item');
-  if (featured) {
-    featured.style.cursor = 'pointer';
-    featured.addEventListener('click', function(e) {
-      if (e.target.closest('a') || e.target.closest('iframe') || e.target.closest('video')) return;
-      if (VIDEO_DATA.length > 0) {
-        openModal(VIDEO_DATA, 0);
-      }
-    });
-  }
-  
-  // Top videos
-  document.querySelectorAll('#topGrid .top-card').forEach(card => {
-    card.style.cursor = 'pointer';
-    card.addEventListener('click', function(e) {
-      if (e.target.closest('a') || e.target.closest('iframe') || e.target.closest('video')) return;
-      const idx = Array.from(this.parentElement.children).indexOf(this);
-      if (VIDEO_DATA.length > 0) {
-        openModal(VIDEO_DATA, Math.min(idx + 1, VIDEO_DATA.length - 1));
-      }
-    });
-  });
-  
-  // New cards (latest, all new, pdfs)
-  document.querySelectorAll('#latestGrid .new-card, #newGrid .new-card, #pdfGrid .new-card').forEach(card => {
-    card.style.cursor = 'pointer';
-    card.addEventListener('click', function(e) {
-      if (e.target.closest('a')) return;
-      const idx = Array.from(this.parentElement.children).indexOf(this);
-      openModal(ALL_DATA, Math.min(idx, ALL_DATA.length - 1));
-    });
-  });
-}
-
-// Override render functions to add click handlers after rendering
+// Override render functions to add click handlers
 const origRenderTopImages = renderTopImages;
-renderTopImages = function() {
-  origRenderTopImages();
-  setTimeout(makeMediaClickable, 100);
-};
+renderTopImages = function() { origRenderTopImages(); setTimeout(setupClickHandlers, 100); };
 
 const origRenderTopVideos = renderTopVideos;
-renderTopVideos = function() {
-  origRenderTopVideos();
-  setTimeout(makeMediaClickable, 100);
-};
+renderTopVideos = function() { origRenderTopVideos(); setTimeout(setupClickHandlers, 100); };
 
 const origRenderLatest = renderLatest;
-renderLatest = function() {
-  origRenderLatest();
-  setTimeout(makeMediaClickable, 100);
-};
+renderLatest = function() { origRenderLatest(); setTimeout(setupClickHandlers, 100); };
 
 const origRenderAllVideos = renderAllVideos;
-renderAllVideos = function() {
-  origRenderAllVideos();
-  setTimeout(makeMediaClickable, 200);
-};
+renderAllVideos = function() { origRenderAllVideos(); setTimeout(setupClickHandlers, 200); };
 
 const origRenderAllImages = renderAllImages;
-renderAllImages = function() {
-  origRenderAllImages();
-  setTimeout(makeMediaClickable, 200);
-};
+renderAllImages = function() { origRenderAllImages(); setTimeout(setupClickHandlers, 200); };
 
 const origRenderAllPdfs = renderAllPdfs;
-renderAllPdfs = function() {
-  origRenderAllPdfs();
-  setTimeout(makeMediaClickable, 200);
-};
+renderAllPdfs = function() { origRenderAllPdfs(); setTimeout(setupClickHandlers, 200); };
 
 const origRenderAllNew = renderAllNew;
-renderAllNew = function() {
-  origRenderAllNew();
-  setTimeout(makeMediaClickable, 200);
-};
+renderAllNew = function() { origRenderAllNew(); setTimeout(setupClickHandlers, 200); };
 
 createStars();
 loadData();
