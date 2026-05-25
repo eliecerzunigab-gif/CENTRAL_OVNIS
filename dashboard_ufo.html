@@ -21,7 +21,6 @@
   --border: #1e293b;
   --success: #10b981;
   --danger: #ef4444;
-  --warning: #f59e0b;
 }
 body {
   font-family: 'Inter', sans-serif;
@@ -33,31 +32,30 @@ body {
 body::before {
   content: '';
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top:0;left:0;right:0;bottom:0;
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(0, 212, 255, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(124, 58, 237, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(245, 158, 11, 0.02) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 50%, rgba(0,212,255,0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(124,58,237,0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(245,158,11,0.02) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
 }
 .stars {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top:0;left:0;right:0;bottom:0;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
 }
 .star {
   position: absolute;
-  width: 2px;
-  height: 2px;
+  width: 2px; height: 2px;
   background: white;
   border-radius: 50%;
   animation: twinkle var(--duration) ease-in-out infinite;
 }
 @keyframes twinkle {
-  0%, 100% { opacity: 0.2; }
+  0%,100% { opacity: 0.2; }
   50% { opacity: 1; }
 }
 .container {
@@ -72,33 +70,33 @@ body::before {
 .nav-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 8px 16px;
+  padding: 8px 14px;
   margin-bottom: 24px;
   flex-wrap: wrap;
 }
 .nav-brand {
   font-family: 'Orbitron', monospace;
-  font-size: 1.1em;
+  font-size: 1em;
   font-weight: 700;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-right: 16px;
+  margin-right: 12px;
   white-space: nowrap;
 }
 .nav-btn {
   background: transparent;
   border: 1px solid transparent;
   color: var(--text-secondary);
-  padding: 8px 18px;
+  padding: 7px 16px;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   transition: all 0.3s ease;
   font-family: 'Inter', sans-serif;
@@ -110,48 +108,48 @@ body::before {
 .nav-btn.active {
   color: var(--accent);
   border-color: var(--accent);
-  background: rgba(0, 212, 255, 0.08);
+  background: rgba(0,212,255,0.08);
 }
 .nav-count {
   background: var(--accent);
   color: var(--bg-primary);
-  font-size: 11px;
-  padding: 1px 8px;
+  font-size: 10px;
+  padding: 1px 7px;
   border-radius: 10px;
-  margin-left: 4px;
+  margin-left: 3px;
   font-weight: 700;
 }
 
 /* Header */
 .header {
   text-align: center;
-  padding: 30px 20px 20px;
+  padding: 25px 20px 18px;
 }
 .header-badge {
   display: inline-block;
   background: linear-gradient(135deg, var(--accent2), var(--accent));
-  padding: 6px 16px;
+  padding: 5px 14px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 2px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 .header h1 {
   font-family: 'Orbitron', monospace;
-  font-size: 2.2em;
+  font-size: 2em;
   font-weight: 800;
   background: linear-gradient(135deg, #00d4ff, #7c3aed, #f59e0b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
 }
 .header .subtitle {
-  font-size: 1em;
+  font-size: 0.95em;
   color: var(--text-secondary);
   font-weight: 300;
 }
@@ -159,50 +157,83 @@ body::before {
 /* Stats Grid */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 14px;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
 }
 .stat-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 18px;
+  border-radius: 12px;
+  padding: 16px;
   text-align: center;
   transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 .stat-card:hover {
   border-color: var(--accent);
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 212, 255, 0.1);
+  box-shadow: 0 8px 30px rgba(0,212,255,0.1);
 }
-.stat-card .icon { font-size: 26px; margin-bottom: 6px; }
+.stat-card .stat-bg-icon {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  font-size: 60px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+.stat-card .icon { font-size: 24px; margin-bottom: 4px; position: relative; z-index: 1; }
 .stat-card .value {
   font-family: 'Orbitron', monospace;
-  font-size: 1.8em;
+  font-size: 1.6em;
   font-weight: 700;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  position: relative; z-index: 1;
 }
 .stat-card .label {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
-  margin-top: 4px;
+  margin-top: 3px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 1px;
+  position: relative; z-index: 1;
+}
+.stat-card .stat-detail {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-radius: 0 0 12px 12px;
+  padding: 10px;
+  z-index: 10;
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: left;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.stat-card:hover .stat-detail {
+  display: block;
 }
 
 /* Section Title */
 .section-title {
   font-family: 'Orbitron', monospace;
-  font-size: 1.3em;
+  font-size: 1.2em;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 28px 0 18px;
-  padding-bottom: 10px;
+  margin: 24px 0 16px;
+  padding-bottom: 8px;
   border-bottom: 2px solid var(--border);
   display: flex;
   align-items: center;
@@ -211,20 +242,111 @@ body::before {
 .section-title .badge {
   background: var(--accent);
   color: var(--bg-primary);
-  font-size: 13px;
-  padding: 2px 12px;
+  font-size: 12px;
+  padding: 2px 10px;
   border-radius: 12px;
   font-family: 'Inter', sans-serif;
 }
 
-/* Top 10 Grid */
-.top10-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 18px;
-  margin-bottom: 28px;
+/* Featured Item (Top 1) */
+.featured-item {
+  background: var(--bg-card);
+  border: 2px solid var(--accent3);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  position: relative;
 }
-.top10-card {
+.featured-item .featured-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #000;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  z-index: 3;
+  box-shadow: 0 4px 15px rgba(245,158,11,0.4);
+}
+.featured-item .featured-media {
+  position: relative;
+  width: 100%;
+  padding-top: 42%;
+  background: #000;
+}
+.featured-item .featured-media iframe {
+  position: absolute;
+  top:0;left:0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.featured-item .featured-media img {
+  position: absolute;
+  top:0;left:0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+.featured-item .card-body {
+  padding: 18px 20px;
+}
+.featured-item .card-body h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent3);
+  margin-bottom: 6px;
+}
+.featured-item .card-body .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.featured-item .card-body .meta span {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+.featured-item .card-body .meta .agency { color: var(--accent); }
+.featured-item .card-body .meta .location { color: var(--accent3); }
+.featured-item .card-body .desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.featured-item .card-body .btn-link {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 16px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: white;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.featured-item .card-body .btn-link:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0,212,255,0.3);
+}
+
+/* Top Grid (2-20) */
+.top-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.top-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -232,17 +354,17 @@ body::before {
   transition: all 0.4s ease;
   position: relative;
 }
-.top10-card:hover {
+.top-card:hover {
   transform: translateY(-4px);
   border-color: var(--accent);
-  box-shadow: 0 12px 40px rgba(0, 212, 255, 0.15);
+  box-shadow: 0 12px 40px rgba(0,212,255,0.15);
 }
-.top10-card .rank {
+.top-card .rank {
   position: absolute;
   top: 10px;
   left: 10px;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   border-radius: 50%;
   display: flex;
@@ -250,54 +372,62 @@ body::before {
   justify-content: center;
   font-family: 'Orbitron', monospace;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 14px;
   color: white;
   z-index: 2;
-  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0,212,255,0.3);
 }
-.top10-card .rank.gold { background: linear-gradient(135deg, #f59e0b, #d97706); }
-.top10-card .rank.silver { background: linear-gradient(135deg, #94a3b8, #64748b); }
-.top10-card .rank.bronze { background: linear-gradient(135deg, #b45309, #92400e); }
-.top10-card .video-wrapper {
+.top-card .rank.gold { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.top-card .rank.silver { background: linear-gradient(135deg, #94a3b8, #64748b); }
+.top-card .rank.bronze { background: linear-gradient(135deg, #b45309, #92400e); }
+.top-card .top-media {
   position: relative;
   width: 100%;
   padding-top: 56.25%;
   background: #000;
 }
-.top10-card .video-wrapper iframe {
+.top-card .top-media iframe {
   position: absolute;
-  top: 0; left: 0;
+  top:0;left:0;
   width: 100%;
   height: 100%;
   border: none;
 }
-.top10-card .card-body {
-  padding: 14px;
+.top-card .top-media img {
+  position: absolute;
+  top:0;left:0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
 }
-.top10-card .card-body h3 {
-  font-size: 14px;
+.top-card .card-body {
+  padding: 12px;
+}
+.top-card .card-body h3 {
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   line-height: 1.3;
 }
-.top10-card .card-body .meta {
+.top-card .card-body .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 6px;
+  gap: 4px;
+  margin-bottom: 4px;
 }
-.top10-card .card-body .meta span {
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 6px;
+.top-card .card-body .meta span {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 5px;
   background: var(--bg-secondary);
   color: var(--text-secondary);
 }
-.top10-card .card-body .meta .agency { color: var(--accent); }
-.top10-card .card-body .meta .location { color: var(--accent3); }
-.top10-card .card-body .desc {
-  font-size: 12px;
+.top-card .card-body .meta .agency { color: var(--accent); }
+.top-card .card-body .meta .location { color: var(--accent3); }
+.top-card .card-body .desc {
+  font-size: 11px;
   color: var(--text-muted);
   line-height: 1.4;
   display: -webkit-box;
@@ -305,18 +435,33 @@ body::before {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.top-card .card-body .btn-link {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: white;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.top-card .card-body .btn-link:hover {
+  transform: scale(1.05);
+}
 
 /* Video Grid (All Videos) */
 .video-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 18px;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 }
 .video-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
 }
@@ -332,25 +477,25 @@ body::before {
 }
 .video-card .video-wrapper iframe {
   position: absolute;
-  top: 0; left: 0;
+  top:0;left:0;
   width: 100%;
   height: 100%;
   border: none;
 }
 .video-card .card-body {
-  padding: 12px;
+  padding: 10px 12px;
 }
 .video-card .card-body h3 {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 .video-card .card-body .meta {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
 }
 .video-card .card-body .meta span {
@@ -362,14 +507,14 @@ body::before {
 /* Lo Nuevo Section */
 .new-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
 }
 .new-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
   position: relative;
@@ -380,40 +525,40 @@ body::before {
 }
 .new-card .new-badge {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 8px;
+  right: 8px;
   background: var(--accent3);
   color: #000;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 8px;
+  padding: 2px 8px;
+  border-radius: 6px;
   text-transform: uppercase;
   letter-spacing: 1px;
   z-index: 2;
 }
 .new-card .new-thumb {
   width: 100%;
-  height: 160px;
+  height: 140px;
   object-fit: cover;
   background: var(--bg-secondary);
   display: block;
 }
 .new-card .card-body {
-  padding: 12px;
+  padding: 10px 12px;
 }
 .new-card .card-body h3 {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 .new-card .card-body .meta {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 .new-card .card-body .desc {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
   line-height: 1.4;
   display: -webkit-box;
@@ -423,19 +568,19 @@ body::before {
 }
 .new-card .card-body .btn-pdf {
   display: inline-block;
-  margin-top: 8px;
-  padding: 5px 14px;
+  margin-top: 6px;
+  padding: 4px 12px;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   color: white;
-  border-radius: 8px;
-  font-size: 12px;
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.3s ease;
 }
 .new-card .card-body .btn-pdf:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0,212,255,0.3);
 }
 
 /* Tab Content */
@@ -445,48 +590,31 @@ body::before {
 /* Loading */
 .loading {
   text-align: center;
-  padding: 60px 20px;
+  padding: 50px 20px;
   color: var(--text-muted);
 }
 .loading .spinner {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border: 3px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
-  margin: 0 auto 16px;
+  margin: 0 auto 14px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* Search */
 .search-bar {
   display: flex;
-  gap: 10px;
-  margin-bottom: 18px;
+  gap: 8px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 .search-bar input {
   flex: 1;
-  min-width: 200px;
-  padding: 10px 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  color: var(--text-primary);
-  font-size: 14px;
-  font-family: 'Inter', sans-serif;
-  outline: none;
-  transition: border-color 0.3s;
-}
-.search-bar input:focus {
-  border-color: var(--accent);
-}
-.search-bar input::placeholder {
-  color: var(--text-muted);
-}
-.search-bar select {
-  padding: 10px 14px;
+  min-width: 180px;
+  padding: 9px 14px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -494,16 +622,70 @@ body::before {
   font-size: 13px;
   font-family: 'Inter', sans-serif;
   outline: none;
+  transition: border-color 0.3s;
+}
+.search-bar input:focus { border-color: var(--accent); }
+.search-bar input::placeholder { color: var(--text-muted); }
+.search-bar select {
+  padding: 9px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
   cursor: pointer;
+}
+
+/* Result count */
+.result-count {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border-radius: 8px;
+  display: inline-block;
+}
+
+/* Type badges */
+.type-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.type-badge.vid { background: rgba(0,212,255,0.15); color: var(--accent); }
+.type-badge.img { background: rgba(16,185,129,0.15); color: var(--success); }
+.type-badge.pdf { background: rgba(245,158,11,0.15); color: var(--accent3); }
+.type-badge.aud { background: rgba(124,58,237,0.15); color: var(--accent2); }
+
+/* Score bar */
+.score-bar {
+  height: 3px;
+  background: var(--bg-secondary);
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.score-bar .fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 2px;
+  transition: width 0.5s ease;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .header h1 { font-size: 1.5em; }
-  .top10-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.3em; }
+  .top-grid { grid-template-columns: 1fr; }
   .video-grid { grid-template-columns: 1fr; }
-  .nav-brand { font-size: 0.9em; margin-right: 8px; }
-  .nav-btn { padding: 6px 12px; font-size: 13px; }
+  .nav-brand { font-size: 0.85em; margin-right: 6px; }
+  .nav-btn { padding: 5px 10px; font-size: 12px; }
+  .featured-item .featured-media { padding-top: 56.25%; }
 }
 </style>
 </head>
@@ -525,7 +707,7 @@ body::before {
     <button class="nav-btn" data-tab="nuevo" onclick="switchTab('nuevo')">
       🆕 Lo Nuevo
     </button>
-    <a href="https://www.war.gov/ufo/" target="_blank" style="margin-left:auto;color:var(--text-muted);font-size:13px;text-decoration:none;padding:6px 12px;border:1px solid var(--border);border-radius:8px;">
+    <a href="https://www.war.gov/ufo/" target="_blank" style="margin-left:auto;color:var(--text-muted);font-size:12px;text-decoration:none;padding:5px 10px;border:1px solid var(--border);border-radius:8px;">
       war.gov/ufo ↗
     </a>
   </div>
@@ -543,46 +725,73 @@ body::before {
     <!-- Stats -->
     <div class="stats-grid" id="statsGrid">
       <div class="stat-card">
+        <div class="stat-bg-icon">📄</div>
         <div class="icon">📄</div>
         <div class="value" id="totalRecords">-</div>
         <div class="label">Total Registros</div>
+        <div class="stat-detail" id="detailRecords"></div>
       </div>
       <div class="stat-card">
+        <div class="stat-bg-icon">🎬</div>
         <div class="icon">🎬</div>
         <div class="value" id="totalVideos">-</div>
         <div class="label">Videos</div>
+        <div class="stat-detail" id="detailVideos"></div>
       </div>
       <div class="stat-card">
+        <div class="stat-bg-icon">📷</div>
         <div class="icon">📷</div>
         <div class="value" id="totalImages">-</div>
         <div class="label">Imágenes</div>
+        <div class="stat-detail" id="detailImages"></div>
       </div>
       <div class="stat-card">
+        <div class="stat-bg-icon">📑</div>
         <div class="icon">📑</div>
         <div class="value" id="totalPDFs">-</div>
         <div class="label">Documentos PDF</div>
+        <div class="stat-detail" id="detailPDFs"></div>
       </div>
       <div class="stat-card">
+        <div class="stat-bg-icon">🏛️</div>
         <div class="icon">🏛️</div>
         <div class="value" id="totalAgencies">-</div>
         <div class="label">Agencias</div>
+        <div class="stat-detail" id="detailAgencies"></div>
       </div>
       <div class="stat-card">
+        <div class="stat-bg-icon">📅</div>
         <div class="icon">📅</div>
         <div class="value" id="latestRelease">-</div>
         <div class="label">Última Publicación</div>
+        <div class="stat-detail" id="detailRelease"></div>
       </div>
     </div>
 
-    <!-- Top 10 Videos -->
+    <!-- Galería de Imágenes Destacadas -->
     <div class="section-title">
-      🏆 Top 10 Videos <span class="badge">Más vistos</span>
+      🖼️ Imágenes Más Destacadas <span class="badge">Top 20</span>
     </div>
-    <div class="top10-grid" id="top10Grid">
-      <div class="loading"><div class="spinner"></div><p>Cargando videos...</p></div>
+    <div class="top-grid" id="topImagesGrid">
+      <div class="loading"><div class="spinner"></div><p>Cargando imágenes destacadas...</p></div>
     </div>
 
-    <!-- Latest Releases -->
+    <!-- Videos Más Impactantes -->
+    <div class="section-title">
+      🔥 Videos Más Impactantes <span class="badge">Top 10</span>
+    </div>
+
+    <!-- Featured Video #1 -->
+    <div id="featuredVideo">
+      <div class="loading"><div class="spinner"></div><p>Cargando video destacado...</p></div>
+    </div>
+
+    <!-- Top Videos #2-10 -->
+    <div class="top-grid" id="topGrid">
+      <div class="loading"><div class="spinner"></div><p>Cargando top videos...</p></div>
+    </div>
+
+    <!-- Últimas Publicaciones -->
     <div class="section-title">
       🆕 Últimas Publicaciones <span class="badge">Nuevo</span>
     </div>
@@ -602,6 +811,7 @@ body::before {
         <option value="">Todas las agencias</option>
       </select>
     </div>
+    <div id="videoResultCount" class="result-count">Mostrando todos los videos</div>
     <div class="video-grid" id="videoGrid">
       <div class="loading"><div class="spinner"></div><p>Cargando videos...</p></div>
     </div>
@@ -610,7 +820,7 @@ body::before {
   <!-- ===== TAB: LO NUEVO ===== -->
   <div class="tab-content" id="tab-nuevo">
     <div class="section-title">
-      🆕 Lo Nuevo Publicado <span class="badge">Release 1 & 2</span>
+      🆕 Lo Nuevo Publicado <span class="badge">Todos los registros</span>
     </div>
     <div class="search-bar">
       <input type="text" id="newSearch" placeholder="Buscar en nuevas publicaciones..." oninput="filterNew()">
@@ -626,28 +836,38 @@ body::before {
 // ===== DATA =====
 const UFO_DATA = [];
 const VIDEO_DATA = [];
+const IMAGE_DATA = [];
 
-// Load data
 async function loadData() {
   try {
     const resp = await fetch('ufo_records.json');
     const data = await resp.json();
     UFO_DATA.push(...data);
 
-    // Extract unique videos
-    const seen = new Set();
+    const seenVid = new Set();
+    const seenImg = new Set();
     data.forEach(r => {
       const dvid = r.dvid_video_id || '';
-      if (dvid && !seen.has(dvid)) {
-        seen.add(dvid);
+      if (dvid && !seenVid.has(dvid)) {
+        seenVid.add(dvid);
         VIDEO_DATA.push(r);
+      }
+      // Images: type IMG or records with modal_image but no video
+      if (r.type === 'IMG' && r.modal_image) {
+        const key = r.modal_image;
+        if (!seenImg.has(key)) {
+          seenImg.add(key);
+          IMAGE_DATA.push(r);
+        }
       }
     });
 
-    renderDashboard(data);
-    renderVideos(VIDEO_DATA);
-    renderNew(data);
     renderStats(data);
+    renderTopImages(IMAGE_DATA, data);
+    renderTopVideos(VIDEO_DATA);
+    renderLatest(data);
+    renderAllVideos(VIDEO_DATA);
+    renderAllNew(data);
     document.getElementById('videoCount').textContent = VIDEO_DATA.length;
   } catch(e) {
     document.querySelectorAll('.loading').forEach(el => {
@@ -663,7 +883,13 @@ function renderStats(data) {
   const vids = data.filter(r => r.type === 'VID').length;
   const imgs = data.filter(r => r.type === 'IMG').length;
   const pdfs = data.filter(r => r.type === 'PDF').length;
-  const agencies = new Set(data.map(r => r.agency).filter(Boolean));
+  const auds = data.filter(r => r.type === 'AUD').length;
+  const agenciesMap = {};
+  data.forEach(r => {
+    const a = r.agency;
+    if (a) agenciesMap[a] = (agenciesMap[a] || 0) + 1;
+  });
+  const agencyEntries = Object.entries(agenciesMap).sort((a,b) => b[1] - a[1]);
   const dates = data.map(r => r.release_date).filter(Boolean).sort();
   const latest = dates.length > 0 ? dates[dates.length - 1] : 'N/A';
 
@@ -671,61 +897,172 @@ function renderStats(data) {
   document.getElementById('totalVideos').textContent = vids;
   document.getElementById('totalImages').textContent = imgs;
   document.getElementById('totalPDFs').textContent = pdfs;
-  document.getElementById('totalAgencies').textContent = agencies.size;
+  document.getElementById('totalAgencies').textContent = agencyEntries.length;
   document.getElementById('latestRelease').textContent = latest;
+
+  // Details on hover
+  document.getElementById('detailRecords').innerHTML =
+    `<strong>Desglose por tipo:</strong><br>
+     🎬 Videos: ${vids}<br>
+     📷 Imágenes: ${imgs}<br>
+     📑 PDFs: ${pdfs}<br>
+     🎵 Audios: ${auds}`;
+
+  document.getElementById('detailVideos').innerHTML =
+    `<strong>Videos con DVIDS:</strong> ${VIDEO_DATA.length}<br>
+     <strong>Total tipo VID:</strong> ${vids}`;
+
+  document.getElementById('detailImages').innerHTML =
+    `<strong>Imágenes destacadas:</strong> ${IMAGE_DATA.length}<br>
+     <strong>Total tipo IMG:</strong> ${imgs}`;
+
+  document.getElementById('detailPDFs').innerHTML =
+    `<strong>Total documentos PDF:</strong> ${pdfs}`;
+
+  document.getElementById('detailAgencies').innerHTML =
+    `<strong>Agencias:</strong><br>` +
+    agencyEntries.slice(0, 10).map(([name, count]) =>
+      `🏛️ ${escHtml(name)}: ${count}`
+    ).join('<br>');
+
+  document.getElementById('detailRelease').innerHTML =
+    `<strong>Última actualización:</strong> ${latest}<br>
+     <strong>Rango de fechas:</strong> ${dates[0] || 'N/A'} → ${latest}`;
 }
 
-// ===== DASHBOARD =====
-function renderDashboard(data) {
-  // Top 10 Videos
-  const videos = VIDEO_DATA.slice(0, 10);
-  const grid = document.getElementById('top10Grid');
+// ===== TOP IMAGES (Dashboard) =====
+function renderTopImages(images, allData) {
+  const grid = document.getElementById('topImagesGrid');
+
+  // Collect all items with modal_image (images + PDFs with thumbnails)
+  const itemsWithImages = allData
+    .filter(r => r.modal_image && r.modal_image.trim() !== '')
+    .map(r => ({
+      ...r,
+      sortScore: r.score || 0
+    }))
+    .sort((a, b) => b.sortScore - a.sortScore);
+
+  // Take top 20 unique by modal_image
+  const seen = new Set();
+  const top20 = [];
+  for (const item of itemsWithImages) {
+    const key = item.modal_image;
+    if (!seen.has(key) && top20.length < 20) {
+      seen.add(key);
+      top20.push(item);
+    }
+  }
+
   grid.innerHTML = '';
 
-  videos.forEach((r, i) => {
-    const dvid = r.dvid_video_id || '';
-    const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-    const title = r.title || 'Sin título';
-    const agency = r.agency || '';
-    const location = r.incident_location || '';
-    const date = r.incident_date || '';
-    const desc = (r.description || '').substring(0, 200);
+  if (top20.length === 0) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No se encontraron imágenes destacadas</div>';
+    return;
+  }
 
+  top20.forEach((r, i) => {
+    const rankNum = i + 1;
+    const rankClass = rankNum === 1 ? 'gold' : rankNum === 2 ? 'silver' : rankNum === 3 ? 'bronze' : '';
     const card = document.createElement('div');
-    card.className = 'top10-card';
+    card.className = 'top-card';
+    const pdfLink = r.pdf_image_link || r.pdf_link || '';
+    const isVideo = r.type === 'VID' && r.dvid_video_id;
     card.innerHTML = `
-      <div class="rank ${rankClass}">${i + 1}</div>
-      <div class="video-wrapper">
-        <iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>
+      <div class="rank ${rankClass}">${rankNum}</div>
+      <div class="top-media">
+        ${isVideo
+          ? `<iframe src="https://www.dvidshub.net/video/embed/${r.dvid_video_id}" allowfullscreen loading="lazy"></iframe>`
+          : `<img src="${escHtml(r.modal_image)}" alt="${escHtml(r.title || '')}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-secondary);color:var(--text-muted);font-size:12px;\\'>📷 ${escHtml(r.type || '')}</div>'">`
+        }
       </div>
       <div class="card-body">
-        <h3>${title}</h3>
+        <h3>${escHtml(r.title || 'Sin título')}</h3>
         <div class="meta">
-          ${agency ? `<span class="agency">🏛️ ${agency}</span>` : ''}
-          ${location ? `<span class="location">📍 ${location}</span>` : ''}
-          ${date ? `<span>📅 ${date}</span>` : ''}
+          ${r.agency ? '<span class="agency">🏛️ ' + escHtml(r.agency) + '</span>' : ''}
+          ${r.incident_location ? '<span class="location">📍 ' + escHtml(r.incident_location) + '</span>' : ''}
+          ${r.incident_date ? '<span>📅 ' + escHtml(r.incident_date) + '</span>' : ''}
+          <span class="type-badge ${(r.type || '').toLowerCase()}">${r.type || ''}</span>
         </div>
-        <div class="desc">${desc}</div>
+        <div class="desc">${escHtml((r.description || '').substring(0, 150))}</div>
+        ${pdfLink ? '<a class="btn-link" href="' + escHtml(pdfLink) + '" target="_blank">📄 Ver Documento</a>' : ''}
+        <div class="score-bar"><div class="fill" style="width:${Math.min(100, (r.sortScore || 0) * 2.5)}%"></div></div>
       </div>
     `;
     grid.appendChild(card);
   });
+}
 
-  // Latest Releases (last 6)
+// ===== TOP VIDEOS (Dashboard) =====
+function renderTopVideos(videos) {
+  if (videos.length === 0) return;
+
+  // Featured Video #1
+  const f = videos[0];
+  const featuredDiv = document.getElementById('featuredVideo');
+  featuredDiv.innerHTML = `
+    <div class="featured-item">
+      <div class="featured-badge">🔥 #1 Más Impactante</div>
+      <div class="featured-media">
+        <iframe src="https://www.dvidshub.net/video/embed/${f.dvid_video_id}" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="card-body">
+        <h2>${escHtml(f.title || 'Sin título')}</h2>
+        <div class="meta">
+          ${f.agency ? '<span class="agency">🏛️ ' + escHtml(f.agency) + '</span>' : ''}
+          ${f.incident_location ? '<span class="location">📍 ' + escHtml(f.incident_location) + '</span>' : ''}
+          ${f.incident_date ? '<span>📅 ' + escHtml(f.incident_date) + '</span>' : ''}
+        </div>
+        <div class="desc">${escHtml((f.description || '').substring(0, 300))}</div>
+      </div>
+    </div>
+  `;
+
+  // Top Videos #2-10
+  const top = videos.slice(1, 10);
+  const grid = document.getElementById('topGrid');
+  grid.innerHTML = '';
+
+  top.forEach((r, i) => {
+    const rankNum = i + 2;
+    const rankClass = rankNum === 2 ? 'gold' : rankNum === 3 ? 'silver' : rankNum === 4 ? 'bronze' : '';
+    const card = document.createElement('div');
+    card.className = 'top-card';
+    card.innerHTML = `
+      <div class="rank ${rankClass}">${rankNum}</div>
+      <div class="top-media">
+        <iframe src="https://www.dvidshub.net/video/embed/${r.dvid_video_id}" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="card-body">
+        <h3>${escHtml(r.title || 'Sin título')}</h3>
+        <div class="meta">
+          ${r.agency ? '<span class="agency">🏛️ ' + escHtml(r.agency) + '</span>' : ''}
+          ${r.incident_location ? '<span class="location">📍 ' + escHtml(r.incident_location) + '</span>' : ''}
+          ${r.incident_date ? '<span>📅 ' + escHtml(r.incident_date) + '</span>' : ''}
+        </div>
+        <div class="desc">${escHtml((r.description || '').substring(0, 150))}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ===== LATEST RELEASES (Dashboard) =====
+function renderLatest(data) {
   const sorted = [...data].sort((a, b) => {
     const da = a.release_date || '';
     const db = b.release_date || '';
     return db.localeCompare(da);
   });
   const latest = sorted.slice(0, 6);
-  const latestGrid = document.getElementById('latestGrid');
-  latestGrid.innerHTML = '';
+  const grid = document.getElementById('latestGrid');
+  grid.innerHTML = '';
 
   latest.forEach(r => {
     const title = r.title || 'Sin título';
     const agency = r.agency || '';
     const date = r.release_date || '';
-    const desc = (r.description || '').substring(0, 150);
+    const desc = (r.description || '').substring(0, 120);
     const thumb = r.modal_image || '';
     const pdfLink = r.pdf_image_link || '';
     const type = r.type || '';
@@ -733,23 +1070,22 @@ function renderDashboard(data) {
     const card = document.createElement('div');
     card.className = 'new-card';
     card.innerHTML = `
-      <div class="new-badge">${date}</div>
-      ${thumb ? `<img class="new-thumb" src="${thumb}" alt="${title}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22160%22><rect fill=%22%231a1f35%22 width=%22300%22 height=%22160%22/><text fill=%22%2364748b%22 font-size=%2214%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22>${type}</text></svg>'">` :
-        `<div style="height:160px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:14px;">${type}</div>`
-      }
+      <div class="new-badge">${escHtml(date)}</div>
+      ${thumb ? '<img class="new-thumb" src="' + escHtml(thumb) + '" alt="' + escHtml(title) + '" loading="lazy" onerror="this.style.display=\'none\'">' :
+        '<div style="height:140px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px;">' + escHtml(type) + '</div>'}
       <div class="card-body">
-        <h3>${title}</h3>
-        <div class="meta">${agency ? `🏛️ ${agency}` : ''} ${date ? `· 📅 ${date}` : ''}</div>
-        <div class="desc">${desc}</div>
-        ${pdfLink ? `<a class="btn-pdf" href="${pdfLink}" target="_blank">📄 Ver Documento</a>` : ''}
+        <h3>${escHtml(title)}</h3>
+        <div class="meta">${agency ? '🏛️ ' + escHtml(agency) : ''} ${date ? '· 📅 ' + escHtml(date) : ''}</div>
+        <div class="desc">${escHtml(desc)}</div>
+        ${pdfLink ? '<a class="btn-pdf" href="' + escHtml(pdfLink) + '" target="_blank">📄 Ver Documento</a>' : ''}
       </div>
     `;
-    latestGrid.appendChild(card);
+    grid.appendChild(card);
   });
 }
 
-// ===== VIDEOS TAB =====
-function renderVideos(videos) {
+// ===== ALL VIDEOS TAB =====
+function renderAllVideos(videos) {
   const grid = document.getElementById('videoGrid');
   const count = document.getElementById('allVideoCount');
   count.textContent = videos.length;
@@ -777,11 +1113,11 @@ function renderVideos(videos) {
         <iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="card-body">
-        <h3>${title}</h3>
+        <h3>${escHtml(title)}</h3>
         <div class="meta">
-          ${agency ? `<span>🏛️ ${agency}</span>` : ''}
-          ${location ? `<span>📍 ${location}</span>` : ''}
-          ${date ? `<span>📅 ${date}</span>` : ''}
+          ${agency ? '<span>🏛️ ' + escHtml(agency) + '</span>' : ''}
+          ${location ? '<span>📍 ' + escHtml(location) + '</span>' : ''}
+          ${date ? '<span>📅 ' + escHtml(date) + '</span>' : ''}
         </div>
       </div>
     `;
@@ -812,11 +1148,13 @@ function filterVideos() {
     if (show) count++;
   });
   document.getElementById('allVideoCount').textContent = count;
+  document.getElementById('videoResultCount').textContent =
+    count === cards.length ? 'Mostrando todos los ' + count + ' videos' :
+    'Mostrando ' + count + ' de ' + cards.length + ' videos';
 }
 
-// ===== LO NUEVO TAB =====
-function renderNew(data) {
-  // Sort by release date descending, then take all
+// ===== ALL NEW (Lo Nuevo Tab) =====
+function renderAllNew(data) {
   const sorted = [...data].sort((a, b) => {
     const da = a.release_date || '';
     const db = b.release_date || '';
@@ -834,21 +1172,21 @@ function renderNew(data) {
     const thumb = r.modal_image || '';
     const pdfLink = r.pdf_image_link || '';
     const type = r.type || '';
-    const location = r.incident_location || '';
 
     const card = document.createElement('div');
     card.className = 'new-card';
-    card.dataset.search = (title + ' ' + agency + ' ' + location + ' ' + desc).toLowerCase();
+    card.dataset.title = title.toLowerCase();
+    card.dataset.agency = agency.toLowerCase();
+    card.dataset.desc = desc.toLowerCase();
     card.innerHTML = `
-      <div class="new-badge">${date || 'N/A'}</div>
-      ${thumb ? `<img class="new-thumb" src="${thumb}" alt="${title}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22160%22><rect fill=%22%231a1f35%22 width=%22300%22 height=%22160%22/><text fill=%22%2364748b%22 font-size=%2214%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22>${type}</text></svg>'">` :
-        `<div style="height:160px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:14px;">${type}</div>`
-      }
+      <div class="new-badge">${escHtml(date)}</div>
+      ${thumb ? '<img class="new-thumb" src="' + escHtml(thumb) + '" alt="' + escHtml(title) + '" loading="lazy" onerror="this.style.display=\'none\'">' :
+        '<div style="height:140px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px;">' + escHtml(type) + '</div>'}
       <div class="card-body">
-        <h3>${title}</h3>
-        <div class="meta">${agency ? `🏛️ ${agency}` : ''} ${location ? `· 📍 ${location}` : ''}</div>
-        <div class="desc">${desc}</div>
-        ${pdfLink ? `<a class="btn-pdf" href="${pdfLink}" target="_blank">📄 Ver Documento</a>` : ''}
+        <h3>${escHtml(title)}</h3>
+        <div class="meta">${agency ? '🏛️ ' + escHtml(agency) : ''} ${date ? '· 📅 ' + escHtml(date) : ''}</div>
+        <div class="desc">${escHtml(desc)}</div>
+        ${pdfLink ? '<a class="btn-pdf" href="' + escHtml(pdfLink) + '" target="_blank">📄 Ver Documento</a>' : ''}
       </div>
     `;
     grid.appendChild(card);
@@ -857,17 +1195,26 @@ function renderNew(data) {
 
 function filterNew() {
   const q = document.getElementById('newSearch').value.toLowerCase();
-  document.querySelectorAll('#newGrid .new-card').forEach(c => {
-    c.style.display = c.dataset.search.includes(q) ? '' : 'none';
+  const cards = document.querySelectorAll('#newGrid .new-card');
+  cards.forEach(c => {
+    const match = c.dataset.title.includes(q) || c.dataset.agency.includes(q) || c.dataset.desc.includes(q);
+    c.style.display = match ? '' : 'none';
   });
 }
 
-// ===== TAB SWITCHING =====
-function switchTab(tab) {
+// ===== UTILITIES =====
+function escHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function switchTab(name) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  document.querySelector(`.nav-btn[data-tab="${tab}"]`).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelector(`.nav-btn[data-tab="${name}"]`).classList.add('active');
 }
 
 // ===== STARS =====
