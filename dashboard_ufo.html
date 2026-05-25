@@ -935,8 +935,16 @@ function getWarGovLink(title) {
 function getThumbnailUrl(title) {
   const pr = getPRId(title);
   if (pr) {
-    // Try slideshow images first, then thumbnail
     return `https://www.war.gov/medialink/ufo/release_1/thumbnail/${pr}.jpg`;
+  }
+  return '';
+}
+
+function getVideoUrl(title) {
+  // Build direct MP4 URL for war.gov videos
+  const pr = getPRId(title);
+  if (pr) {
+    return `https://www.war.gov/medialink/ufo/release_1/video/${pr}.mp4`;
   }
   return '';
 }
@@ -956,16 +964,18 @@ function renderVideoCard(r, rank) {
 
   let mediaHtml = '';
   if (isDVIDS) {
-    // DVIDS video - show iframe directly
+    // DVIDS video - show iframe directly (reproduce en la misma pagina)
     mediaHtml = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>`;
   } else {
-    // War.gov video - show thumbnail with play button overlay
+    // War.gov video - try to play directly with <video> tag
+    const videoUrl = getVideoUrl(title);
     mediaHtml = `
-      <img src="${escHtml(thumb)}" alt="${escHtml(title)}" loading="lazy" 
-        onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1f35,#0a0e1a);flex-direction:column;gap:8px;\\'><span style=\\'font-size:36px;\\'>🎬</span><span style=\\'color:var(--text-muted);font-size:11px;\\'>${escHtml(title.substring(0,50))}</span></div>'">
-      <div class="play-overlay">
-        <div class="play-btn">▶</div>
-      </div>
+      <video controls preload="metadata" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;background:#000;"
+        poster="${escHtml(thumb)}"
+        onerror="this.controls=false;this.style.display='none';this.parentElement.innerHTML+='<img src=\\'${escHtml(thumb)}\\' alt=\\'${escHtml(title)}\\' style=\\'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;background:#000;\\' onerror=\\'this.parentElement.innerHTML=\\\"<div style=\\\\\\"position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1f35,#0a0e1a);flex-direction:column;gap:8px;\\\\\\"><span style=\\\\\\"font-size:36px;\\\\\\">🎬</span><span style=\\\\\\"color:var(--text-muted);font-size:11px;\\\\\\">${escHtml(title.substring(0,50))}</span></div>\\'><div class=\\'play-overlay\\'><div class=\\'play-btn\\'>▶</div></div>'">
+        <source src="${escHtml(videoUrl)}" type="video/mp4">
+        Tu navegador no soporta este video.
+      </video>
       ${warLink ? `<span class="dvid-badge">war.gov</span>` : ''}
     `;
   }
