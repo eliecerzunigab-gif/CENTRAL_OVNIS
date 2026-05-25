@@ -692,6 +692,11 @@ body::before {
 .modal-nav.next { right: 12px; }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media (max-width: 768px) {
   .header h1 { font-size: 1.3em; }
   .grid-4 { grid-template-columns: 1fr; }
@@ -699,6 +704,56 @@ body::before {
   .nav-brand { font-size: 0.85em; margin-right: 6px; }
   .nav-btn { padding: 5px 10px; font-size: 12px; }
   .featured-card .featured-media { padding-top: 56.25%; }
+  .container { padding: 10px; }
+  .nav-bar { padding: 6px 10px; gap: 4px; }
+  .nav-bar a[target="_blank"] { display: none; }
+  .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat-card { padding: 12px 8px; }
+  .stat-card .value { font-size: 1.2em; }
+  .stat-card .label { font-size: 9px; }
+  .stat-card .icon { font-size: 18px; }
+  .header { padding: 15px 10px 12px; }
+  .header .subtitle { font-size: 0.8em; }
+  .section-title { font-size: 1em; margin: 16px 0 10px; }
+  .search-bar input { min-width: 120px; font-size: 12px; padding: 7px 10px; }
+  .search-bar select { font-size: 11px; padding: 7px 8px; }
+  .card-body { padding: 8px 10px; }
+  .card-body h3 { font-size: 12px; }
+  .featured-card .card-body { padding: 12px 14px; }
+  .featured-card .card-body h2 { font-size: 15px; }
+  .featured-card .card-body .desc { font-size: 12px; }
+  .modal-content { max-width: 100vw; max-height: 100vh; border-radius: 0; }
+  .modal-media iframe { height: 50vh; }
+  .modal-media video { height: 50vh; }
+  .modal-media img { max-height: 50vh; }
+  .modal-info { padding: 12px 14px; max-height: 35vh; }
+  .modal-info h2 { font-size: 14px; }
+  .modal-nav { width: 32px; height: 32px; font-size: 14px; }
+  .modal-nav.prev { left: 6px; }
+  .modal-nav.next { right: 6px; }
+  .modal-close { top: 6px; right: 6px; width: 30px; height: 30px; font-size: 16px; }
+}
+
+@media (max-width: 480px) {
+  .header h1 { font-size: 1.1em; letter-spacing: 1px; }
+  .header-badge { font-size: 9px; padding: 3px 10px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .stat-card { padding: 10px 6px; }
+  .stat-card .value { font-size: 1em; }
+  .stat-card .label { font-size: 8px; }
+  .nav-bar { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .nav-btn { white-space: nowrap; padding: 4px 8px; font-size: 11px; }
+  .nav-brand { font-size: 0.75em; }
+  .nav-count { font-size: 8px; padding: 1px 5px; }
+  .card-media { padding-top: 56.25%; }
+  .card-media .play-overlay .play-btn { width: 44px; height: 44px; font-size: 20px; }
+  .featured-card .featured-media { padding-top: 56.25%; }
+  .featured-card .featured-badge { font-size: 9px; padding: 3px 10px; top: 8px; left: 8px; }
+  .result-count { font-size: 11px; padding: 4px 10px; }
+  .modal-overlay { padding: 0; }
+  .modal-media iframe { height: 40vh; }
+  .modal-media video { height: 40vh; }
+  .modal-media img { max-height: 40vh; }
 }
 </style>
 </head>
@@ -949,6 +1004,15 @@ function getVideoUrl(title) {
   return '';
 }
 
+function getWarGovEmbedUrl(title) {
+  // Build embed URL for war.gov video page
+  const pr = getPRId(title);
+  if (pr) {
+    return `https://www.war.gov/ufo/video/${pr}`;
+  }
+  return '';
+}
+
 // ===== RENDER VIDEO CARD =====
 function renderVideoCard(r, rank) {
   const dvid = r.dvid_video_id || '';
@@ -959,15 +1023,20 @@ function renderVideoCard(r, rank) {
   const desc = (r.description || '').substring(0, 150);
   const pdfLink = r.pdf_image_link || r.pdf_link || '';
   const warLink = getWarGovLink(title);
+  const embedUrl = getWarGovEmbedUrl(title);
   const thumb = r.modal_image || getThumbnailUrl(title);
   const isDVIDS = !!dvid;
+  const hasEmbed = !!embedUrl;
 
   let mediaHtml = '';
   if (isDVIDS) {
     // DVIDS video - show iframe directly (reproduce en la misma pagina)
     mediaHtml = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>`;
+  } else if (hasEmbed) {
+    // War.gov video - embed via iframe to play directly on the page
+    mediaHtml = `<iframe src="${escHtml(embedUrl)}" allowfullscreen loading="lazy"></iframe>`;
   } else {
-    // War.gov video - show thumbnail with play button that opens war.gov
+    // Fallback: show thumbnail with play button
     mediaHtml = `
       <img src="${escHtml(thumb)}" alt="${escHtml(title)}" loading="lazy" 
         onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1f35,#0a0e1a);flex-direction:column;gap:8px;\\'><span style=\\'font-size:36px;\\'>🎬</span><span style=\\'color:var(--text-muted);font-size:11px;\\'>${escHtml(title.substring(0,50))}</span></div>'">
@@ -1139,12 +1208,16 @@ function renderTopVideos() {
   const f = sorted[0];
   const dvid = f.dvid_video_id || '';
   const warLink = getWarGovLink(f.title || '');
+  const embedUrl = getWarGovEmbedUrl(f.title || '');
   const thumb = f.modal_image || getThumbnailUrl(f.title || '');
   const isDVIDS = !!dvid;
+  const hasEmbed = !!embedUrl;
 
   let featuredMedia = '';
   if (isDVIDS) {
     featuredMedia = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>`;
+  } else if (hasEmbed) {
+    featuredMedia = `<iframe src="${escHtml(embedUrl)}" allowfullscreen loading="lazy"></iframe>`;
   } else {
     featuredMedia = `
       <img src="${escHtml(thumb)}" alt="${escHtml(f.title || '')}" loading="lazy"
@@ -1156,7 +1229,7 @@ function renderTopVideos() {
   }
 
   document.getElementById('featuredVideo').innerHTML = `
-    <div class="featured-card" onclick="${isDVIDS ? '' : (warLink ? 'window.open(\'' + escHtml(warLink) + '\',\'_blank\')' : '')}">
+    <div class="featured-card" onclick="${(isDVIDS || hasEmbed) ? '' : (warLink ? 'window.open(\'' + escHtml(warLink) + '\',\'_blank\')' : '')}">
       <div class="featured-badge">🔥 #1 Más Impactante</div>
       <div class="featured-media">
         ${featuredMedia}
@@ -1347,13 +1420,17 @@ function showModalItem() {
   let mediaHtml = '';
   const dvid = item.dvid_video_id || '';
   const warLink = getWarGovLink(item.title || '');
+  const embedUrl = getWarGovEmbedUrl(item.title || '');
   const thumb = item.modal_image || getThumbnailUrl(item.title || '');
   
   if (item.type === 'VID') {
     if (dvid) {
       mediaHtml = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen></iframe>`;
+    } else if (embedUrl) {
+      // War.gov video - embed via iframe to play directly in modal
+      mediaHtml = `<iframe src="${escHtml(embedUrl)}" allowfullscreen></iframe>`;
     } else {
-      // Try to play war.gov video directly with <video> tag
+      // Fallback: try to play with <video> tag
       const videoUrl = getVideoUrl(item.title || '');
       mediaHtml = `
         <video controls preload="metadata" style="width:100%;height:70vh;object-fit:contain;background:#000;"
