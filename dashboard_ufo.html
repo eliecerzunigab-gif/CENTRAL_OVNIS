@@ -691,6 +691,157 @@ body::before {
   transition: width 0.5s ease;
 }
 
+/* ===== MODAL ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+}
+.modal-overlay.active {
+  display: flex;
+}
+.modal-content {
+  position: relative;
+  max-width: 95vw;
+  max-height: 95vh;
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(0,212,255,0.15);
+  animation: modalIn 0.3s ease;
+}
+@keyframes modalIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.modal-close:hover {
+  background: var(--danger);
+  transform: scale(1.1);
+}
+.modal-media {
+  width: 100%;
+  max-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  overflow: hidden;
+}
+.modal-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  max-height: 70vh;
+  cursor: zoom-in;
+}
+.modal-media iframe {
+  width: 100%;
+  height: 70vh;
+  border: none;
+}
+.modal-media video {
+  width: 100%;
+  height: 70vh;
+  object-fit: contain;
+  background: #000;
+}
+.modal-info {
+  padding: 16px 20px;
+  max-height: 25vh;
+  overflow-y: auto;
+}
+.modal-info h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.modal-info .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.modal-info .meta span {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+.modal-info .desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.modal-info .btn-external {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.modal-info .btn-external:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(0,212,255,0.3);
+}
+.modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.modal-nav:hover {
+  background: var(--accent);
+  color: #000;
+}
+.modal-nav.prev { left: 12px; }
+.modal-nav.next { right: 12px; }
+
 /* Responsive */
 @media (max-width: 768px) {
   .header h1 { font-size: 1.3em; }
@@ -884,6 +1035,17 @@ body::before {
     </div>
   </div>
 
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <button class="modal-nav prev" id="modalPrev" onclick="navigateModal(-1)">‹</button>
+    <button class="modal-nav next" id="modalNext" onclick="navigateModal(1)">›</button>
+    <div class="modal-media" id="modalMedia"></div>
+    <div class="modal-info" id="modalInfo"></div>
+  </div>
 </div>
 
 <script>
@@ -1601,6 +1763,210 @@ function createStars() {
     container.appendChild(star);
   }
 }
+
+// ===== MODAL =====
+let modalItems = [];
+let modalIndex = 0;
+
+function openModal(items, index) {
+  modalItems = items;
+  modalIndex = index;
+  showModalItem();
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  // Keyboard navigation
+  document.addEventListener('keydown', modalKeyHandler);
+}
+
+function closeModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', modalKeyHandler);
+  // Stop any playing video
+  const media = document.getElementById('modalMedia');
+  const vids = media.querySelectorAll('video');
+  vids.forEach(v => v.pause());
+}
+
+function navigateModal(dir) {
+  modalIndex = (modalIndex + dir + modalItems.length) % modalItems.length;
+  showModalItem();
+}
+
+function showModalItem() {
+  const item = modalItems[modalIndex];
+  const mediaDiv = document.getElementById('modalMedia');
+  const infoDiv = document.getElementById('modalInfo');
+  
+  // Show/hide navigation buttons
+  document.getElementById('modalPrev').style.display = modalItems.length > 1 ? '' : 'none';
+  document.getElementById('modalNext').style.display = modalItems.length > 1 ? '' : 'none';
+  
+  // Build media content
+  let mediaHtml = '';
+  if (item.type === 'VID') {
+    const dvid = item.dvid_video_id || '';
+    if (dvid) {
+      mediaHtml = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen></iframe>`;
+    } else {
+      // Try direct video URL
+      const urls = buildDirectVideoUrl(item.title || '');
+      if (urls.length > 0) {
+        const sources = urls.map(u => `<source src="${escHtml(u)}" type="${u.endsWith('.webm') ? 'video/webm' : 'video/mp4'}">`).join('');
+        mediaHtml = `<video controls autoplay style="width:100%;height:100%;object-fit:contain;background:#000;">${sources}</video>`;
+      } else {
+        const warLink = buildWarGovLink(item.title || '');
+        mediaHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);flex-direction:column;gap:12px;padding:20px;">
+          <span style="font-size:48px;">🎬</span>
+          <p style="color:var(--text-muted);font-size:14px;">Video no disponible para reproducción directa</p>
+          ${warLink ? '<a href="' + escHtml(warLink) + '" target="_blank" class="btn-external" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-radius:8px;text-decoration:none;font-weight:600;">Abrir en war.gov ↗</a>' : ''}
+        </div>`;
+      }
+    }
+  } else if (item.type === 'IMG' || item.modal_image) {
+    mediaHtml = `<img src="${escHtml(item.modal_image)}" alt="${escHtml(item.title || '')}" style="width:100%;height:100%;object-fit:contain;max-height:70vh;" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);color:var(--text-muted);font-size:14px;\\'>📷 Imagen no disponible</div>'">`;
+  } else if (item.type === 'PDF' || item.pdf_image_link || item.pdf_link) {
+    const pdfUrl = item.pdf_image_link || item.pdf_link || '';
+    mediaHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);flex-direction:column;gap:12px;padding:20px;">
+      <span style="font-size:48px;">📄</span>
+      <p style="color:var(--text-muted);font-size:14px;">Documento PDF</p>
+      ${pdfUrl ? '<a href="' + escHtml(pdfUrl) + '" target="_blank" class="btn-external" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-radius:8px;text-decoration:none;font-weight:600;">Abrir PDF ↗</a>' : ''}
+    </div>`;
+  } else {
+    mediaHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);color:var(--text-muted);font-size:14px;">📄 ${escHtml(item.type || '')}</div>`;
+  }
+  
+  mediaDiv.innerHTML = mediaHtml;
+  
+  // Build info
+  const pdfLink = item.pdf_image_link || item.pdf_link || '';
+  infoDiv.innerHTML = `
+    <h2>${escHtml(item.title || 'Sin título')}</h2>
+    <div class="meta">
+      ${item.agency ? '<span>🏛️ ' + escHtml(item.agency) + '</span>' : ''}
+      ${item.incident_location ? '<span>📍 ' + escHtml(item.incident_location) + '</span>' : ''}
+      ${item.incident_date ? '<span>📅 ' + escHtml(item.incident_date) + '</span>' : ''}
+      ${item.release_date ? '<span>📆 ' + escHtml(item.release_date) + '</span>' : ''}
+      ${item.type ? '<span class="type-badge ' + (item.type || '').toLowerCase() + '">' + item.type + '</span>' : ''}
+    </div>
+    <div class="desc">${escHtml(item.description || '')}</div>
+    ${pdfLink ? '<a class="btn-external" href="' + escHtml(pdfLink) + '" target="_blank">📄 Ver Documento Original</a>' : ''}
+    ${modalItems.length > 1 ? '<div style="margin-top:8px;font-size:11px;color:var(--text-muted);text-align:center;">' + (modalIndex + 1) + ' / ' + modalItems.length + '</div>' : ''}
+  `;
+}
+
+function modalKeyHandler(e) {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'ArrowLeft') navigateModal(-1);
+  if (e.key === 'ArrowRight') navigateModal(1);
+}
+
+// Make images and videos clickable - add click handlers after rendering
+function makeMediaClickable() {
+  // Images in top-grid
+  document.querySelectorAll('#topImagesGrid .top-card, #imageGrid .top-card').forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function(e) {
+      // Don't open modal if clicking a link
+      if (e.target.closest('a')) return;
+      const idx = Array.from(this.parentElement.children).indexOf(this);
+      const items = IMAGE_DATA.length > 0 ? IMAGE_DATA : [];
+      if (items.length > 0) {
+        openModal(items, Math.min(idx, items.length - 1));
+      }
+    });
+  });
+  
+  // Videos in video-grid
+  document.querySelectorAll('#videoGrid .video-card').forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('iframe') || e.target.closest('video')) return;
+      const idx = Array.from(this.parentElement.children).indexOf(this);
+      if (VIDEO_DATA.length > 0) {
+        openModal(VIDEO_DATA, Math.min(idx, VIDEO_DATA.length - 1));
+      }
+    });
+  });
+  
+  // Featured video
+  const featured = document.querySelector('#featuredVideo .featured-item');
+  if (featured) {
+    featured.style.cursor = 'pointer';
+    featured.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('iframe') || e.target.closest('video')) return;
+      if (VIDEO_DATA.length > 0) {
+        openModal(VIDEO_DATA, 0);
+      }
+    });
+  }
+  
+  // Top videos
+  document.querySelectorAll('#topGrid .top-card').forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('iframe') || e.target.closest('video')) return;
+      const idx = Array.from(this.parentElement.children).indexOf(this);
+      if (VIDEO_DATA.length > 0) {
+        openModal(VIDEO_DATA, Math.min(idx + 1, VIDEO_DATA.length - 1));
+      }
+    });
+  });
+  
+  // New cards (latest, all new, pdfs)
+  document.querySelectorAll('#latestGrid .new-card, #newGrid .new-card, #pdfGrid .new-card').forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a')) return;
+      const idx = Array.from(this.parentElement.children).indexOf(this);
+      openModal(ALL_DATA, Math.min(idx, ALL_DATA.length - 1));
+    });
+  });
+}
+
+// Override render functions to add click handlers after rendering
+const origRenderTopImages = renderTopImages;
+renderTopImages = function() {
+  origRenderTopImages();
+  setTimeout(makeMediaClickable, 100);
+};
+
+const origRenderTopVideos = renderTopVideos;
+renderTopVideos = function() {
+  origRenderTopVideos();
+  setTimeout(makeMediaClickable, 100);
+};
+
+const origRenderLatest = renderLatest;
+renderLatest = function() {
+  origRenderLatest();
+  setTimeout(makeMediaClickable, 100);
+};
+
+const origRenderAllVideos = renderAllVideos;
+renderAllVideos = function() {
+  origRenderAllVideos();
+  setTimeout(makeMediaClickable, 200);
+};
+
+const origRenderAllImages = renderAllImages;
+renderAllImages = function() {
+  origRenderAllImages();
+  setTimeout(makeMediaClickable, 200);
+};
+
+const origRenderAllPdfs = renderAllPdfs;
+renderAllPdfs = function() {
+  origRenderAllPdfs();
+  setTimeout(makeMediaClickable, 200);
+};
+
+const origRenderAllNew = renderAllNew;
+renderAllNew = function() {
+  origRenderAllNew();
+  setTimeout(makeMediaClickable, 200);
+};
 
 createStars();
 loadData();
