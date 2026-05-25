@@ -834,26 +834,65 @@ body::before {
 
 <script>
 // ===== DATA =====
-const UFO_DATA = [];
-const VIDEO_DATA = [];
-const IMAGE_DATA = [];
+let ALL_DATA = [];          // Combined data from both JSONs
+let VIDEO_DATA = [];        // Unique videos with dvid_video_id
+let IMAGE_DATA = [];        // Unique images with modal_image
+let DASHBOARD_META = null;  // Metadata from dashboard_data.json
 
 async function loadData() {
   try {
-    const resp = await fetch('ufo_records.json');
-    const data = await resp.json();
-    UFO_DATA.push(...data);
+    // Load both JSON files
+    const [ufoResp, dashResp] = await Promise.all([
+      fetch('ufo_records.json'),
+      fetch('dashboard_data.json')
+    ]);
+    const ufoData = await ufoResp.json();
+    const dashData = await dashResp.json();
 
+    DASHBOARD_META = dashData;
+
+    // Merge: use dashboard_data.json all_records as primary (has scores, pdf_link, etc.)
+    // and supplement with ufo_records.json for any missing records
+    const mergedMap = new Map();
+
+    // First add all from dashboard_data.json all_records
+    if (dashData.all_records) {
+      dashData.all_records.forEach(r => {
+        const key = r.title || r.pdf_image_link || Math.random();
+        mergedMap.set(key, r);
+      });
+    }
+
+    // Then add/merge from ufo_records.json (adds dvid_video_id, etc.)
+    ufoData.forEach(r => {
+      const key = r.title || r.pdf_image_link || Math.random();
+      if (mergedMap.has(key)) {
+        // Merge: keep existing but add missing fields
+        const existing = mergedMap.get(key);
+        Object.keys(r).forEach(k => {
+          if (!existing[k] && r[k]) existing[k] = r[k];
+        });
+      } else {
+        mergedMap.set(key, r);
+      }
+    });
+
+    ALL_DATA = Array.from(mergedMap.values());
+
+    // Extract unique videos
     const seenVid = new Set();
-    const seenImg = new Set();
-    data.forEach(r => {
+    ALL_DATA.forEach(r => {
       const dvid = r.dvid_video_id || '';
       if (dvid && !seenVid.has(dvid)) {
         seenVid.add(dvid);
         VIDEO_DATA.push(r);
       }
-      // Images: type IMG or records with modal_image but no video
-      if (r.type === 'IMG' && r.modal_image) {
+    });
+
+    // Extract unique images (type IMG or records with modal_image)
+    const seenImg = new Set();
+    ALL_DATA.forEach(r => {
+      if (r.modal_image && r.modal_image.trim() !== '') {
         const key = r.modal_image;
         if (!seenImg.has(key)) {
           seenImg.add(key);
@@ -862,65 +901,87 @@ async function loadData() {
       }
     });
 
-    renderStats(data);
-    renderTopImages(IMAGE_DATA, data);
-    renderTopVideos(VIDEO_DATA);
-    renderLatest(data);
-    renderAllVideos(VIDEO_DATA);
-    renderAllNew(data);
+    renderStats();
+    renderTopImages();
+    renderTopVideos();
+    renderLatest();
+    renderAllVideos();
+    renderAllNew();
     document.getElementById('videoCount').textContent = VIDEO_DATA.length;
   } catch(e) {
     document.querySelectorAll('.loading').forEach(el => {
-      el.innerHTML = '<p style="color:var(--danger)">Error al cargar datos. Verifica que ufo_records.json esté disponible.</p>';
+      el.innerHTML = '<p style="color:var(--danger)">Error al cargar datos. Verifica que los archivos JSON estén disponibles.</p>';
     });
     console.error(e);
   }
 }
 
 // ===== STATS =====
-function renderStats(data) {
+function renderStats() {
+  const data = ALL_DATA;
   const total = data.length;
   const vids = data.filter(r => r.type === 'VID').length;
   const imgs = data.filter(r => r.type === 'IMG').length;
   const pdfs = data.filter(r => r.type === 'PDF').length;
   const auds = data.filter(r => r.type === 'AUD').length;
+
+  // Use dashboard_data.json metadata if available for more accurate counts
+  let totalDisplay = total;
+  let vidsDisplay = vids;
+  let imgsDisplay = imgs;
+  let pdfsDisplay = pdfs;
+  let audsDisplay = auds;
+
+  if (DASHBOARD_META && DASHBOARD_META.total_records) {
+    totalDisplay = DASHBOARD_META.total_records;
+    if (DASHBOARD_META.types) {
+      vidsDisplay = DASHBOARD_META.types.VID || vids;
+      imgsDisplay = DASHBOARD_META.types.IMG || imgs;
+      pdfsDisplay = DASHBOARD_META.types.PDF || pdfs;
+      audsDisplay = DASHBOARD_META.types.AUD || auds;
+    }
+  }
+
   const agenciesMap = {};
   data.forEach(r => {
     const a = r.agency;
     if (a) agenciesMap[a] = (agenciesMap[a] || 0) + 1;
   });
   const agencyEntries = Object.entries(agenciesMap).sort((a,b) => b[1] - a[1]);
+
+  // Get dates from both sources
   const dates = data.map(r => r.release_date).filter(Boolean).sort();
   const latest = dates.length > 0 ? dates[dates.length - 1] : 'N/A';
 
-  document.getElementById('totalRecords').textContent = total;
-  document.getElementById('totalVideos').textContent = vids;
-  document.getElementById('totalImages').textContent = imgs;
-  document.getElementById('totalPDFs').textContent = pdfs;
+  document.getElementById('totalRecords').textContent = totalDisplay;
+  document.getElementById('totalVideos').textContent = vidsDisplay;
+  document.getElementById('totalImages').textContent = imgsDisplay;
+  document.getElementById('totalPDFs').textContent = pdfsDisplay;
   document.getElementById('totalAgencies').textContent = agencyEntries.length;
   document.getElementById('latestRelease').textContent = latest;
 
   // Details on hover
   document.getElementById('detailRecords').innerHTML =
     `<strong>Desglose por tipo:</strong><br>
-     🎬 Videos: ${vids}<br>
-     📷 Imágenes: ${imgs}<br>
-     📑 PDFs: ${pdfs}<br>
-     🎵 Audios: ${auds}`;
+     🎬 Videos: ${vidsDisplay}<br>
+     📷 Imágenes: ${imgsDisplay}<br>
+     📑 PDFs: ${pdfsDisplay}<br>
+     🎵 Audios: ${audsDisplay}<br>
+     <small>Total registros únicos: ${total}</small>`;
 
   document.getElementById('detailVideos').innerHTML =
     `<strong>Videos con DVIDS:</strong> ${VIDEO_DATA.length}<br>
-     <strong>Total tipo VID:</strong> ${vids}`;
+     <strong>Total tipo VID:</strong> ${vidsDisplay}`;
 
   document.getElementById('detailImages').innerHTML =
-    `<strong>Imágenes destacadas:</strong> ${IMAGE_DATA.length}<br>
-     <strong>Total tipo IMG:</strong> ${imgs}`;
+    `<strong>Imágenes con thumbnail:</strong> ${IMAGE_DATA.length}<br>
+     <strong>Total tipo IMG:</strong> ${imgsDisplay}`;
 
   document.getElementById('detailPDFs').innerHTML =
-    `<strong>Total documentos PDF:</strong> ${pdfs}`;
+    `<strong>Total documentos PDF:</strong> ${pdfsDisplay}`;
 
   document.getElementById('detailAgencies').innerHTML =
-    `<strong>Agencias:</strong><br>` +
+    `<strong>Agencias (${agencyEntries.length}):</strong><br>` +
     agencyEntries.slice(0, 10).map(([name, count]) =>
       `🏛️ ${escHtml(name)}: ${count}`
     ).join('<br>');
@@ -931,22 +992,44 @@ function renderStats(data) {
 }
 
 // ===== TOP IMAGES (Dashboard) =====
-function renderTopImages(images, allData) {
+function renderTopImages() {
   const grid = document.getElementById('topImagesGrid');
 
-  // Collect all items with modal_image (images + PDFs with thumbnails)
-  const itemsWithImages = allData
-    .filter(r => r.modal_image && r.modal_image.trim() !== '')
-    .map(r => ({
-      ...r,
-      sortScore: r.score || 0
-    }))
-    .sort((a, b) => b.sortScore - a.sortScore);
+  // Use dashboard_data.json top10 first, then supplement with scored items
+  let topItems = [];
+
+  if (DASHBOARD_META && DASHBOARD_META.top10) {
+    // Use top10 from dashboard_data.json (they have scores)
+    topItems = DASHBOARD_META.top10
+      .filter(r => r.modal_image && r.modal_image.trim() !== '')
+      .map(r => ({ ...r, sortScore: r.score || 0 }));
+  }
+
+  // Also add slideshow_images as featured images
+  if (DASHBOARD_META && DASHBOARD_META.slideshow_images) {
+    DASHBOARD_META.slideshow_images.forEach((imgUrl, idx) => {
+      if (!topItems.some(t => t.modal_image === imgUrl)) {
+        topItems.push({
+          title: 'Imagen Destacada ' + (idx + 1),
+          modal_image: imgUrl,
+          agency: 'Gobierno de EE.UU.',
+          incident_location: '',
+          incident_date: '',
+          type: 'IMG',
+          description: 'Imagen oficial del archivo desclasificado UAP del Departamento de Guerra.',
+          sortScore: 30 - idx
+        });
+      }
+    });
+  }
+
+  // Sort by score descending
+  topItems.sort((a, b) => b.sortScore - a.sortScore);
 
   // Take top 20 unique by modal_image
   const seen = new Set();
   const top20 = [];
-  for (const item of itemsWithImages) {
+  for (const item of topItems) {
     const key = item.modal_image;
     if (!seen.has(key) && top20.length < 20) {
       seen.add(key);
@@ -994,11 +1077,14 @@ function renderTopImages(images, allData) {
 }
 
 // ===== TOP VIDEOS (Dashboard) =====
-function renderTopVideos(videos) {
-  if (videos.length === 0) return;
+function renderTopVideos() {
+  if (VIDEO_DATA.length === 0) return;
+
+  // Sort videos by score if available
+  const sortedVids = [...VIDEO_DATA].sort((a, b) => (b.score || 0) - (a.score || 0));
 
   // Featured Video #1
-  const f = videos[0];
+  const f = sortedVids[0];
   const featuredDiv = document.getElementById('featuredVideo');
   featuredDiv.innerHTML = `
     <div class="featured-item">
@@ -1019,7 +1105,7 @@ function renderTopVideos(videos) {
   `;
 
   // Top Videos #2-10
-  const top = videos.slice(1, 10);
+  const top = sortedVids.slice(1, 10);
   const grid = document.getElementById('topGrid');
   grid.innerHTML = '';
 
@@ -1048,8 +1134,8 @@ function renderTopVideos(videos) {
 }
 
 // ===== LATEST RELEASES (Dashboard) =====
-function renderLatest(data) {
-  const sorted = [...data].sort((a, b) => {
+function renderLatest() {
+  const sorted = [...ALL_DATA].sort((a, b) => {
     const da = a.release_date || '';
     const db = b.release_date || '';
     return db.localeCompare(da);
@@ -1064,7 +1150,7 @@ function renderLatest(data) {
     const date = r.release_date || '';
     const desc = (r.description || '').substring(0, 120);
     const thumb = r.modal_image || '';
-    const pdfLink = r.pdf_image_link || '';
+    const pdfLink = r.pdf_image_link || r.pdf_link || '';
     const type = r.type || '';
 
     const card = document.createElement('div');
@@ -1085,18 +1171,18 @@ function renderLatest(data) {
 }
 
 // ===== ALL VIDEOS TAB =====
-function renderAllVideos(videos) {
+function renderAllVideos() {
   const grid = document.getElementById('videoGrid');
   const count = document.getElementById('allVideoCount');
-  count.textContent = videos.length;
+  count.textContent = VIDEO_DATA.length;
   grid.innerHTML = '';
 
-  if (videos.length === 0) {
+  if (VIDEO_DATA.length === 0) {
     grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No se encontraron videos</div>';
     return;
   }
 
-  videos.forEach(r => {
+  VIDEO_DATA.forEach(r => {
     const dvid = r.dvid_video_id || '';
     const title = r.title || 'Sin título';
     const agency = r.agency || '';
@@ -1125,7 +1211,7 @@ function renderAllVideos(videos) {
   });
 
   // Populate agency filter
-  const agencies = [...new Set(videos.map(r => r.agency).filter(Boolean))].sort();
+  const agencies = [...new Set(VIDEO_DATA.map(r => r.agency).filter(Boolean))].sort();
   const sel = document.getElementById('agencyFilter');
   agencies.forEach(a => {
     const opt = document.createElement('option');
@@ -1154,8 +1240,8 @@ function filterVideos() {
 }
 
 // ===== ALL NEW (Lo Nuevo Tab) =====
-function renderAllNew(data) {
-  const sorted = [...data].sort((a, b) => {
+function renderAllNew() {
+  const sorted = [...ALL_DATA].sort((a, b) => {
     const da = a.release_date || '';
     const db = b.release_date || '';
     return db.localeCompare(da);
@@ -1170,7 +1256,7 @@ function renderAllNew(data) {
     const date = r.release_date || '';
     const desc = (r.description || '').substring(0, 150);
     const thumb = r.modal_image || '';
-    const pdfLink = r.pdf_image_link || '';
+    const pdfLink = r.pdf_image_link || r.pdf_link || '';
     const type = r.type || '';
 
     const card = document.createElement('div');
