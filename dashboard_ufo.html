@@ -1149,20 +1149,69 @@ function buildWarGovLink(title) {
     desc = desc.replace(/[^a-zA-Z0-9\-]/g, '');
     return `https://www.war.gov/ufo/#${prId}-${desc}`;
   }
+  // Try without quotes
+  const match2 = title.match(/(DOW-UAP-PR\d+),\s*(.+?)$/);
+  if (match2) {
+    const prId = match2[1];
+    let desc = match2[2].trim();
+    desc = desc.replace(/[\[\]\(\)]/g, '');
+    desc = desc.replace(/\s+/g, '-');
+    desc = desc.replace(/[^a-zA-Z0-9\-]/g, '');
+    return `https://www.war.gov/ufo/#${prId}-${desc}`;
+  }
   return '';
 }
 
-// ===== RENDER VIDEO MEDIA (DVIDS iframe or war.gov link) =====
+// ===== BUILD DIRECT VIDEO URL (MP4) =====
+function buildDirectVideoUrl(title) {
+  // Try to build a direct MP4 URL for war.gov videos
+  const match = title.match(/(DOW-UAP-PR\d+)/i);
+  if (match) {
+    const prId = match[1].toLowerCase();
+    // Try multiple possible URL patterns
+    return [
+      `https://www.war.gov/medialink/ufo/release_1/video/${prId}.mp4`,
+      `https://www.war.gov/medialink/ufo/video/${prId}.mp4`,
+      `https://www.war.gov/medialink/ufo/release_1/video/${prId}.webm`
+    ];
+  }
+  return [];
+}
+
+// ===== RENDER VIDEO MEDIA (DVIDS iframe or war.gov video player) =====
 function renderVideoMedia(r) {
   const dvid = r.dvid_video_id || '';
   if (dvid) {
     return `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>`;
   }
+  
+  // Try direct video URLs first
+  const videoUrls = buildDirectVideoUrl(r.title || '');
+  if (videoUrls.length > 0) {
+    const sources = videoUrls.map(url => 
+      `<source src="${escHtml(url)}" type="${url.endsWith('.webm') ? 'video/webm' : 'video/mp4'}">`
+    ).join('');
+    const warLink = buildWarGovLink(r.title || '');
+    const safeTitle = escHtml(r.title ? r.title.substring(0, 60) : '');
+    const safeWarLink = escHtml(warLink);
+    // Use a unique ID for the video element to handle errors via JS
+    const vidId = 'vid-' + Math.random().toString(36).substr(2, 9);
+    return `
+      <div id="${vidId}" style="width:100%;height:100%;position:absolute;top:0;left:0;">
+        <video controls preload="metadata" style="width:100%;height:100%;object-fit:contain;background:#000;" 
+          onerror="document.getElementById('${vidId}').innerHTML='<a href=\\'${safeWarLink}\\' target=\\'_blank\\' style=\\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg,#1a1f35,#0a0e1a);color:var(--accent);text-decoration:none;flex-direction:column;gap:8px;\\'><span style=\\'font-size:40px;\\'>🎬</span><span style=\\'font-size:13px;font-weight:600;\\'>Abrir en war.gov</span><span style=\\'font-size:10px;color:var(--text-muted);\\'>${safeTitle}</span></a>'">
+          ${sources}
+          Tu navegador no soporta este video.
+        </video>
+      </div>`;
+  }
+  
+  // Fallback: link to war.gov
   const warLink = buildWarGovLink(r.title || '');
   if (warLink) {
     return `<a href="${escHtml(warLink)}" target="_blank" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg,#1a1f35,#0a0e1a);color:var(--accent);text-decoration:none;flex-direction:column;gap:8px;">
       <span style="font-size:40px;">🎬</span>
-      <span style="font-size:13px;font-weight:600;">Ver en war.gov</span>
+      <span style="font-size:13px;font-weight:600;">Abrir en war.gov</span>
       <span style="font-size:10px;color:var(--text-muted);">${escHtml(r.title ? r.title.substring(0, 60) : '')}</span>
     </a>`;
   }
