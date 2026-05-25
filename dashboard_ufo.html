@@ -1013,6 +1013,15 @@ function getWarGovEmbedUrl(title) {
   return '';
 }
 
+function getWarGovVideoPage(title) {
+  // Build direct URL to war.gov video page (opens in new tab)
+  const pr = getPRId(title);
+  if (pr) {
+    return `https://www.war.gov/ufo/#${pr}`;
+  }
+  return '';
+}
+
 // ===== RENDER VIDEO CARD =====
 function renderVideoCard(r, rank) {
   const dvid = r.dvid_video_id || '';
@@ -1023,27 +1032,32 @@ function renderVideoCard(r, rank) {
   const desc = (r.description || '').substring(0, 150);
   const pdfLink = r.pdf_image_link || r.pdf_link || '';
   const warLink = getWarGovLink(title);
-  const embedUrl = getWarGovEmbedUrl(title);
+  const warVideoPage = getWarGovVideoPage(title);
   const thumb = r.modal_image || getThumbnailUrl(title);
   const isDVIDS = !!dvid;
-  const hasEmbed = !!embedUrl;
+  const isWarGov = !!warLink || !!warVideoPage;
 
   let mediaHtml = '';
   if (isDVIDS) {
     // DVIDS video - show iframe directly (reproduce en la misma pagina)
     mediaHtml = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>`;
-  } else if (hasEmbed) {
-    // War.gov video - embed via iframe to play directly on the page
-    mediaHtml = `<iframe src="${escHtml(embedUrl)}" allowfullscreen loading="lazy"></iframe>`;
-  } else {
-    // Fallback: show thumbnail with play button
+  } else if (isWarGov) {
+    // War.gov video - show thumbnail with play button that opens war.gov in new tab
+    // (war.gov blocks iframe embedding and direct MP4 access with 403)
+    const openUrl = warLink || warVideoPage;
     mediaHtml = `
       <img src="${escHtml(thumb)}" alt="${escHtml(title)}" loading="lazy" 
         onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1f35,#0a0e1a);flex-direction:column;gap:8px;\\'><span style=\\'font-size:36px;\\'>🎬</span><span style=\\'color:var(--text-muted);font-size:11px;\\'>${escHtml(title.substring(0,50))}</span></div>'">
-      <div class="play-overlay" onclick="event.stopPropagation();window.open('${escHtml(warLink)}','_blank')">
+      <div class="play-overlay" onclick="event.stopPropagation();window.open('${escHtml(openUrl)}','_blank')">
         <div class="play-btn">▶</div>
       </div>
-      ${warLink ? `<span class="dvid-badge">war.gov</span>` : ''}
+      <span class="dvid-badge">war.gov</span>
+    `;
+  } else {
+    // Fallback: show thumbnail only
+    mediaHtml = `
+      <img src="${escHtml(thumb)}" alt="${escHtml(title)}" loading="lazy" 
+        onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1f35,#0a0e1a);flex-direction:column;gap:8px;\\'><span style=\\'font-size:36px;\\'>🎬</span><span style=\\'color:var(--text-muted);font-size:11px;\\'>${escHtml(title.substring(0,50))}</span></div>'">
     `;
   }
 
@@ -1208,16 +1222,24 @@ function renderTopVideos() {
   const f = sorted[0];
   const dvid = f.dvid_video_id || '';
   const warLink = getWarGovLink(f.title || '');
-  const embedUrl = getWarGovEmbedUrl(f.title || '');
+  const warVideoPage = getWarGovVideoPage(f.title || '');
   const thumb = f.modal_image || getThumbnailUrl(f.title || '');
   const isDVIDS = !!dvid;
-  const hasEmbed = !!embedUrl;
+  const isWarGov = !!warLink || !!warVideoPage;
 
   let featuredMedia = '';
   if (isDVIDS) {
     featuredMedia = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>`;
-  } else if (hasEmbed) {
-    featuredMedia = `<iframe src="${escHtml(embedUrl)}" allowfullscreen loading="lazy"></iframe>`;
+  } else if (isWarGov) {
+    // War.gov video - show thumbnail with play button that opens war.gov in new tab
+    const openUrl = warLink || warVideoPage;
+    featuredMedia = `
+      <img src="${escHtml(thumb)}" alt="${escHtml(f.title || '')}" loading="lazy"
+        onerror="this.parentElement.innerHTML='<div style=\\'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1f35,#0a0e1a);flex-direction:column;gap:12px;\\'><span style=\\'font-size:48px;\\'>🎬</span><span style=\\'color:var(--text-muted);font-size:13px;\\'>Video no disponible</span></div>'">
+      <div class="play-overlay" onclick="event.stopPropagation();window.open('${escHtml(openUrl)}','_blank')">
+        <div class="play-btn" style="width:80px;height:80px;font-size:36px;">▶</div>
+      </div>
+    `;
   } else {
     featuredMedia = `
       <img src="${escHtml(thumb)}" alt="${escHtml(f.title || '')}" loading="lazy"
@@ -1229,7 +1251,7 @@ function renderTopVideos() {
   }
 
   document.getElementById('featuredVideo').innerHTML = `
-    <div class="featured-card" onclick="${(isDVIDS || hasEmbed) ? '' : (warLink ? 'window.open(\'' + escHtml(warLink) + '\',\'_blank\')' : '')}">
+    <div class="featured-card" onclick="${isDVIDS ? '' : (isWarGov ? '' : (warLink ? 'window.open(\'' + escHtml(warLink) + '\',\'_blank\')' : ''))}">
       <div class="featured-badge">🔥 #1 Más Impactante</div>
       <div class="featured-media">
         ${featuredMedia}
@@ -1420,15 +1442,28 @@ function showModalItem() {
   let mediaHtml = '';
   const dvid = item.dvid_video_id || '';
   const warLink = getWarGovLink(item.title || '');
-  const embedUrl = getWarGovEmbedUrl(item.title || '');
+  const warVideoPage = getWarGovVideoPage(item.title || '');
   const thumb = item.modal_image || getThumbnailUrl(item.title || '');
+  const isDVIDS = !!dvid;
+  const isWarGov = !!warLink || !!warVideoPage;
   
   if (item.type === 'VID') {
-    if (dvid) {
+    if (isDVIDS) {
+      // DVIDS video - iframe works fine
       mediaHtml = `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen></iframe>`;
-    } else if (embedUrl) {
-      // War.gov video - embed via iframe to play directly in modal
-      mediaHtml = `<iframe src="${escHtml(embedUrl)}" allowfullscreen></iframe>`;
+    } else if (isWarGov) {
+      // War.gov video - cannot embed (blocks iframes and direct MP4 with 403)
+      // Show thumbnail with button to open in war.gov
+      const openUrl = warLink || warVideoPage;
+      mediaHtml = `
+        <div style="display:flex;align-items:center;justify-content:center;width:100%;height:70vh;background:#000;flex-direction:column;gap:16px;padding:20px;position:relative;">
+          <img src="${escHtml(thumb)}" alt="${escHtml(item.title || '')}" 
+            style="max-width:90%;max-height:50vh;object-fit:contain;border-radius:8px;"
+            onerror="this.style.display='none'">
+          <span style="font-size:48px;">🎬</span>
+          <p style="color:var(--text-muted);font-size:14px;text-align:center;">Este video solo está disponible en war.gov</p>
+          <a href="${escHtml(openUrl)}" target="_blank" class="btn-external" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">▶ Ver en war.gov ↗</a>
+        </div>`;
     } else {
       // Fallback: try to play with <video> tag
       const videoUrl = getVideoUrl(item.title || '');
