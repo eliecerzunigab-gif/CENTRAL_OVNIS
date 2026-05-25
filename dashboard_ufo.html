@@ -933,13 +933,16 @@ async function loadData() {
 
     ALL_DATA = Array.from(mergedMap.values());
 
-    // Extract unique videos
+    // Extract unique videos - include both DVIDS and war.gov videos
     const seenVid = new Set();
     ALL_DATA.forEach(r => {
-      const dvid = r.dvid_video_id || '';
-      if (dvid && !seenVid.has(dvid)) {
-        seenVid.add(dvid);
-        VIDEO_DATA.push(r);
+      if (r.type === 'VID') {
+        const dvid = r.dvid_video_id || '';
+        const key = dvid || r.title;
+        if (!seenVid.has(key)) {
+          seenVid.add(key);
+          VIDEO_DATA.push(r);
+        }
       }
     });
 
@@ -1134,6 +1137,38 @@ function renderTopImages() {
   });
 }
 
+// ===== BUILD WAR.GOV VIDEO LINK =====
+function buildWarGovLink(title) {
+  // Build a war.gov/ufo link from a title like DOW-UAP-PR050, "4 UAP Formation..."
+  const match = title.match(/(DOW-UAP-PR\d+),\s*["\u201c]?(.+?)["\u201d]?\s*$/);
+  if (match) {
+    const prId = match[1];
+    let desc = match[2].trim();
+    desc = desc.replace(/[\[\]\(\)]/g, '');
+    desc = desc.replace(/\s+/g, '-');
+    desc = desc.replace(/[^a-zA-Z0-9\-]/g, '');
+    return `https://www.war.gov/ufo/#${prId}-${desc}`;
+  }
+  return '';
+}
+
+// ===== RENDER VIDEO MEDIA (DVIDS iframe or war.gov link) =====
+function renderVideoMedia(r) {
+  const dvid = r.dvid_video_id || '';
+  if (dvid) {
+    return `<iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>`;
+  }
+  const warLink = buildWarGovLink(r.title || '');
+  if (warLink) {
+    return `<a href="${escHtml(warLink)}" target="_blank" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg,#1a1f35,#0a0e1a);color:var(--accent);text-decoration:none;flex-direction:column;gap:8px;">
+      <span style="font-size:40px;">🎬</span>
+      <span style="font-size:13px;font-weight:600;">Ver en war.gov</span>
+      <span style="font-size:10px;color:var(--text-muted);">${escHtml(r.title ? r.title.substring(0, 60) : '')}</span>
+    </a>`;
+  }
+  return `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);color:var(--text-muted);font-size:12px;">🎬 Video sin enlace disponible</div>`;
+}
+
 // ===== TOP VIDEOS (Dashboard) =====
 function renderTopVideos() {
   if (VIDEO_DATA.length === 0) return;
@@ -1148,7 +1183,7 @@ function renderTopVideos() {
     <div class="featured-item">
       <div class="featured-badge">🔥 #1 Más Impactante</div>
       <div class="featured-media">
-        <iframe src="https://www.dvidshub.net/video/embed/${f.dvid_video_id}" allowfullscreen loading="lazy"></iframe>
+        ${renderVideoMedia(f)}
       </div>
       <div class="card-body">
         <h2>${escHtml(f.title || 'Sin título')}</h2>
@@ -1175,7 +1210,7 @@ function renderTopVideos() {
     card.innerHTML = `
       <div class="rank ${rankClass}">${rankNum}</div>
       <div class="top-media">
-        <iframe src="https://www.dvidshub.net/video/embed/${r.dvid_video_id}" allowfullscreen loading="lazy"></iframe>
+        ${renderVideoMedia(r)}
       </div>
       <div class="card-body">
         <h3>${escHtml(r.title || 'Sin título')}</h3>
@@ -1254,7 +1289,7 @@ function renderAllVideos() {
     card.dataset.location = location.toLowerCase();
     card.innerHTML = `
       <div class="video-wrapper">
-        <iframe src="https://www.dvidshub.net/video/embed/${dvid}" allowfullscreen loading="lazy"></iframe>
+        ${renderVideoMedia(r)}
       </div>
       <div class="card-body">
         <h3>${escHtml(title)}</h3>

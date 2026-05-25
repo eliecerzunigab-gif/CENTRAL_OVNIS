@@ -234,6 +234,9 @@ dashboard_data = {
         'type': r['type'],
         'description': r['description'][:200],
         'modal_image': r['modal_image'],
+        'dvid_video_id': r.get('dvid_video_id', ''),
+        'pdf_image_link': r.get('pdf_image_link', ''),
+        'release_date': r.get('release_date', ''),
         'score': r['score']
     } for r in combined]
 }
