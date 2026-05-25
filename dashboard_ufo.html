@@ -177,6 +177,19 @@ body::before {
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(0,212,255,0.1);
 }
+.stat-card::after {
+  content: '🔗';
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.stat-card:hover::after {
+  opacity: 0.5;
+}
+
 .stat-card .stat-bg-icon {
   position: absolute;
   right: -5px;
@@ -724,42 +737,42 @@ body::before {
 
     <!-- Stats -->
     <div class="stats-grid" id="statsGrid">
-      <div class="stat-card">
+      <div class="stat-card" onclick="switchTab('nuevo')" title="Ver todos los registros">
         <div class="stat-bg-icon">📄</div>
         <div class="icon">📄</div>
         <div class="value" id="totalRecords">-</div>
         <div class="label">Total Registros</div>
         <div class="stat-detail" id="detailRecords"></div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" onclick="switchTab('videos')" title="Ver todos los videos">
         <div class="stat-bg-icon">🎬</div>
         <div class="icon">🎬</div>
         <div class="value" id="totalVideos">-</div>
         <div class="label">Videos</div>
         <div class="stat-detail" id="detailVideos"></div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" onclick="document.getElementById('topImagesGrid').scrollIntoView({behavior:'smooth'})" title="Ver imágenes destacadas">
         <div class="stat-bg-icon">📷</div>
         <div class="icon">📷</div>
         <div class="value" id="totalImages">-</div>
         <div class="label">Imágenes</div>
         <div class="stat-detail" id="detailImages"></div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" onclick="switchTab('nuevo')" title="Ver documentos PDF">
         <div class="stat-bg-icon">📑</div>
         <div class="icon">📑</div>
         <div class="value" id="totalPDFs">-</div>
         <div class="label">Documentos PDF</div>
         <div class="stat-detail" id="detailPDFs"></div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" onclick="switchTab('nuevo')" title="Ver por agencia">
         <div class="stat-bg-icon">🏛️</div>
         <div class="icon">🏛️</div>
         <div class="value" id="totalAgencies">-</div>
         <div class="label">Agencias</div>
         <div class="stat-detail" id="detailAgencies"></div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" onclick="switchTab('nuevo')" title="Ver últimas publicaciones">
         <div class="stat-bg-icon">📅</div>
         <div class="icon">📅</div>
         <div class="value" id="latestRelease">-</div>
@@ -767,6 +780,7 @@ body::before {
         <div class="stat-detail" id="detailRelease"></div>
       </div>
     </div>
+
 
     <!-- Galería de Imágenes Destacadas -->
     <div class="section-title">
