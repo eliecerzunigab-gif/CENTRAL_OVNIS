@@ -1,39 +1,44 @@
-import json
+import json, re
 
-with open('ufo_records.json','r',encoding='utf-8') as f:
+with open('dashboard_data.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
 
-# Extract unique video records (VID type or with dvid_video_id)
-video_records = []
-seen_dvid = set()
-for r in data:
-    dvid = r.get('dvid_video_id','')
-    if dvid and dvid not in seen_dvid:
-        seen_dvid.add(dvid)
-        video_records.append(r)
+# Build a map of PR numbers to slideshow images
+pr_to_slideshow = {}
+if 'slideshow_images' in data:
+    for img_url in data['slideshow_images']:
+        # Extract PR number from filename
+        match = re.search(r'(DOW-UAP-PR\d+)', img_url, re.IGNORECASE)
+        if match:
+            pr = match.group(1).upper()
+            pr_to_slideshow[pr] = img_url
 
-# Sort by score if available, otherwise by title
-def get_score(r):
-    try:
-        return int(r.get('score', 0))
-    except:
-        return 0
+print(f"Found {len(pr_to_slideshow)} slideshow images with PR numbers:")
+for pr, url in sorted(pr_to_slideshow.items()):
+    print(f"  {pr}: {url}")
 
-video_records.sort(key=get_score, reverse=True)
+# Now check which VID records have no dvid_video_id and no modal_image
+print("\n=== VID records without dvid_video_id ===")
+no_dvid = []
+for r in data['all_records']:
+    if r.get('type') == 'VID' and not r.get('dvid_video_id'):
+        no_dvid.append(r)
+        pr_match = re.search(r'(DOW-UAP-PR\d+)', r.get('title', ''), re.IGNORECASE)
+        pr = pr_match.group(1).upper() if pr_match else 'NO_PR'
+        slideshow = pr_to_slideshow.get(pr, 'NONE')
+        print(f"  {pr}: {r.get('title','')[:60]}")
+        print(f"    modal_image: {r.get('modal_image','')[:80]}")
+        print(f"    slideshow: {slideshow[:80]}")
+        print()
 
-# Output as JSON for the HTML to use
-output = []
-for r in video_records:
-    output.append({
-        'title': r.get('title', 'Sin título'),
-        'dvid_video_id': r.get('dvid_video_id', ''),
-        'type': r.get('type', ''),
-        'agency': r.get('agency', ''),
-        'incident_date': r.get('incident_date', ''),
-        'incident_location': r.get('incident_location', ''),
-        'description': r.get('description', '')[:200],
-        'modal_image': r.get('modal_image', ''),
-        'score': get_score(r)
-    })
+print(f"\nTotal VID without DVIDS: {len(no_dvid)}")
 
-print(json.dumps(output, ensure_ascii=False, indent=2))
+# Check if war.gov/medialink has thumbnail images for these PRs
+# Pattern: https://www.war.gov/medialink/ufo/release_1/thumbnail/DOW-UAP-PR050.jpg
+print("\n=== Building thumbnail URLs for VID without DVIDS ===")
+for r in no_dvid:
+    pr_match = re.search(r'(DOW-UAP-PR\d+)', r.get('title', ''), re.IGNORECASE)
+    if pr_match:
+        pr = pr_match.group(1).upper()
+        thumbnail_url = f"https://www.war.gov/medialink/ufo/release_1/thumbnail/{pr.lower()}.jpg"
+        print(f"  {pr}: {thumbnail_url}")
